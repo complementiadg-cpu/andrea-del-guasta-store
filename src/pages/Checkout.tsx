@@ -86,13 +86,12 @@ const Checkout = () => {
 
   const handleCompleteOrder = async () => {
     setIsProcessing(true);
-    
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsProcessing(false);
     setPaymentComplete(true);
+    clearCart();
   };
+
 
   return (
     <div className="min-h-screen bg-background">
