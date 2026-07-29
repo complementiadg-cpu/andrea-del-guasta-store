@@ -105,30 +105,32 @@ const Checkout = () => {
             {/* Order Summary - First on mobile, last on desktop */}
             <div className="lg:col-span-1 lg:order-2">
               <div className="bg-muted/20 p-8 rounded-none sticky top-6">
-                <h2 className="text-lg font-light text-foreground mb-6">Order Summary</h2>
-                
+                <h2 className="font-serif text-2xl text-foreground mb-6">Riepilogo Ordine</h2>
+
                 <div className="space-y-6">
+                  {cartItems.length === 0 && (
+                    <p className="text-sm font-light text-muted-foreground">
+                      Il tuo carrello è vuoto.
+                    </p>
+                  )}
                   {cartItems.map((item) => (
-                    <div key={item.id} className="flex gap-4">
-                      <div className="w-20 h-20 bg-muted rounded-none overflow-hidden">
-                        <img 
-                          src={item.image} 
+                    <div key={item.sku} className="flex gap-4">
+                      <div className="w-20 h-20 bg-muted rounded-none overflow-hidden shrink-0">
+                        <img
+                          src={item.image}
                           alt={item.name}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-light text-foreground">{item.name}</h3>
-                        {item.size && (
-                          <p className="text-sm text-muted-foreground">Size: {item.size}</p>
-                        )}
-                        
-                        {/* Quantity controls */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-light text-muted-foreground">{item.category}</p>
+                        <h3 className="font-serif text-base text-foreground truncate">{item.name}</h3>
+
                         <div className="flex items-center gap-2 mt-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.sku, item.quantity - 1)}
                             className="h-8 w-8 p-0 rounded-none border-muted-foreground/20"
                           >
                             <Minus className="h-3 w-3" />
@@ -139,19 +141,20 @@ const Checkout = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.sku, item.quantity + 1)}
                             className="h-8 w-8 p-0 rounded-none border-muted-foreground/20"
                           >
                             <Plus className="h-3 w-3" />
                           </Button>
                         </div>
                       </div>
-                      <div className="text-foreground font-medium">
-                        {item.price}
+                      <div className="text-foreground font-light whitespace-nowrap">
+                        {formatEuro(item.price * item.quantity)}
                       </div>
                     </div>
                   ))}
                 </div>
+
 
                 {/* Discount Code Section */}
                 <div className="mt-8 pt-6 border-t border-muted-foreground/20">
