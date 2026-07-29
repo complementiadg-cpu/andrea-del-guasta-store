@@ -34,7 +34,7 @@ const CategoryHeader = ({ category }: CategoryHeaderProps) => {
         </div>
         
         <div>
-          <h1 className="text-3xl md:text-4xl font-light text-foreground">
+          <h1 className="font-serif text-4xl md:text-5xl text-foreground">
             {capitalizedCategory}
           </h1>
         </div>

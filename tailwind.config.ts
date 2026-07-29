@@ -15,6 +15,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['DM Sans', 'sans-serif'],
+        serif: ['"Bodoni Moda"', 'serif'],
+        display: ['"Bodoni Moda"', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
