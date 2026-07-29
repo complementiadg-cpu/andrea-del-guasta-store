@@ -1,248 +1,126 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import Pagination from "./Pagination";
-import pantheonImage from "@/assets/pantheon.jpg";
-import eclipseImage from "@/assets/eclipse.jpg";
-import haloImage from "@/assets/halo.jpg";
-import obliqueImage from "@/assets/oblique.jpg";
-import lintelImage from "@/assets/lintel.jpg";
-import shadowlineImage from "@/assets/shadowline.jpg";
-import organicEarring from "@/assets/organic-earring.png";
-import linkBracelet from "@/assets/link-bracelet.png";
+import { Card, CardContent } from "@/components/ui/card";
+import { useProducts } from "@/hooks/useProducts";
+import type { Product } from "@/lib/products";
 
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  price: string;
-  image: string;
-  isNew?: boolean;
+interface ProductGridProps {
+  filterCategory?: string; // e.g. "earrings", "bracelets", "collane"
+  showCategoryFilters?: boolean;
+  onCountChange?: (n: number) => void;
 }
 
-// Extended product list for category page
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Pantheon",
-    category: "Earrings",
-    price: "€2,850",
-    image: pantheonImage,
-    isNew: true,
-  },
-  {
-    id: 2,
-    name: "Eclipse",
-    category: "Bracelets",
-    price: "€3,200",
-    image: eclipseImage,
-  },
-  {
-    id: 3,
-    name: "Halo",
-    category: "Earrings",
-    price: "€1,950",
-    image: haloImage,
-    isNew: true,
-  },
-  {
-    id: 4,
-    name: "Oblique",
-    category: "Earrings",
-    price: "€1,650",
-    image: obliqueImage,
-  },
-  {
-    id: 5,
-    name: "Lintel",
-    category: "Earrings",
-    price: "€2,250",
-    image: lintelImage,
-  },
-  {
-    id: 6,
-    name: "Shadowline",
-    category: "Bracelets",
-    price: "€3,950",
-    image: shadowlineImage,
-  },
-  {
-    id: 7,
-    name: "Meridian",
-    category: "Earrings",
-    price: "€2,450",
-    image: pantheonImage,
-  },
-  {
-    id: 8,
-    name: "Vertex",
-    category: "Bracelets",
-    price: "€2,800",
-    image: eclipseImage,
-  },
-  {
-    id: 9,
-    name: "Apex",
-    category: "Earrings",
-    price: "€1,550",
-    image: haloImage,
-  },
-  {
-    id: 10,
-    name: "Zenith",
-    category: "Earrings",
-    price: "€1,850",
-    image: obliqueImage,
-  },
-  {
-    id: 11,
-    name: "Prism",
-    category: "Earrings",
-    price: "€2,050",
-    image: lintelImage,
-  },
-  {
-    id: 12,
-    name: "Radiant",
-    category: "Bracelets",
-    price: "€3,650",
-    image: shadowlineImage,
-  },
-  {
-    id: 13,
-    name: "Stellar",
-    category: "Earrings",
-    price: "€2,150",
-    image: pantheonImage,
-  },
-  {
-    id: 14,
-    name: "Cosmos",
-    category: "Bracelets",
-    price: "€2,950",
-    image: eclipseImage,
-  },
-  {
-    id: 15,
-    name: "Aurora",
-    category: "Earrings",
-    price: "€1,750",
-    image: haloImage,
-  },
-  {
-    id: 16,
-    name: "Nebula",
-    category: "Earrings",
-    price: "€1,850",
-    image: obliqueImage,
-  },
-  {
-    id: 17,
-    name: "Orbit",
-    category: "Earrings",
-    price: "€2,350",
-    image: lintelImage,
-  },
-  {
-    id: 18,
-    name: "Galaxy",
-    category: "Bracelets",
-    price: "€3,450",
-    image: shadowlineImage,
-  },
-  {
-    id: 19,
-    name: "Lunar",
-    category: "Earrings",
-    price: "€2,050",
-    image: pantheonImage,
-  },
-  {
-    id: 20,
-    name: "Solar",
-    category: "Bracelets",
-    price: "€3,150",
-    image: eclipseImage,
-  },
-  {
-    id: 21,
-    name: "Astral",
-    category: "Earrings",
-    price: "€1,650",
-    image: haloImage,
-  },
-  {
-    id: 22,
-    name: "Cosmic",
-    category: "Earrings",
-    price: "€1,950",
-    image: obliqueImage,
-  },
-  {
-    id: 23,
-    name: "Celestial",
-    category: "Earrings",
-    price: "€2,250",
-    image: lintelImage,
-  },
-  {
-    id: 24,
-    name: "Ethereal",
-    category: "Bracelets",
-    price: "€3,750",
-    image: shadowlineImage,
-  },
-];
+const normalize = (s: string) => s.trim().toLowerCase();
 
-const ProductGrid = () => {
+const ProductGrid = ({ filterCategory, showCategoryFilters }: ProductGridProps) => {
+  const { data: products, isLoading, error } = useProducts();
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+
+  const categories = useMemo(() => {
+    if (!products) return [];
+    const set = new Set<string>();
+    products.forEach((p) => {
+      if (p.category) set.add(p.category.trim());
+    });
+    return Array.from(set).sort();
+  }, [products]);
+
+  const filtered = useMemo(() => {
+    if (!products) return [];
+    const routeFilter = filterCategory && normalize(filterCategory) !== "all" && normalize(filterCategory) !== "shop"
+      ? normalize(filterCategory)
+      : null;
+    const chipFilter = showCategoryFilters && activeCategory !== "all" ? normalize(activeCategory) : null;
+
+    return products.filter((p) => {
+      const cat = normalize(p.category);
+      if (routeFilter && !cat.includes(routeFilter) && !routeFilter.includes(cat)) return false;
+      if (chipFilter && cat !== chipFilter) return false;
+      return true;
+    });
+  }, [products, filterCategory, activeCategory, showCategoryFilters]);
+
   return (
     <section className="w-full px-6 mb-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {products.map((product) => (
-            <Link key={product.id} to={`/product/${product.id}`}>
-              <Card 
-                className="border-none shadow-none bg-transparent group cursor-pointer"
-              >
-                <CardContent className="p-0">
-                  <div className="aspect-square mb-3 overflow-hidden bg-muted/10 relative">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-all duration-300 group-hover:opacity-0"
-                    />
-                    <img
-                      src={product.category === "Earrings" ? organicEarring : linkBracelet}
-                      alt={`${product.name} lifestyle`}
-                      className="absolute inset-0 w-full h-full object-cover transition-all duration-300 opacity-0 group-hover:opacity-100"
-                    />
-                    <div className="absolute inset-0 bg-black/[0.03]"></div>
-                    {product.isNew && (
-                      <div className="absolute top-2 left-2 px-2 py-1 text-xs font-medium text-black">
-                        NEW
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-light text-foreground">
-                      {product.category}
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-sm font-medium text-foreground">
-                        {product.name}
-                      </h3>
-                      <p className="text-sm font-light text-foreground">
-                        {product.price}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+      {showCategoryFilters && categories.length > 0 && (
+        <div className="mb-8 flex flex-wrap gap-2">
+          <FilterChip label="Tutti" active={activeCategory === "all"} onClick={() => setActiveCategory("all")} />
+          {categories.map((c) => (
+            <FilterChip
+              key={c}
+              label={c}
+              active={normalize(activeCategory) === normalize(c)}
+              onClick={() => setActiveCategory(c)}
+            />
           ))}
         </div>
-      
-      <Pagination />
+      )}
+
+      {isLoading && (
+        <p className="text-sm font-light text-muted-foreground">Caricamento prodotti…</p>
+      )}
+      {error && (
+        <p className="text-sm font-light text-destructive">
+          Impossibile caricare i prodotti. Verifica la connessione al database.
+        </p>
+      )}
+      {!isLoading && !error && filtered.length === 0 && (
+        <p className="text-sm font-light text-muted-foreground">Nessun prodotto disponibile.</p>
+      )}
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {filtered.map((product) => (
+          <ProductCard key={product.sku} product={product} />
+        ))}
+      </div>
     </section>
   );
 };
+
+const FilterChip = ({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) => (
+  <button
+    onClick={onClick}
+    className={`px-4 py-2 text-sm font-light border transition-colors ${
+      active
+        ? "bg-foreground text-background border-foreground"
+        : "bg-transparent text-foreground border-border hover:border-foreground"
+    }`}
+  >
+    {label}
+  </button>
+);
+
+const ProductCard = ({ product }: { product: Product }) => (
+  <Link to={`/product/${encodeURIComponent(product.sku)}`}>
+    <Card className="border-none shadow-none bg-transparent group cursor-pointer">
+      <CardContent className="p-0">
+        <div className="aspect-square mb-3 overflow-hidden bg-muted/10 relative">
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+          <div className="absolute inset-0 bg-black/[0.03]" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm font-light text-muted-foreground">{product.category}</p>
+          <div className="flex justify-between items-center gap-2">
+            <h3 className="font-serif text-base text-foreground truncate">{product.name}</h3>
+            <p className="text-sm font-light text-foreground whitespace-nowrap">{product.priceLabel}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </Link>
+);
 
 export default ProductGrid;
