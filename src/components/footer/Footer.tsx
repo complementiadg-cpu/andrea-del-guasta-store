@@ -5,29 +5,32 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-8">
           {/* Brand - Left side */}
           <div>
-            <img 
-              src="/Linea_Jewelry_Inc-2.svg" 
-              alt="Linea Jewelry Inc." 
-              className="mb-4 h-6 w-auto"
-            />
-            <p className="text-sm font-light text-black/70 leading-relaxed max-w-md mb-6">
-              Minimalist jewelry crafted for the modern individual
+            <p className="font-serif uppercase tracking-[0.18em] text-lg mb-1">andreadelguasta</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] font-light text-black/60 mb-6">
+              couture accessories
             </p>
-            
+
             {/* Contact Information */}
             <div className="space-y-2 text-sm font-light text-black/70">
-              <div>
-                <p className="font-normal text-black mb-1">Visit Us</p>
-                <p>123 Madison Avenue</p>
-                <p>New York, NY 10016</p>
-              </div>
-              <div>
-                <p className="font-normal text-black mb-1 mt-3">Contact</p>
-                <p>+1 (212) 555-0123</p>
-                <p>hello@lineajewelry.com</p>
-              </div>
+              <p className="font-normal text-black mb-1">Contatti</p>
+              <p>
+                <a
+                  href="https://instagram.com/andreadelguasta66"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-black transition-colors"
+                >
+                  @andreadelguasta66
+                </a>
+              </p>
+              <p>
+                <a href="mailto:complementiadg@gmail.com" className="hover:text-black transition-colors">
+                  complementiadg@gmail.com
+                </a>
+              </p>
             </div>
           </div>
+
 
           {/* Link lists - Right side */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -59,8 +62,9 @@ const Footer = () => {
             <div>
               <h4 className="text-sm font-normal mb-4">Connect</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Pinterest</a></li>
+                <li><a href="https://instagram.com/andreadelguasta66" target="_blank" rel="noopener noreferrer" className="text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
+                <li><a href="mailto:complementiadg@gmail.com" className="text-sm font-light text-black/70 hover:text-black transition-colors">Email</a></li>
+
                 <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</a></li>
               </ul>
             </div>
@@ -72,7 +76,7 @@ const Footer = () => {
       <div className="border-t border-[#e5e5e5] -mx-6 px-6 pt-2">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm font-light text-black mb-1 md:mb-0">
-            © 2024 Linea. All rights reserved. Template made by{" "}
+            © 2026 andreadelguasta. All rights reserved. Template made by{" "}
             <a href="https://www.liljeros.co" target="_blank" rel="noopener noreferrer" className="hover:text-black/70 transition-colors underline">
               Rickard Liljeros
             </a>
