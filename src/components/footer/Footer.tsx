@@ -5,7 +5,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-8">
           {/* Brand - Left side */}
           <div>
-            <p className="font-serif uppercase tracking-[0.18em] text-lg mb-1">andreadelguasta</p>
+            <p className="font-serif uppercase tracking-[0.18em] text-lg mb-1">ANDREADELGUASTA</p>
             <p className="text-[10px] uppercase tracking-[0.3em] font-light text-black/60 mb-6">
               couture accessories
             </p>
@@ -76,7 +76,7 @@ const Footer = () => {
       <div className="border-t border-[#e5e5e5] -mx-6 px-6 pt-2">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm font-light text-black mb-1 md:mb-0">
-            © 2026 andreadelguasta. All rights reserved. Template made by{" "}
+            © 2026 ANDREADELGUASTA. All rights reserved. Template made by{" "}
             <a href="https://www.liljeros.co" target="_blank" rel="noopener noreferrer" className="hover:text-black/70 transition-colors underline">
               Rickard Liljeros
             </a>

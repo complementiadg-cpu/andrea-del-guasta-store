@@ -17,11 +17,9 @@ const CheckoutHeader = () => {
 
           {/* Center - Logo - Absolutely positioned to ensure perfect centering */}
           <Link to="/" className="absolute left-1/2 transform -translate-x-1/2">
-            <img 
-              src="/LINEA-1.svg" 
-              alt="Linea Jewelry Inc" 
-              className="h-6 w-auto"
-            />
+            <span className="font-serif uppercase tracking-[0.18em] text-base md:text-lg text-foreground whitespace-nowrap">
+              ANDREADELGUASTA
+            </span>
           </Link>
 
           {/* Right side - Support */}
