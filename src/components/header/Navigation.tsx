@@ -111,11 +111,17 @@ const Navigation = () => {
           ))}
         </div>
 
-        <div className="absolute left-1/2 transform -translate-x-1/2">
-          <Link to="/" className="block">
-            <img src="/LINEA-1.svg" alt="LINEA" className="h-6 w-auto" />
+        <div className="absolute left-1/2 transform -translate-x-1/2 text-center">
+          <Link to="/" className="block leading-none">
+            <span className="block font-serif uppercase tracking-[0.18em] text-base md:text-lg text-nav-foreground">
+              andreadelguasta
+            </span>
+            <span className="block text-[9px] md:text-[10px] uppercase tracking-[0.3em] font-light text-nav-foreground/60 mt-0.5">
+              couture accessories
+            </span>
           </Link>
         </div>
+
 
         <div className="flex items-center space-x-2">
           <button
