@@ -54,7 +54,7 @@ const ShoppingBag = ({ isOpen, onClose, onViewFavorites }: ShoppingBagProps) => 
             <>
               <div className="flex-1 overflow-y-auto space-y-6 mb-6 -mr-2 pr-2">
                 {items.map((item) => (
-                  <div key={item.sku} className="flex gap-4">
+                  <div key={item.id} className="flex gap-4">
                     <div className="w-20 h-20 bg-muted/10 overflow-hidden shrink-0">
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
@@ -63,6 +63,11 @@ const ShoppingBag = ({ isOpen, onClose, onViewFavorites }: ShoppingBagProps) => 
                         <div className="min-w-0">
                           <p className="text-xs font-light text-muted-foreground">{item.category}</p>
                           <h3 className="font-serif text-base text-foreground truncate">{item.name}</h3>
+                          {item.customSize && (
+                            <p className="text-xs font-light text-muted-foreground mt-0.5">
+                              Misura: {item.customSize}
+                            </p>
+                          )}
                         </div>
                         <p className="text-sm font-light text-foreground whitespace-nowrap">
                           {item.priceLabel}
@@ -71,7 +76,7 @@ const ShoppingBag = ({ isOpen, onClose, onViewFavorites }: ShoppingBagProps) => 
                       <div className="flex items-center gap-2 mt-3">
                         <div className="flex items-center border border-border">
                           <button
-                            onClick={() => updateQuantity(item.sku, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             className="p-2 hover:bg-muted/50 transition-colors"
                             aria-label="Diminuisci"
                           >
@@ -81,12 +86,17 @@ const ShoppingBag = ({ isOpen, onClose, onViewFavorites }: ShoppingBagProps) => 
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateQuantity(item.sku, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             className="p-2 hover:bg-muted/50 transition-colors"
                             aria-label="Aumenta"
                           >
                             <Plus size={14} />
                           </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
                         </div>
                       </div>
                     </div>
