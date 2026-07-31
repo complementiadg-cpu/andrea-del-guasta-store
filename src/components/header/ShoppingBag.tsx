@@ -97,11 +97,6 @@ const ShoppingBag = ({ isOpen, onClose, onViewFavorites }: ShoppingBagProps) => 
                     </div>
                   </div>
                 ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
               </div>
 
               <div className="border-t border-border pt-6 space-y-4">
