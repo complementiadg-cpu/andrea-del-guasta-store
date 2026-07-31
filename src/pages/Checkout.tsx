@@ -124,6 +124,11 @@ const Checkout = () => {
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-light text-muted-foreground">{item.category}</p>
                         <h3 className="font-serif text-base text-foreground truncate">{item.name}</h3>
+                        {item.customSize && (
+                          <p className="text-xs font-light text-muted-foreground mt-0.5">
+                            Misura personalizzata: {item.customSize}
+                          </p>
+                        )}
 
                         <div className="flex items-center gap-2 mt-2">
                           <Button
