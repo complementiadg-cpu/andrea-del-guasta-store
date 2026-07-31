@@ -58,11 +58,19 @@ export const formatEuro = (value: number): string =>
 
 export function mapProduct(row: ProdottoRow): Product {
   const rawPrice = row["Prezzo (€)"];
+  const parseItalianPrice = (value: string): number => {
+    // "€ 1.088,00" -> 1088.00 ; "88,00" -> 88 ; "88.5" -> 88.5
+    const cleaned = value.replace(/[^\d.,-]/g, "").trim();
+    const normalized = cleaned.includes(",")
+      ? cleaned.replace(/\./g, "").replace(",", ".")
+      : cleaned;
+    return parseFloat(normalized);
+  };
   const price =
     typeof rawPrice === "number"
       ? rawPrice
       : rawPrice
-      ? parseFloat(String(rawPrice).replace(/[^\d,.-]/g, "").replace(",", "."))
+      ? parseItalianPrice(String(rawPrice))
       : 0;
 
   const images = [row["Immagine 1"], row["Immagine 2"], row["Immagine 3"]]
