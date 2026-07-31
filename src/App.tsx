@@ -7,6 +7,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import { CartProvider } from "./contexts/CartContext";
 import Index from "./pages/Index";
 import Category from "./pages/Category";
+import Collection from "./pages/Collection";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
@@ -31,6 +32,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/category/:category" element={<Category />} />
+            <Route path="/collection/:collection" element={<Collection />} />
             <Route path="/product/:productId" element={<ProductDetail />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/about/our-story" element={<OurStory />} />
