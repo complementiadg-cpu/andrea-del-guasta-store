@@ -5,16 +5,18 @@ import { useProducts } from "@/hooks/useProducts";
 import type { Product } from "@/lib/products";
 
 interface ProductGridProps {
-  filterCategory?: string; // e.g. "earrings", "bracelets", "collane"
+  filterCategory?: string; // e.g. "orecchini", "bracciale"
+  filterCollection?: string;
   showCategoryFilters?: boolean;
   onCountChange?: (n: number) => void;
 }
 
 const normalize = (s: string) => s.trim().toLowerCase();
 
-const ProductGrid = ({ filterCategory, showCategoryFilters }: ProductGridProps) => {
+const ProductGrid = ({ filterCategory, filterCollection, showCategoryFilters }: ProductGridProps) => {
   const { data: products, isLoading, error } = useProducts();
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeCollection, setActiveCollection] = useState<string>("all");
 
   const categories = useMemo(() => {
     if (!products) return [];
@@ -25,34 +27,87 @@ const ProductGrid = ({ filterCategory, showCategoryFilters }: ProductGridProps) 
     return Array.from(set).sort();
   }, [products]);
 
+  const collections = useMemo(() => {
+    if (!products) return [];
+    const set = new Set<string>();
+    products.forEach((p) => {
+      if (p.collection) set.add(p.collection.trim());
+    });
+    return Array.from(set).sort();
+  }, [products]);
+
   const filtered = useMemo(() => {
     if (!products) return [];
-    const routeFilter = filterCategory && normalize(filterCategory) !== "all" && normalize(filterCategory) !== "shop"
-      ? normalize(filterCategory)
-      : null;
+    const routeFilter =
+      filterCategory && normalize(filterCategory) !== "all" && normalize(filterCategory) !== "shop"
+        ? normalize(filterCategory)
+        : null;
+    const routeCollection =
+      filterCollection && normalize(filterCollection) !== "all" ? normalize(filterCollection) : null;
     const chipFilter = showCategoryFilters && activeCategory !== "all" ? normalize(activeCategory) : null;
+    const chipCollection =
+      showCategoryFilters && activeCollection !== "all" ? normalize(activeCollection) : null;
 
     return products.filter((p) => {
       const cat = normalize(p.category);
+      const col = normalize(p.collection);
       if (routeFilter && !cat.includes(routeFilter) && !routeFilter.includes(cat)) return false;
+      if (routeCollection && col !== routeCollection) return false;
       if (chipFilter && cat !== chipFilter) return false;
+      if (chipCollection && col !== chipCollection) return false;
       return true;
     });
-  }, [products, filterCategory, activeCategory, showCategoryFilters]);
+  }, [products, filterCategory, filterCollection, activeCategory, activeCollection, showCategoryFilters]);
 
   return (
     <section className="w-full px-6 mb-16">
-      {showCategoryFilters && categories.length > 0 && (
-        <div className="mb-8 flex flex-wrap gap-2">
-          <FilterChip label="Tutti" active={activeCategory === "all"} onClick={() => setActiveCategory("all")} />
-          {categories.map((c) => (
-            <FilterChip
-              key={c}
-              label={c}
-              active={normalize(activeCategory) === normalize(c)}
-              onClick={() => setActiveCategory(c)}
-            />
-          ))}
+      {showCategoryFilters && (categories.length > 0 || collections.length > 0) && (
+        <div className="mb-8 space-y-4">
+          {categories.length > 0 && (
+            <div>
+              <p className="text-[10px] font-light uppercase tracking-[0.25em] text-muted-foreground mb-2">
+                Categorie
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <FilterChip
+                  label="Tutte"
+                  active={activeCategory === "all"}
+                  onClick={() => setActiveCategory("all")}
+                />
+                {categories.map((c) => (
+                  <FilterChip
+                    key={c}
+                    label={c}
+                    active={normalize(activeCategory) === normalize(c)}
+                    onClick={() => setActiveCategory(c)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {collections.length > 0 && (
+            <div>
+              <p className="text-[10px] font-light uppercase tracking-[0.25em] text-muted-foreground mb-2">
+                Collezioni
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <FilterChip
+                  label="Tutte"
+                  active={activeCollection === "all"}
+                  onClick={() => setActiveCollection("all")}
+                />
+                {collections.map((c) => (
+                  <FilterChip
+                    key={c}
+                    label={c}
+                    active={normalize(activeCollection) === normalize(c)}
+                    onClick={() => setActiveCollection(c)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
