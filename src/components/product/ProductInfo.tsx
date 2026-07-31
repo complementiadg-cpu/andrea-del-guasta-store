@@ -11,7 +11,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Minus, Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import type { Product } from "@/lib/products";
+import { supportsCustomSize } from "@/lib/products";
 import { useCart } from "@/contexts/CartContext";
 
 interface ProductInfoProps {
@@ -20,7 +23,10 @@ interface ProductInfoProps {
 
 const ProductInfo = ({ product }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
+  const [customSize, setCustomSize] = useState("");
   const { addToCart } = useCart();
+
+  const showSizeField = supportsCustomSize(product.category);
 
   const details: Array<{ label: string; value: string }> = [
     { label: "Materiali", value: product.materiali },
@@ -30,8 +36,13 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
   ].filter((d) => d.value && d.value.trim() !== "");
 
   const handleAdd = () => {
-    addToCart(product, quantity);
-    toast.success(`${product.name} aggiunto al carrello`);
+    const size = customSize.trim() !== "" ? `${customSize.trim()} cm` : undefined;
+    addToCart(product, quantity, size);
+    toast.success(
+      size
+        ? `${product.name} (${size}) aggiunto al carrello`
+        : `${product.name} aggiunto al carrello`
+    );
   };
 
   return (
@@ -150,6 +161,33 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
             </Button>
           </div>
         </div>
+
+        {showSizeField && (
+          <div className="space-y-2">
+            <Label
+              htmlFor="custom-size"
+              className="text-xs font-medium uppercase tracking-widest text-foreground"
+            >
+              Personalizza la misura
+            </Label>
+            <div className="flex items-center border border-border focus-within:border-foreground transition-colors">
+              <Input
+                id="custom-size"
+                type="text"
+                inputMode="decimal"
+                maxLength={10}
+                value={customSize}
+                onChange={(e) => setCustomSize(e.target.value.replace(/[^\d.,]/g, ""))}
+                placeholder="es. 42"
+                className="h-11 border-none rounded-none focus-visible:ring-0 font-light"
+              />
+              <span className="px-4 text-sm font-light text-muted-foreground">cm</span>
+            </div>
+            <p className="text-xs font-light text-muted-foreground">
+              Opzionale — indica la misura desiderata in centimetri.
+            </p>
+          </div>
+        )}
 
         <Button
           onClick={handleAdd}

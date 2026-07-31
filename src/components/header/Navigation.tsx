@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ShoppingBag from "./ShoppingBag";
 import { useCart } from "@/contexts/CartContext";
+import { useTaxonomy } from "@/hooks/useProducts";
 
 const Navigation = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -12,6 +13,7 @@ const Navigation = () => {
   const [isShoppingBagOpen, setIsShoppingBagOpen] = useState(false);
 
   const { totalItems } = useCart();
+  const { categories, collections } = useTaxonomy();
 
   useEffect(() => {
     const imagesToPreload = [
@@ -36,30 +38,43 @@ const Navigation = () => {
     "Collezione esclusiva",
   ];
 
-  const navItems = [
+  type NavItem = {
+    name: string;
+    href: string;
+    submenuItems: Array<{ label: string; to: string }>;
+    images?: Array<{ src: string; alt: string; label: string; to: string }>;
+  };
+
+  const navItems: NavItem[] = [
     {
-      name: "Shop",
+      name: "Categorie",
       href: "/category/shop",
-      submenuItems: ["Anelli", "Collane", "Orecchini", "Bracciali"],
-      images: [
-        { src: "/rings-collection.png", alt: "Rings", label: "Anelli" },
-        { src: "/earrings-collection.png", alt: "Earrings", label: "Orecchini" },
-      ],
+      submenuItems: categories.map((c) => ({
+        label: c,
+        to: `/category/${encodeURIComponent(c.toLowerCase())}`,
+      })),
     },
     {
-      name: "New in",
-      href: "/category/new-in",
-      submenuItems: ["Nuovi arrivi", "Collezione stagionale", "Edizione limitata"],
-      images: [
-        { src: "/arcus-bracelet.png", alt: "Arcus Bracelet", label: "Arcus" },
-        { src: "/span-bracelet.png", alt: "Span Bracelet", label: "Span" },
-      ],
+      name: "Collezioni",
+      href: "/category/shop",
+      submenuItems: collections.map((c) => ({
+        label: c,
+        to: `/collection/${encodeURIComponent(c)}`,
+      })),
     },
     {
       name: "About",
       href: "/about/our-story",
-      submenuItems: ["Our Story", "Sustainability", "Size Guide", "Customer Care", "Store Locator"],
-      images: [{ src: "/founders.png", alt: "Founders", label: "La nostra storia" }],
+      submenuItems: [
+        { label: "Our Story", to: "/about/our-story" },
+        { label: "Sustainability", to: "/about/sustainability" },
+        { label: "Size Guide", to: "/about/size-guide" },
+        { label: "Customer Care", to: "/about/customer-care" },
+        { label: "Store Locator", to: "/about/store-locator" },
+      ],
+      images: [
+        { src: "/founders.png", alt: "Founders", label: "La nostra storia", to: "/about/our-story" },
+      ],
     },
   ];
 
@@ -174,14 +189,10 @@ const Navigation = () => {
                     ?.submenuItems.map((subItem, idx) => (
                       <li key={idx}>
                         <Link
-                          to={
-                            activeDropdown === "About"
-                              ? `/about/${subItem.toLowerCase().replace(/\s+/g, "-")}`
-                              : `/category/${subItem.toLowerCase()}`
-                          }
+                          to={subItem.to}
                           className="text-nav-foreground hover:text-nav-hover transition-colors text-sm font-light block py-2"
                         >
-                          {subItem}
+                          {subItem.label}
                         </Link>
                       </li>
                     ))}
@@ -190,14 +201,10 @@ const Navigation = () => {
               <div className="flex space-x-6">
                 {navItems
                   .find((i) => i.name === activeDropdown)
-                  ?.images.map((image, idx) => (
+                  ?.images?.map((image, idx) => (
                     <Link
                       key={idx}
-                      to={
-                        activeDropdown === "About"
-                          ? "/about/our-story"
-                          : `/category/${image.label.toLowerCase()}`
-                      }
+                      to={image.to}
                       className="w-[400px] h-[280px] cursor-pointer group relative overflow-hidden block"
                     >
                       <img
@@ -269,15 +276,11 @@ const Navigation = () => {
                     {item.submenuItems.map((subItem, subIdx) => (
                       <Link
                         key={subIdx}
-                        to={
-                          item.name === "About"
-                            ? `/about/${subItem.toLowerCase().replace(/\s+/g, "-")}`
-                            : `/category/${subItem.toLowerCase()}`
-                        }
+                        to={subItem.to}
                         className="text-nav-foreground/70 hover:text-nav-hover text-sm font-light block py-1"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        {subItem}
+                        {subItem.label}
                       </Link>
                     ))}
                   </div>

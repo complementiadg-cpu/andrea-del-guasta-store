@@ -113,7 +113,7 @@ const Checkout = () => {
                     </p>
                   )}
                   {cartItems.map((item) => (
-                    <div key={item.sku} className="flex gap-4">
+                    <div key={item.id} className="flex gap-4">
                       <div className="w-20 h-20 bg-muted rounded-none overflow-hidden shrink-0">
                         <img
                           src={item.image}
@@ -124,12 +124,17 @@ const Checkout = () => {
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-light text-muted-foreground">{item.category}</p>
                         <h3 className="font-serif text-base text-foreground truncate">{item.name}</h3>
+                        {item.customSize && (
+                          <p className="text-xs font-light text-muted-foreground mt-0.5">
+                            Misura personalizzata: {item.customSize}
+                          </p>
+                        )}
 
                         <div className="flex items-center gap-2 mt-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => updateQuantity(item.sku, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             className="h-8 w-8 p-0 rounded-none border-muted-foreground/20"
                           >
                             <Minus className="h-3 w-3" />
@@ -140,7 +145,7 @@ const Checkout = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => updateQuantity(item.sku, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             className="h-8 w-8 p-0 rounded-none border-muted-foreground/20"
                           >
                             <Plus className="h-3 w-3" />
