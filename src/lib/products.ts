@@ -5,6 +5,7 @@ export interface ProdottoRow {
   SKU: string;
   "Nome Prodotto": string | null;
   Categoria: string | null;
+  Collezione: string | null;
   "Descrizione Originale": string | null;
   "Descrizione E-commerce Estesa": string | null;
   Design: string | null;
@@ -13,7 +14,9 @@ export interface ProdottoRow {
   Chiusura: string | null;
   "Consiglio di Stile": string | null;
   "Prezzo (€)": number | string | null;
-  Immagine: string | null;
+  "Immagine 1": string | null;
+  "Immagine 2": string | null;
+  "Immagine 3": string | null;
 }
 
 // Normalized shape used by UI components
@@ -21,6 +24,7 @@ export interface Product {
   sku: string;
   name: string;
   category: string;
+  collection: string;
   descrizioneOriginale: string;
   descrizioneEstesa: string;
   design: string;
@@ -31,9 +35,18 @@ export interface Product {
   price: number;
   priceLabel: string;
   image: string;
+  images: string[];
 }
 
 const PLACEHOLDER = "/placeholder.svg";
+
+// Categories that support a custom made-to-measure length
+export const CUSTOM_SIZE_CATEGORIES = ["girocollo", "bracciale", "choker", "collana"];
+
+export const supportsCustomSize = (category: string): boolean => {
+  const cat = (category || "").trim().toLowerCase();
+  return CUSTOM_SIZE_CATEGORIES.some((c) => cat.includes(c));
+};
 
 export const formatEuro = (value: number): string =>
   new Intl.NumberFormat("it-IT", {
@@ -52,10 +65,15 @@ export function mapProduct(row: ProdottoRow): Product {
       ? parseFloat(String(rawPrice).replace(/[^\d,.-]/g, "").replace(",", "."))
       : 0;
 
+  const images = [row["Immagine 1"], row["Immagine 2"], row["Immagine 3"]]
+    .map((v) => (v ?? "").trim())
+    .filter((v) => v !== "");
+
   return {
     sku: row.SKU,
     name: row["Nome Prodotto"] ?? "",
     category: row.Categoria ?? "",
+    collection: row.Collezione ?? "",
     descrizioneOriginale: row["Descrizione Originale"] ?? "",
     descrizioneEstesa: row["Descrizione E-commerce Estesa"] ?? "",
     design: row.Design ?? "",
@@ -65,7 +83,8 @@ export function mapProduct(row: ProdottoRow): Product {
     consiglioStile: row["Consiglio di Stile"] ?? "",
     price: isNaN(price) ? 0 : price,
     priceLabel: formatEuro(isNaN(price) ? 0 : price),
-    image: row.Immagine && row.Immagine.trim() !== "" ? row.Immagine : PLACEHOLDER,
+    image: images[0] ?? PLACEHOLDER,
+    images: images.length > 0 ? images : [PLACEHOLDER],
   };
 }
 
