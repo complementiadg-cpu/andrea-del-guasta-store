@@ -162,6 +162,33 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           </div>
         </div>
 
+        {showSizeField && (
+          <div className="space-y-2">
+            <Label
+              htmlFor="custom-size"
+              className="text-xs font-medium uppercase tracking-widest text-foreground"
+            >
+              Personalizza la misura
+            </Label>
+            <div className="flex items-center border border-border focus-within:border-foreground transition-colors">
+              <Input
+                id="custom-size"
+                type="text"
+                inputMode="decimal"
+                maxLength={10}
+                value={customSize}
+                onChange={(e) => setCustomSize(e.target.value.replace(/[^\d.,]/g, ""))}
+                placeholder="es. 42"
+                className="h-11 border-none rounded-none focus-visible:ring-0 font-light"
+              />
+              <span className="px-4 text-sm font-light text-muted-foreground">cm</span>
+            </div>
+            <p className="text-xs font-light text-muted-foreground">
+              Opzionale — indica la misura desiderata in centimetri.
+            </p>
+          </div>
+        )}
+
         <Button
           onClick={handleAdd}
           className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-light rounded-none"
