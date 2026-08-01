@@ -26,7 +26,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
   const [customSize, setCustomSize] = useState("");
   const { addToCart } = useCart();
 
-  const showSizeField = supportsCustomSize(product.category);
+  const showSizeField = supportsCustomSize(product.category, product.collection);
 
   const details: Array<{ label: string; value: string }> = [
     { label: "Materiali", value: product.materiali },

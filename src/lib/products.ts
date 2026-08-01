@@ -43,7 +43,12 @@ const PLACEHOLDER = "/placeholder.svg";
 // Categories that support a custom made-to-measure length
 export const CUSTOM_SIZE_CATEGORIES = ["girocollo", "bracciale", "choker", "collana"];
 
-export const supportsCustomSize = (category: string): boolean => {
+// Collections that never allow a made-to-measure length
+export const NO_CUSTOM_SIZE_COLLECTIONS = ["slap"];
+
+export const supportsCustomSize = (category: string, collection = ""): boolean => {
+  const col = (collection || "").trim().toLowerCase();
+  if (NO_CUSTOM_SIZE_COLLECTIONS.some((c) => col.includes(c))) return false;
   const cat = (category || "").trim().toLowerCase();
   return CUSTOM_SIZE_CATEGORIES.some((c) => cat.includes(c));
 };
@@ -73,15 +78,16 @@ export function mapProduct(row: ProdottoRow): Product {
       ? parseItalianPrice(String(rawPrice))
       : 0;
 
-  const images = [row["Immagine 1"], row["Immagine 2"], row["Immagine 3"]]
+  // "Immagine 2" is the primary shot of the gallery when available
+  const images = [row["Immagine 2"], row["Immagine 1"], row["Immagine 3"]]
     .map((v) => (v ?? "").trim())
     .filter((v) => v !== "");
 
   return {
     sku: row.SKU,
     name: row["Nome Prodotto"] ?? "",
-    category: row.Categoria ?? "",
-    collection: row.Collezione ?? "",
+    category: (row.Categoria ?? "").trim(),
+    collection: (row.Collezione ?? "").trim(),
     descrizioneOriginale: row["Descrizione Originale"] ?? "",
     descrizioneEstesa: row["Descrizione E-commerce Estesa"] ?? "",
     design: row.Design ?? "",
