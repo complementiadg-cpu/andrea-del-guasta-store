@@ -3,9 +3,8 @@ import Footer from "../components/footer/Footer";
 import LargeHero from "../components/content/LargeHero";
 import FiftyFiftySection from "../components/content/FiftyFiftySection";
 import OneThirdTwoThirdsSection from "../components/content/OneThirdTwoThirdsSection";
-import ProductCarousel from "../components/content/ProductCarousel";
 import EditorialSection from "../components/content/EditorialSection";
-import ProductGrid from "../components/category/ProductGrid";
+import CollectionShowcase from "../components/content/CollectionShowcase";
 
 const Index = () => {
   return (
@@ -14,16 +13,16 @@ const Index = () => {
 
       <main className="pt-6">
         <FiftyFiftySection />
-        <ProductCarousel />
+        <CollectionShowcase index={0} />
+
         <LargeHero />
-        <section className="w-full px-6 mb-8">
-          <h2 className="font-serif text-3xl md:text-4xl text-foreground text-center">
-            La Collezione
-          </h2>
-        </section>
-        <ProductGrid showCategoryFilters />
+        <CollectionShowcase index={1} />
+
         <OneThirdTwoThirdsSection />
+        <CollectionShowcase index={2} />
+
         <EditorialSection />
+        <CollectionShowcase index={3} />
       </main>
 
       <Footer />
