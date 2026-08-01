@@ -5,15 +5,23 @@ import ProductCarousel from "./ProductCarousel";
 interface CollectionShowcaseProps {
   /** Which collection of the catalogue to show (0-based, wraps around). */
   index?: number;
+  /** Exact collection name to show. If it exists, overrides index. */
+  collection?: string;
   limit?: number;
 }
 
-const CollectionShowcase = ({ index = 0, limit = 4 }: CollectionShowcaseProps) => {
+const CollectionShowcase = ({ index = 0, collection: collectionProp, limit = 4 }: CollectionShowcaseProps) => {
   const { collections } = useTaxonomy();
 
   if (collections.length === 0) return null;
 
-  const collection = collections[index % collections.length];
+  const findCollection = (name: string) =>
+    collections.find((c) => c.toLowerCase() === name.trim().toLowerCase());
+
+  const collection = collectionProp
+    ? findCollection(collectionProp) ?? collections[index % collections.length]
+    : collections[index % collections.length];
+
 
   return (
     <section className="w-full">
