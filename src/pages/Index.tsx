@@ -13,7 +13,7 @@ const Index = () => {
 
       <main className="pt-6">
         <FiftyFiftySection />
-        <CollectionShowcase index={0} />
+        <CollectionShowcase collection="Stone gender" />
 
         <LargeHero />
         <CollectionShowcase index={1} />
