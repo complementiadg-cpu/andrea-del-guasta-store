@@ -16,13 +16,13 @@ const Index = () => {
         <CollectionShowcase collection="Stone gender" />
 
         <LargeHero />
-        <CollectionShowcase index={1} />
+        <CollectionShowcase collection="Pearl" />
 
         <OneThirdTwoThirdsSection />
-        <CollectionShowcase index={2} />
+        <CollectionShowcase collection="Metal pride" />
 
         <EditorialSection />
-        <CollectionShowcase index={3} />
+        <CollectionShowcase collection="Long way" />
       </main>
 
       <Footer />
