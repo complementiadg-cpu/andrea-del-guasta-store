@@ -51,7 +51,8 @@ const ProductGrid = ({ filterCategory, filterCollection, showCategoryFilters }: 
     return products.filter((p) => {
       const cat = normalize(p.category);
       const col = normalize(p.collection);
-      if (routeFilter && !cat.includes(routeFilter) && !routeFilter.includes(cat)) return false;
+      if (routeFilter && cat !== routeFilter && !cat.includes(routeFilter) && !routeFilter.includes(cat))
+        return false;
       if (routeCollection && col !== routeCollection) return false;
       if (chipFilter && cat !== chipFilter) return false;
       if (chipCollection && col !== chipCollection) return false;
