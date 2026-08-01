@@ -10,13 +10,27 @@ import { useProducts } from "@/hooks/useProducts";
 interface ProductCarouselProps {
   limit?: number;
   filterCategory?: string;
+  filterCollection?: string;
+  excludeSku?: string;
 }
 
-const ProductCarousel = ({ limit = 8, filterCategory }: ProductCarouselProps) => {
+const ProductCarousel = ({
+  limit = 8,
+  filterCategory,
+  filterCollection,
+  excludeSku,
+}: ProductCarouselProps) => {
   const { data: products, isLoading } = useProducts();
 
   let list = products ?? [];
-  if (filterCategory) {
+  if (excludeSku) {
+    list = list.filter((p) => p.sku !== excludeSku);
+  }
+  if (filterCollection) {
+    const f = filterCollection.trim().toLowerCase();
+    list = list.filter((p) => p.collection.trim().toLowerCase() === f);
+  }
+  if (filterCategory && !filterCollection) {
     const f = filterCategory.trim().toLowerCase();
     list = list.filter((p) => p.category.toLowerCase().includes(f));
   }

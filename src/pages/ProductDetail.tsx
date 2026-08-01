@@ -93,7 +93,12 @@ const ProductDetail = () => {
           <div className="mb-4 px-6">
             <h2 className="font-serif text-2xl text-foreground">Potrebbero piacerti</h2>
           </div>
-          <ProductCarousel filterCategory={product.category} limit={8} />
+          <ProductCarousel
+            filterCollection={product.collection || undefined}
+            filterCategory={product.category}
+            excludeSku={product.sku}
+            limit={2}
+          />
         </section>
       </main>
 
