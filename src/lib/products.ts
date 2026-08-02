@@ -35,6 +35,7 @@ export interface Product {
   price: number;
   priceLabel: string;
   image: string;
+  image1: string;
   images: string[];
 }
 
@@ -98,6 +99,7 @@ export function mapProduct(row: ProdottoRow): Product {
     price: isNaN(price) ? 0 : price,
     priceLabel: formatEuro(isNaN(price) ? 0 : price),
     image: images[0] ?? PLACEHOLDER,
+    image1: images[1] ?? PLACEHOLDER,
     images: images.length > 0 ? images : [PLACEHOLDER],
   };
 }

@@ -22,7 +22,6 @@ const Index = () => {
         <CollectionShowcase collection="Metal pride" />
 
         <EditorialSection />
-        <CollectionShowcase collection="Long way" />
       </main>
 
       <Footer />
