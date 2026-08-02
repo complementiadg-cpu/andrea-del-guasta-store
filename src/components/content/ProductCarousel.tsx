@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Carousel,
@@ -6,6 +7,7 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { useProducts } from "@/hooks/useProducts";
+import type { Product } from "@/lib/products";
 
 interface ProductCarouselProps {
   limit?: number;
