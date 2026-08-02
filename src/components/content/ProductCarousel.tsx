@@ -78,6 +78,7 @@ const ProductCarouselImage = ({ product }: { product: Product }) => {
     product.image1 &&
     product.image1 !== product.image &&
     product.image1 !== "/placeholder.svg";
+  console.log("ProductCarouselImage", product.sku, product.image, product.image1, hasAltImage);
 
   return (
     <div className="aspect-square mb-3 overflow-hidden bg-muted/10 relative">
