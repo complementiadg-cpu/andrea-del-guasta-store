@@ -53,15 +53,7 @@ const ProductCarousel = ({
               <Link to={`/product/${encodeURIComponent(product.sku)}`}>
                 <Card className="border-none shadow-none bg-transparent group">
                   <CardContent className="p-0">
-                    <div className="aspect-square mb-3 overflow-hidden bg-muted/10 relative">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      />
-                      <div className="absolute inset-0 bg-black/[0.03]" />
-                    </div>
+                    <ProductCarouselImage product={product} />
                     <div className="space-y-1">
                       <p className="text-sm font-light text-muted-foreground">{product.category}</p>
                       <div className="flex justify-between items-center gap-2">
@@ -79,6 +71,25 @@ const ProductCarousel = ({
         </CarouselContent>
       </Carousel>
     </section>
+  );
+};
+
+const ProductCarouselImage = ({ product }: { product: Product }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const displayImage = isHovered && product.image1 ? product.image1 : product.image;
+
+  return (
+    <div className="aspect-square mb-3 overflow-hidden bg-muted/10 relative">
+      <img
+        src={displayImage}
+        alt={product.name}
+        loading="lazy"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+      />
+      <div className="absolute inset-0 bg-black/[0.03]" />
+    </div>
   );
 };
 
