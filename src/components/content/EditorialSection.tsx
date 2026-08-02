@@ -17,7 +17,7 @@ const EditorialSection = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div className="space-y-4 max-w-[630px]">
           <h2 className="text-2xl font-normal text-foreground leading-tight md:text-xl">
-            Jewelry Drawn From Shadows and Lines
+            About Andrea
           </h2>
           <p className="text-sm font-light text-foreground leading-relaxed">
             Andrea Del Guasta è un brand fiorentino che unisce tradizione manifatturiera e design contemporaneo. Progetta e produce artigianalmente abbigliamento, accessori e complementi d’arredo couture. Ogni complemento celebra l’unicità e l’inclusione, trasformando la diversità in un segno distintivo di eleganza.
