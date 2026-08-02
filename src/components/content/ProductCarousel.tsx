@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Carousel,
@@ -75,20 +74,30 @@ const ProductCarousel = ({
 };
 
 const ProductCarouselImage = ({ product }: { product: Product }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const displayImage = isHovered && product.image1 ? product.image1 : product.image;
+  const hasAltImage =
+    product.image1 &&
+    product.image1 !== product.image &&
+    product.image1 !== "/placeholder.svg";
 
   return (
     <div className="aspect-square mb-3 overflow-hidden bg-muted/10 relative">
       <img
-        src={displayImage}
+        src={product.image}
         alt={product.name}
         loading="lazy"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${
+          hasAltImage ? "group-hover:opacity-0" : ""
+        }`}
       />
-      <div className="absolute inset-0 bg-black/[0.03]" />
+      {hasAltImage && (
+        <img
+          src={product.image1}
+          alt={product.name}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-[1.03]"
+        />
+      )}
+      <div className="absolute inset-0 bg-black/[0.03] pointer-events-none" />
     </div>
   );
 };
