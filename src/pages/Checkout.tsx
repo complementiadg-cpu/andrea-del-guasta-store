@@ -49,10 +49,8 @@ const Checkout = () => {
 
   const getShippingCost = () => {
     switch (shippingOption) {
-      case "express":
-        return 15;
-      case "overnight":
-        return 35;
+      case "international":
+        return 25;
       default:
         return 0;
     }
