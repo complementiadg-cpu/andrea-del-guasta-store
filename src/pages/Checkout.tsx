@@ -495,7 +495,7 @@ const Checkout = () => {
                     </Label>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    €25 • 5–10 giorni lavorativi
+                    €25 • 5–10 giorni lavorativi • gratuita per ordini &gt; €300
                   </div>
                 </div>
               </RadioGroup>
