@@ -19,129 +19,120 @@ const CustomerCare = () => {
         </div>
         
         <main className="w-full lg:w-[70vw] lg:ml-auto px-6">
-        <PageHeader 
-          title="Customer Care" 
-          subtitle="We're here to help you with all your jewelry needs"
-        />
+          <PageHeader 
+            title="Servizio Clienti" 
+            subtitle="Siamo qui per aiutarti per qualsiasi esigenza sui tuoi gioielli"
+          />
         
-        <ContentSection title="Contact Information">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="space-y-4">
-              <h3 className="text-lg font-light text-foreground">Phone</h3>
-              <p className="text-muted-foreground">+1 (555) 123-4567</p>
-              <p className="text-sm text-muted-foreground">Mon-Fri: 9AM-6PM EST<br />Sat: 10AM-4PM EST</p>
+          <ContentSection title="Informazioni di Contatto">
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="space-y-4">
+                <h3 className="text-lg font-light text-foreground">Orari</h3>
+                <p className="text-muted-foreground">Lun-Ven: 10:00 - 18:00</p>
+                <p className="text-sm text-muted-foreground">Sab: 10:00 - 16:00</p>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-light text-foreground">Email</h3>
+                <p className="text-muted-foreground">complementiadg@gmail.com</p>
+                <p className="text-sm text-muted-foreground">Risposta entro 24 ore</p>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-light text-foreground">Chat Live</h3>
+                <a 
+                  href="https://wa.me/393299599539" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block"
+                >
+                  <Button variant="outline" className="rounded-none">
+                    Avvia Chat
+                  </Button>
+                </a>
+                <p className="text-sm text-muted-foreground">Disponibile negli orari di apertura</p>
+              </div>
             </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-light text-foreground">Email</h3>
-              <p className="text-muted-foreground">care@lineajewelry.com</p>
-              <p className="text-sm text-muted-foreground">Response within 24 hours</p>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-light text-foreground">Live Chat</h3>
-              <Button variant="outline" className="rounded-none">
-                Start Chat
-              </Button>
-              <p className="text-sm text-muted-foreground">Available during business hours</p>
-            </div>
-          </div>
-        </ContentSection>
+          </ContentSection>
 
-        <ContentSection title="Frequently Asked Questions">
-          <Accordion type="single" collapsible className="space-y-4">
-            <AccordionItem value="shipping" className="border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-left hover:no-underline">
-                What are your shipping options and timeframes?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                We offer free standard shipping (3-5 business days) on orders over $500. Express shipping (1-2 business days) is available for $25. All orders are fully insured and require signature confirmation.
-              </AccordionContent>
-            </AccordionItem>
+          <ContentSection title="Domande Frequenti">
+            <Accordion type="single" collapsible className="space-y-4">
+              <AccordionItem value="shipping" className="border border-border rounded-lg px-6">
+                <AccordionTrigger className="text-left hover:no-underline">
+                  Quali sono le opzioni e i tempi di spedizione?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Offriamo la spedizione standard nazionale gratuita (5 giorni lavorativi). La spedizione internazionale (5–10 giorni lavorativi) è disponibile al costo di 25 €.
+                </AccordionContent>
+              </AccordionItem>
 
-            <AccordionItem value="returns" className="border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-left hover:no-underline">
-                What is your return and exchange policy?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                We offer a 30-day return policy for unworn items in original condition. Custom and engraved pieces are final sale. Returns are free with our prepaid return label.
-              </AccordionContent>
-            </AccordionItem>
+              <AccordionItem value="returns" className="border border-border rounded-lg px-6">
+                <AccordionTrigger className="text-left hover:no-underline">
+                  Qual è la vostra politica di reso e cambio?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Offriamo una politica di reso di 10 giorni per articoli non indossati e nelle condizioni originali. Gli articoli personalizzati e quelli con incisioni sono venduti come vendita definitiva (non restituibili).
+                </AccordionContent>
+              </AccordionItem>
 
-            <AccordionItem value="warranty" className="border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-left hover:no-underline">
-                What warranty do you offer on your jewelry?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                All LINEA jewelry comes with a lifetime warranty against manufacturing defects. This includes free repairs for normal wear and tear, stone tightening, and professional cleaning.
-              </AccordionContent>
-            </AccordionItem>
+              <AccordionItem value="sizing" className="border border-border rounded-lg px-6">
+                <AccordionTrigger className="text-left hover:no-underline">
+                  È possibile modificare la misura del gioiello dopo l'acquisto?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  No, offriamo la modifica gratuita della misura prima dell'acquisto: ti basterà compilare la sezione dedicata al momento della selezione dell'articolo o contattare il servizio clienti. Ulteriori modifiche successive saranno disponibili a pagamento. Alcuni modelli non possono essere ridimensionati a causa della loro struttura.
+                </AccordionContent>
+              </AccordionItem>
 
-            <AccordionItem value="sizing" className="border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-left hover:no-underline">
-                Can I resize my jewelry after purchase?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                Yes, we offer free ring resizing within 60 days of purchase (up to 2 sizes). Additional resizing is available for a service fee. Some designs cannot be resized due to their construction.
-              </AccordionContent>
-            </AccordionItem>
+              <AccordionItem value="care" className="border border-border rounded-lg px-6">
+                <AccordionTrigger className="text-left hover:no-underline">
+                  Come dovrei prendermi cura dei miei gioielli ADG?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Conserva i tuoi gioielli separatamente in morbide custodie, evita il contatto con prodotti chimici e cosmetici e puliscili delicatamente con un panno morbido.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </ContentSection>
 
-            <AccordionItem value="care" className="border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-left hover:no-underline">
-                How should I care for my LINEA jewelry?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                Store pieces separately in soft pouches, avoid contact with chemicals and cosmetics, and clean gently with a soft cloth. We recommend professional cleaning every 6-12 months.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="authentication" className="border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-left hover:no-underline">
-                How can I verify the authenticity of my jewelry?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                Every LINEA piece comes with a certificate of authenticity and is hallmarked. You can verify authenticity on our website using your unique piece number or contact our customer care team.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </ContentSection>
-
-        <ContentSection title="Contact Form">
-          <div>
-            <form className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-light text-foreground">First Name</label>
-                  <Input className="rounded-none" placeholder="Enter your first name" />
+          <ContentSection title="Modulo di Contatto">
+            <div>
+              <form className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-light text-foreground">Nome</label>
+                    <Input className="rounded-none" placeholder="Inserisci il tuo nome" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-light text-foreground">Cognome</label>
+                    <Input className="rounded-none" placeholder="Inserisci il tuo cognome" />
+                  </div>
                 </div>
+                
                 <div className="space-y-2">
-                  <label className="text-sm font-light text-foreground">Last Name</label>
-                  <Input className="rounded-none" placeholder="Enter your last name" />
+                  <label className="text-sm font-light text-foreground">Email</label>
+                  <Input type="email" className="rounded-none" placeholder="Inserisci la tua email" />
                 </div>
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">Email</label>
-                <Input type="email" className="rounded-none" placeholder="Enter your email" />
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">Order Number (Optional)</label>
-                <Input className="rounded-none" placeholder="Enter your order number if applicable" />
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-light text-foreground">How can we help you?</label>
-                <Textarea 
-                  className="rounded-none min-h-[120px]" 
-                  placeholder="Please describe your inquiry in detail"
-                />
-              </div>
-              
-              <Button type="submit" className="w-full rounded-none">
-                Send Message
-              </Button>
-            </form>
-          </div>
-        </ContentSection>
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-light text-foreground">Numero d'Ordine (Opzionale)</label>
+                  <Input className="rounded-none" placeholder="Inserisci il numero d'ordine se applicabile" />
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-light text-foreground">Come possiamo aiutarti?</label>
+                  <Textarea 
+                    className="rounded-none min-h-[120px]" 
+                    placeholder="Descrivi la tua richiesta in dettaglio"
+                  />
+                </div>
+                
+                <Button type="submit" className="w-full rounded-none">
+                  Invia Messaggio
+                </Button>
+              </form>
+            </div>
+          </ContentSection>
         </main>
       </div>
       
