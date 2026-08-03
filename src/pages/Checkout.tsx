@@ -479,35 +479,23 @@ const Checkout = () => {
                   <div className="flex items-center space-x-3">
                     <RadioGroupItem value="standard" id="standard" />
                     <Label htmlFor="standard" className="font-light text-foreground">
-                      Standard Shipping
+                      Spedizione standard nazionale gratuita
                     </Label>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Free • 3-5 business days
+                    Gratis • 5 giorni lavorativi
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between p-4 border border-muted-foreground/20 rounded-none">
                   <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="express" id="express" />
-                    <Label htmlFor="express" className="font-light text-foreground">
-                      Express Shipping
+                    <RadioGroupItem value="international" id="international" />
+                    <Label htmlFor="international" className="font-light text-foreground">
+                      Spedizione internazionale
                     </Label>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    €15 • 1-2 business days
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 border border-muted-foreground/20 rounded-none">
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="overnight" id="overnight" />
-                    <Label htmlFor="overnight" className="font-light text-foreground">
-                      Overnight Delivery
-                    </Label>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    €35 • Next business day
+                    €25 • 5–10 giorni lavorativi
                   </div>
                 </div>
               </RadioGroup>
