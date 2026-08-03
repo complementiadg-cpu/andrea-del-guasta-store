@@ -17,16 +17,16 @@ const OurStory = () => {
         
         <main className="w-full lg:w-[70vw] lg:ml-auto px-6">
           <PageHeader 
-            title="Our Story" 
+            title="My Story" 
             subtitle="A journey of passion, craftsmanship, and timeless elegance"
           />
           
           <ContentSection>
             <ImageTextBlock
-              image="/founders.png"
-              imageAlt="Company founders"
-              title="Founded on Passion"
-              content="LINEA Jewelry was born from a shared vision of creating timeless pieces that transcend fleeting trends. Our founders, united by their passion for exceptional craftsmanship and sustainable practices, established the brand with a commitment to creating jewelry that tells a story - your story."
+              image="https://res.cloudinary.com/cjgxjyub/image/upload/v1785743310/deac642a-2da7-44fd-a263-15a9a5233523-1_all_20232_efp7ec.jpg"
+              imageAlt="Andrea Del Guasta Founders"
+              title="Una storia che continua"
+              content="Ogni creazione Andrea Del Guasta nasce da un'eredità preziosa. Le collezioni prendono vita dalla riscoperta di componenti originali provenienti da un laboratorio di bigiotteria fiorentino attivo negli anni Ottanta, appartenuto a suo cugino Loriano Vignozzi, modista di luxury bijoux di fama internazionale. Anziché lasciarli inutilizzati, Andrea ha scelto di reinterpretarli attraverso un linguaggio contemporaneo, dando nuova vita a un patrimonio di creatività e manifattura."
               imagePosition="left"
             />
           </ContentSection>
@@ -34,15 +34,15 @@ const OurStory = () => {
           <ContentSection title="Our Heritage">
             <div className="grid md:grid-cols-2 gap-12">
               <div className="space-y-6">
-                <h3 className="text-xl font-light text-foreground">Traditional Craftsmanship</h3>
+                <h3 className="text-xl font-light text-foreground">Artigianalità Locale</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Every piece in our collection is meticulously handcrafted by skilled artisans who have honed their craft over generations. We honor traditional techniques while embracing modern innovation, ensuring each piece meets our exacting standards for quality and beauty.
+                  Ogni gioiello è progettato e realizzato interamente in Toscana. Dalla lavorazione del metallo alle galvaniche, fino all'assemblaggio finale, ogni fase della produzione è affidata a maestranze locali che custodiscono il sapere e la qualità della tradizione artigianale italiana.
                 </p>
               </div>
               <div className="space-y-6">
-                <h3 className="text-xl font-light text-foreground">Sustainable Future</h3>
+                <h3 className="text-xl font-light text-foreground">Un Archivio Vivo</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  We believe luxury and sustainability can coexist beautifully. Our commitment to ethical sourcing, recycled materials, and responsible manufacturing practices ensures that every piece you wear contributes to a more sustainable future.
+                  Catene, chiusure, componenti decorativi ed elementi vintage diventano il punto di partenza di nuove collezioni. Ogni dettaglio conserva la memoria della propria origine e viene reinterpretato con uno stile contemporaneo, trasformando il passato in una nuova espressione di eleganza.
                 </p>
               </div>
             </div>
@@ -51,21 +51,21 @@ const OurStory = () => {
           <ContentSection title="Our Values">
             <div className="grid md:grid-cols-3 gap-8">
               <div className="space-y-4">
-                <h3 className="text-lg font-light text-foreground">Excellence</h3>
+                <h3 className="text-lg font-light text-foreground">100% Toscano</h3>
                 <p className="text-muted-foreground">
-                  We pursue perfection in every detail, from the initial design concept to the final polish.
+                  Ogni creazione è progettata e realizzata nella filiera industriale di Firenze e Prato, nel cuore di una tradizione manifatturiera riconosciuta in tutto il mondo.
                 </p>
               </div>
               <div className="space-y-4">
-                <h3 className="text-lg font-light text-foreground">Authenticity</h3>
+                <h3 className="text-lg font-light text-foreground">Dal 1980</h3>
                 <p className="text-muted-foreground">
-                  Each piece reflects genuine craftsmanship and tells an authentic story of artistry and care.
+                  Un patrimonio di materiali, esperienza e lavorazioni artigianali reinterpretato attraverso una visione contemporanea.
                 </p>
               </div>
               <div className="space-y-4">
-                <h3 className="text-lg font-light text-foreground">Innovation</h3>
+                <h3 className="text-lg font-light text-foreground">Ogni Gioiello è Unico</h3>
                 <p className="text-muted-foreground">
-                  We continuously evolve our designs and techniques while honoring timeless aesthetic principles.
+                  Ciò che per molti rappresentava la fine di una storia è diventato l'inizio di una nuova visione. Andrea Del Guasta trasforma un archivio di elementi vintage in collezioni contemporanee, preservando il valore della tradizione e proiettandolo nel presente.
                 </p>
               </div>
             </div>
