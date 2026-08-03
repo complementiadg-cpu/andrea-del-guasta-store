@@ -17,30 +17,30 @@ const SizeGuide = () => {
         
         <main className="w-full lg:w-[70vw] lg:ml-auto px-6">
           <PageHeader 
-            title="Size Guide" 
-            subtitle="Find your perfect fit with our comprehensive sizing guide"
+            title="Guida alle Taglie" 
+            subtitle="Trova la misura perfetta con la nostra guida completa alle taglie"
           />
         
-          <ContentSection title="Ring Sizing">
+          <ContentSection title="Taglie degli Anelli">
             <div className="space-y-8">
               <div className="bg-muted/10 rounded-lg p-8">
-                <h3 className="text-xl font-light text-foreground mb-6">How to Measure Your Ring Size</h3>
+                <h3 className="text-xl font-light text-foreground mb-6">Come misurare la taglia del tuo anello</h3>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <h4 className="font-medium text-foreground">Method 1: Using a Ring You Own</h4>
+                    <h4 className="font-medium text-foreground">Metodo 1: Usando un anello in tuo possesso</h4>
                     <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                      <li>Take a ring that fits comfortably on your desired finger</li>
-                      <li>Place it on a ruler and measure the inner diameter in millimeters</li>
-                      <li>Use our size chart below to find your size</li>
+                      <li>Prendi un anello che ti veste comodamente sul dito desiderato</li>
+                      <li>Posizionalo su un righello e misura il diametro interno in millimetri</li>
+                      <li>Confronta il valore con la tabella delle taglie qui sotto per trovare la tua misura</li>
                     </ol>
                   </div>
                   <div className="space-y-4">
-                    <h4 className="font-medium text-foreground">Method 2: Using String or Paper</h4>
+                    <h4 className="font-medium text-foreground">Metodo 2: Usando un nastro o uno spago</h4>
                     <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                      <li>Wrap string or paper around your finger where the ring will sit</li>
-                      <li>Mark where the material overlaps</li>
-                      <li>Measure the length in millimeters</li>
-                      <li>Divide by 3.14 to get the diameter</li>
+                      <li>Avvolgi lo spago o la striscia di carta attorno al dito dove indosserai l'anello</li>
+                      <li>Segna il punto in cui il materiale si sovrappone</li>
+                      <li>Misura la lunghezza in millimetri per ottenere la circonferenza</li>
+                      <li>Dividi per 3,14 per calcolare il diametro</li>
                     </ol>
                   </div>
                 </div>
@@ -50,9 +50,9 @@ const SizeGuide = () => {
                 <table className="w-full border-collapse border border-border">
                   <thead>
                     <tr className="bg-muted/20">
-                      <th className="border border-border p-3 text-left font-light">Size</th>
-                      <th className="border border-border p-3 text-left font-light">Diameter (mm)</th>
-                      <th className="border border-border p-3 text-left font-light">Circumference (mm)</th>
+                      <th className="border border-border p-3 text-left font-light">Taglia</th>
+                      <th className="border border-border p-3 text-left font-light">Diametro (mm)</th>
+                      <th className="border border-border p-3 text-left font-light">Circonferenza (mm)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -72,10 +72,10 @@ const SizeGuide = () => {
             </div>
           </ContentSection>
 
-          <ContentSection title="Bracelet & Necklace Sizing">
+          <ContentSection title="Misure di Bracciali e Collane">
             <div className="grid md:grid-cols-2 gap-12">
               <div className="space-y-6">
-                <h3 className="text-xl font-light text-foreground">Bracelet Sizes</h3>
+                <h3 className="text-xl font-light text-foreground">Misure Bracciali</h3>
                 <div className="space-y-4">
                   <div className="flex justify-between py-2 border-b border-border">
                     <span className="text-muted-foreground">Taglia unica regolabile</span>
@@ -85,7 +85,7 @@ const SizeGuide = () => {
               </div>
               
               <div className="space-y-6">
-                <h3 className="text-xl font-light text-foreground">Necklace Lengths</h3>
+                <h3 className="text-xl font-light text-foreground">Lunghezze Collane</h3>
                 <div className="space-y-4">
                   <div className="flex justify-between py-2 border-b border-border">
                     <span className="text-muted-foreground">Choker</span>
@@ -115,17 +115,17 @@ const SizeGuide = () => {
               </p>
               
               <div className="bg-muted/10 rounded-lg p-8">
-                <h4 className="font-medium text-foreground mb-4">How to Measure your size using string</h4>
+                <h4 className="font-medium text-foreground mb-4">Come misurare la tua taglia con uno spago</h4>
                 <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
-                  <li>Using a piece of string, gently measure the area where your necklace or bracelet will naturally sit.</li>
-                  <li>Mark where the material overlaps</li>
-                  <li>Measure the length in millimeters</li>
+                  <li>Utilizzando uno spago, misura delicatamente la zona in cui appoggerà naturalmente la collana o il bracciale.</li>
+                  <li>Segna il punto in cui il materiale si sovrappone</li>
+                  <li>Misura la lunghezza in millimetri</li>
                 </ol>
               </div>
             </div>
           </ContentSection>
 
-          <ContentSection title="Need Help?">
+          <ContentSection title="Serve aiuto?">
             <div className="space-y-6">
               <p className="text-muted-foreground">
                 Hai ancora dubbi sulla taglia? Siamo qui per aiutarti a trovare la vestibilità perfetta. Contattaci per qualsiasi dubbio o chiarimento.
