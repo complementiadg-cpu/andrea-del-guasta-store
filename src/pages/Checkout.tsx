@@ -188,10 +188,23 @@ const Checkout = () => {
                   )}
                 </div>
 
-                <div className="border-t border-muted-foreground/20 mt-4 pt-6">
+                <div className="border-t border-muted-foreground/20 mt-4 pt-6 space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="text-foreground">{formatEuro(subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-foreground">
+                      {shipping === 0 ? "Free" : `€${shipping}`}
+                      {shippingOption === "international" && subtotal > 300 && (
+                        <span className="block text-xs text-muted-foreground"> Internazionale gratuita</span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-lg font-medium border-t border-muted-foreground/20 pt-3">
+                    <span className="text-foreground">Total</span>
+                    <span className="text-foreground">{formatEuro(total)}</span>
                   </div>
                 </div>
               </div>
