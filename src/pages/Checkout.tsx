@@ -50,7 +50,7 @@ const Checkout = () => {
   const getShippingCost = () => {
     switch (shippingOption) {
       case "international":
-        return 25;
+        return subtotal > 300 ? 0 : 25;
       default:
         return 0;
     }
