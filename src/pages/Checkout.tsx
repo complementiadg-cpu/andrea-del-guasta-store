@@ -47,6 +47,10 @@ const Checkout = () => {
   const [paymentComplete, setPaymentComplete] = useState(false);
   const { items: cartItems, updateQuantity, subtotal, clearCart } = useCart();
 
+  const hasCustomSize = cartItems.some(
+    (item) => item.customSize && item.customSize.trim() !== ""
+  );
+
   const getShippingCost = () => {
     switch (shippingOption) {
       case "international":
@@ -55,6 +59,12 @@ const Checkout = () => {
         return 0;
     }
   };
+
+  const standardDays = hasCustomSize ? "10/15 giorni" : "5 giorni";
+  const internationalDays = hasCustomSize ? "15/20 giorni" : "5–10 giorni";
+  const standardSuffix = hasCustomSize ? " lavorativi" : " lavorativi";
+  const internationalSuffix = " lavorativi";
+
 
   
   const shipping = getShippingCost();
