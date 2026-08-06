@@ -62,20 +62,18 @@ const Navigation = () => {
         to: `/collection/${encodeURIComponent(c)}`,
       })),
     },
-    {
-      name: "About",
-      href: "/about/our-story",
-      submenuItems: [
-        { label: "Our Story", to: "/about/our-story" },
-        { label: "Sustainability", to: "/about/sustainability" },
-        { label: "Size Guide", to: "/about/size-guide" },
-        { label: "Customer Care", to: "/about/customer-care" },
-        { label: "Store Locator", to: "/about/store-locator" },
-      ],
-      images: [
-        { src: "/founders.png", alt: "Founders", label: "La nostra storia", to: "/about/our-story" },
-      ],
-    },
+      {
+        name: "About",
+        href: "/about/our-story",
+        submenuItems: [
+          { label: "Our Story", to: "/about/our-story" },
+          { label: "Size Guide", to: "/about/size-guide" },
+          { label: "Customer Care", to: "/about/customer-care" },
+        ],
+        images: [
+          { src: "/founders.png", alt: "Founders", label: "La nostra storia", to: "/about/our-story" },
+        ],
+      },
   ];
 
   return (
