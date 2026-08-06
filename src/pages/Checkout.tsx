@@ -506,7 +506,7 @@ const Checkout = () => {
                     </Label>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Gratis • 5 giorni lavorativi
+                    Gratis • {standardDays}{standardSuffix}
                   </div>
                 </div>
 
@@ -518,7 +518,7 @@ const Checkout = () => {
                     </Label>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    €25 • 5–10 giorni lavorativi • gratuita per ordini &gt; €300
+                    €25 • {internationalDays}{internationalSuffix} • gratuita per ordini &gt; €300
                   </div>
                 </div>
               </RadioGroup>
