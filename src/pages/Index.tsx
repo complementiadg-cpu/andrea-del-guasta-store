@@ -13,13 +13,14 @@ const Index = () => {
 
       <main className="pt-6">
         <FiftyFiftySection />
-        <CollectionShowcase index={0} />
+        <CollectionShowcase collection="Stone" />
 
         <LargeHero />
-        <CollectionShowcase index={1} />
+        <CollectionShowcase collection="Pearl" />
 
         <OneThirdTwoThirdsSection />
-        <CollectionShowcase index={2} />
+        <CollectionShowcase collection="Metal" />
+
 
 
         <EditorialSection />
