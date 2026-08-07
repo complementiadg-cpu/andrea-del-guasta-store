@@ -154,29 +154,45 @@ const FilterChip = ({
   </button>
 );
 
-const ProductCard = ({ product }: { product: Product }) => (
-  <Link to={`/product/${encodeURIComponent(product.sku)}`}>
-    <Card className="border-none shadow-none bg-transparent group cursor-pointer">
-      <CardContent className="p-0">
-        <div className="aspect-square mb-3 overflow-hidden bg-muted/10 relative">
-          <img
-            src={product.image}
-            alt={product.name}
-            loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-          />
-          <div className="absolute inset-0 bg-black/[0.03]" />
-        </div>
-        <div className="space-y-1">
-          <p className="text-sm font-light text-muted-foreground">{product.category}</p>
-          <div className="flex justify-between items-center gap-2">
-            <h3 className="font-serif text-base text-foreground truncate">{product.name}</h3>
-            <p className="text-sm font-light text-foreground whitespace-nowrap">{product.priceLabel}</p>
+const ProductCard = ({ product }: { product: Product }) => {
+  const hasAltImage =
+    product.image1 && product.image1 !== product.image && product.image1 !== "/placeholder.svg";
+
+  return (
+    <Link to={`/product/${encodeURIComponent(product.sku)}`}>
+      <Card className="border-none shadow-none bg-transparent group cursor-pointer">
+        <CardContent className="p-0">
+          <div className="aspect-square mb-3 overflow-hidden bg-muted/10 relative">
+            <img
+              src={product.image}
+              alt={product.name}
+              loading="lazy"
+              className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${
+                hasAltImage ? "group-hover:opacity-0" : ""
+              }`}
+            />
+            {hasAltImage && (
+              <img
+                src={product.image1}
+                alt={product.name}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-[1.03]"
+              />
+            )}
+            <div className="absolute inset-0 bg-black/[0.03] pointer-events-none" />
           </div>
-        </div>
-      </CardContent>
-    </Card>
-  </Link>
-);
+          <div className="space-y-1">
+            <p className="text-sm font-light text-muted-foreground">{product.category}</p>
+            <div className="flex justify-between items-center gap-2">
+              <h3 className="font-serif text-base text-foreground truncate">{product.name}</h3>
+              <p className="text-sm font-light text-foreground whitespace-nowrap">{product.priceLabel}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+};
+
 
 export default ProductGrid;
