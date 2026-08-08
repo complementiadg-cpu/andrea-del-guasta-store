@@ -9,6 +9,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCart } from "@/contexts/CartContext";
 import { formatEuro } from "@/lib/products";
+import { saveOrder } from "@/lib/orders";
+import { toast } from "sonner";
 
 const Checkout = () => {
   const [showDiscountInput, setShowDiscountInput] = useState(false);
