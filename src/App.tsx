@@ -16,6 +16,8 @@ import SizeGuide from "./pages/about/SizeGuide";
 import CustomerCare from "./pages/about/CustomerCare";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
+import Newsletter from "./pages/Newsletter";
+
 
 const queryClient = new QueryClient();
 
