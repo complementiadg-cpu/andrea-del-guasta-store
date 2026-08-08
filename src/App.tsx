@@ -16,6 +16,8 @@ import SizeGuide from "./pages/about/SizeGuide";
 import CustomerCare from "./pages/about/CustomerCare";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
+import Newsletter from "./pages/Newsletter";
+
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,8 @@ const App = () => (
             <Route path="/about/customer-care" element={<CustomerCare />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/newsletter" element={<Newsletter />} />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

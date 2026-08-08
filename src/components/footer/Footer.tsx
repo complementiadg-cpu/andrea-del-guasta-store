@@ -65,7 +65,7 @@ const Footer = () => {
                 <li><a href="https://instagram.com/andreadelguasta66" target="_blank" rel="noopener noreferrer" className="text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
                 <li><a href="mailto:complementiadg@gmail.com" className="text-sm font-light text-black/70 hover:text-black transition-colors">Email</a></li>
 
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</a></li>
+                <li><a href="/newsletter" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</a></li>
               </ul>
             </div>
           </div>
