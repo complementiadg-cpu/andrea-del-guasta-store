@@ -95,11 +95,31 @@ const Checkout = () => {
   };
 
   const handleCompleteOrder = async () => {
+    if (cartItems.length === 0) {
+      toast.error("Il carrello è vuoto.");
+      return;
+    }
     setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsProcessing(false);
-    setPaymentComplete(true);
-    clearCart();
+    try {
+      await saveOrder({
+        customer: customerDetails,
+        shippingAddress,
+        billingAddress: hasSeparateBilling ? billingDetails : null,
+        shippingOption,
+        shippingCost: shipping,
+        subtotal,
+        total,
+        items: cartItems,
+        discountCode,
+      });
+      setPaymentComplete(true);
+      clearCart();
+    } catch (err) {
+      console.error("Order save failed:", err);
+      toast.error("Non è stato possibile registrare l'ordine. Riprova.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
 
