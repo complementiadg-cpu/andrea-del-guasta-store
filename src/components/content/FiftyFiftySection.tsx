@@ -25,10 +25,10 @@ const FiftyFiftySection = () => {
           </Link>
           <div>
             <h3 className="text-sm font-normal text-foreground mb-1">
-              Organic Forms
+              Fluid Forms
             </h3>
             <p className="text-sm font-light text-foreground">
-              Nature-inspired pieces with fluid, sculptural details
+              Vintage-inspired pieces with fluid, sculptural details
             </p>
           </div>
         </div>
@@ -46,10 +46,10 @@ const FiftyFiftySection = () => {
           </Link>
           <div>
             <h3 className="text-sm font-normal text-foreground mb-1">
-              Chain Collection
+              Stone Collection
             </h3>
             <p className="text-sm font-light text-foreground">
-              Refined links and connections in precious metals
+              Refined links and stones with exquisite plated finishes
             </p>
           </div>
         </div>
