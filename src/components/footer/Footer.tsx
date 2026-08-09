@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useTaxonomy } from "@/hooks/useProducts";
 
 const Footer = () => {
+  const { categories } = useTaxonomy();
+
   return (
     <footer className="w-full bg-white text-black pt-8 pb-2 px-6 border-t border-[#e5e5e5] mt-48">
       <div className="">
