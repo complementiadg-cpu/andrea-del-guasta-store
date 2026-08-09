@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="w-full bg-white text-black pt-8 pb-2 px-6 border-t border-[#e5e5e5] mt-48">
@@ -33,39 +35,46 @@ const Footer = () => {
 
 
           {/* Link lists - Right side */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Shop */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Collezioni */}
             <div>
-              <h4 className="text-sm font-normal mb-4">Shop</h4>
+              <h4 className="text-sm font-normal mb-4">Collezioni</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">New In</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Rings</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Earrings</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Bracelets</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Necklaces</a></li>
+                <li><Link to="/" className="text-sm font-light text-black/70 hover:text-black transition-colors">Shop All</Link></li>
+                <li><Link to="/collection/Metal" className="text-sm font-light text-black/70 hover:text-black transition-colors">Metal</Link></li>
+                <li><Link to="/collection/Pearl" className="text-sm font-light text-black/70 hover:text-black transition-colors">Pearl</Link></li>
+                <li><Link to="/collection/Stone" className="text-sm font-light text-black/70 hover:text-black transition-colors">Stone</Link></li>
+                <li><Link to="/collection/Slap" className="text-sm font-light text-black/70 hover:text-black transition-colors">Slap</Link></li>
+                <li><Link to="/collection/Long" className="text-sm font-light text-black/70 hover:text-black transition-colors">Long</Link></li>
               </ul>
             </div>
 
-            {/* Support */}
+            {/* Chi siamo */}
             <div>
-              <h4 className="text-sm font-normal mb-4">Support</h4>
+              <h4 className="text-sm font-normal mb-4">Chi siamo</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Size Guide</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Care Instructions</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Returns</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Shipping</a></li>
-                <li><a href="#" className="text-sm font-light text-black/70 hover:text-black transition-colors">Contact</a></li>
+                <li><Link to="/about/our-story" className="text-sm font-light text-black/70 hover:text-black transition-colors">La nostra storia</Link></li>
+                <li><Link to="/about/size-guide" className="text-sm font-light text-black/70 hover:text-black transition-colors">Guida alle taglie</Link></li>
+                <li><Link to="/about/customer-care" className="text-sm font-light text-black/70 hover:text-black transition-colors">Assistenza clienti</Link></li>
               </ul>
             </div>
 
-            {/* Connect */}
+            {/* Connettiti */}
             <div>
-              <h4 className="text-sm font-normal mb-4">Connect</h4>
+              <h4 className="text-sm font-normal mb-4">Connettiti</h4>
               <ul className="space-y-2">
                 <li><a href="https://instagram.com/andreadelguasta66" target="_blank" rel="noopener noreferrer" className="text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
                 <li><a href="mailto:complementiadg@gmail.com" className="text-sm font-light text-black/70 hover:text-black transition-colors">Email</a></li>
+                <li><Link to="/newsletter" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</Link></li>
+              </ul>
+            </div>
 
-                <li><a href="/newsletter" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</a></li>
+            {/* Legale */}
+            <div>
+              <h4 className="text-sm font-normal mb-4">Legale</h4>
+              <ul className="space-y-2">
+                <li><Link to="/privacy-policy" className="text-sm font-light text-black/70 hover:text-black transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms-of-service" className="text-sm font-light text-black/70 hover:text-black transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
@@ -76,18 +85,15 @@ const Footer = () => {
       <div className="border-t border-[#e5e5e5] -mx-6 px-6 pt-2">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm font-light text-black mb-1 md:mb-0">
-            © 2026 ANDREADELGUASTA. All rights reserved. Template made by{" "}
-            <a href="https://www.liljeros.co" target="_blank" rel="noopener noreferrer" className="hover:text-black/70 transition-colors underline">
-              Rickard Liljeros
-            </a>
+            © 2026 ANDREADELGUASTA. All rights reserved.
           </p>
           <div className="flex space-x-6">
-            <a href="/privacy-policy" className="text-sm font-light text-black hover:text-black/70 transition-colors">
+            <Link to="/privacy-policy" className="text-sm font-light text-black hover:text-black/70 transition-colors">
               Privacy Policy
-            </a>
-            <a href="/terms-of-service" className="text-sm font-light text-black hover:text-black/70 transition-colors">
+            </Link>
+            <Link to="/terms-of-service" className="text-sm font-light text-black hover:text-black/70 transition-colors">
               Terms of Service
-            </a>
+            </Link>
           </div>
         </div>
       </div>
