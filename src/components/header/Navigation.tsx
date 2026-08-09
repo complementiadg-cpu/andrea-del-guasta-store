@@ -21,7 +21,7 @@ const Navigation = () => {
       "/earrings-collection.png",
       "/arcus-bracelet.png",
       "/span-bracelet.png",
-      "/founders.png",
+      "https://res.cloudinary.com/cjgxjyub/image/upload/v1785743310/deac642a-2da7-44fd-a263-15a9a5233523-1_all_20232_efp7ec.jpg",
     ];
     imagesToPreload.forEach((src) => {
       const img = new Image();
@@ -62,18 +62,23 @@ const Navigation = () => {
         to: `/collection/${encodeURIComponent(c)}`,
       })),
     },
-      {
-        name: "About",
-        href: "/about/our-story",
-        submenuItems: [
-          { label: "Our Story", to: "/about/our-story" },
-          { label: "Size Guide", to: "/about/size-guide" },
-          { label: "Customer Care", to: "/about/customer-care" },
-        ],
-        images: [
-          { src: "/founders.png", alt: "Founders", label: "La nostra storia", to: "/about/our-story" },
-        ],
-      },
+    {
+      name: "About",
+      href: "/about/our-story",
+      submenuItems: [
+        { label: "Our Story", to: "/about/our-story" },
+        { label: "Size Guide", to: "/about/size-guide" },
+        { label: "Customer Care", to: "/about/customer-care" },
+      ],
+      images: [
+        {
+          src: "https://res.cloudinary.com/cjgxjyub/image/upload/v1785743310/deac642a-2da7-44fd-a263-15a9a5233523-1_all_20232_efp7ec.jpg",
+          alt: "La nostra storia",
+          label: "La nostra storia",
+          to: "/about/our-story",
+        },
+      ],
+    },
   ];
 
   return (
@@ -134,7 +139,6 @@ const Navigation = () => {
             </span>
           </Link>
         </div>
-
 
         <div className="flex items-center space-x-2">
           <button
