@@ -39,16 +39,20 @@ const Footer = () => {
 
           {/* Link lists - Right side */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Collezioni */}
+            {/* Categorie */}
             <div>
-              <h4 className="text-sm font-normal mb-4">Collezioni</h4>
+              <h4 className="text-sm font-normal mb-4">Categorie</h4>
               <ul className="space-y-2">
-                <li><Link to="/" className="text-sm font-light text-black/70 hover:text-black transition-colors">Shop All</Link></li>
-                <li><Link to="/collection/Metal" className="text-sm font-light text-black/70 hover:text-black transition-colors">Metal</Link></li>
-                <li><Link to="/collection/Pearl" className="text-sm font-light text-black/70 hover:text-black transition-colors">Pearl</Link></li>
-                <li><Link to="/collection/Stone" className="text-sm font-light text-black/70 hover:text-black transition-colors">Stone</Link></li>
-                <li><Link to="/collection/Slap" className="text-sm font-light text-black/70 hover:text-black transition-colors">Slap</Link></li>
-                <li><Link to="/collection/Long" className="text-sm font-light text-black/70 hover:text-black transition-colors">Long</Link></li>
+                {categories.map((category) => (
+                  <li key={category}>
+                    <Link
+                      to={`/category/${encodeURIComponent(category.toLowerCase())}`}
+                      className="text-sm font-light text-black/70 hover:text-black transition-colors"
+                    >
+                      {category}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
 
