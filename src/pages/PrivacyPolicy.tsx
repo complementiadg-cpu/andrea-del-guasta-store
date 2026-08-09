@@ -4,132 +4,104 @@ import Footer from "../components/footer/Footer";
 
 const PrivacyPolicy = () => {
   useEffect(() => {
-    document.title = "Privacy Policy - Linea Jewelry";
+    document.title = "Privacy Policy - ANDREADELGUASTA";
   }, []);
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main className="pt-6">
         <div className="max-w-4xl mx-auto px-6 py-12">
           <header className="mb-12 text-center">
-            <h1 className="text-4xl font-light text-foreground mb-4">Privacy Policy</h1>
-            <p className="text-muted-foreground">Last updated: January 15, 2024</p>
+            <h1 className="font-serif text-4xl uppercase tracking-[0.12em] text-foreground mb-4">Privacy Policy</h1>
+            <p className="text-muted-foreground text-sm">Ultimo aggiornamento: 9 agosto 2026</p>
           </header>
 
-          <div className="prose prose-lg max-w-none space-y-8">
+          <div className="max-w-none space-y-10">
             <section>
-              <h2 className="text-2xl font-light text-foreground mb-4">Introduction</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                At Linea Jewelry Inc. ("we," "our," or "us"), we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, make a purchase, or interact with our services.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-light text-foreground mb-4">Information We Collect</h2>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-xl font-light text-foreground mb-2">Personal Information</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    We may collect personal information that you provide directly to us, including:
-                  </p>
-                  <ul className="list-disc list-inside text-muted-foreground mt-2 space-y-1">
-                    <li>Name, email address, and contact information</li>
-                    <li>Billing and shipping addresses</li>
-                    <li>Payment information (processed securely through third-party providers)</li>
-                    <li>Account preferences and communication settings</li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h3 className="text-xl font-light text-foreground mb-2">Usage Information</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    We automatically collect certain information about your device and usage patterns, including IP address, browser type, pages visited, and interaction data to improve our services and user experience.
-                  </p>
-                </div>
+              <h2 className="font-serif text-2xl text-foreground mb-4">Titolare del trattamento</h2>
+              <div className="text-muted-foreground leading-relaxed space-y-1">
+                <p>ANDREA DEL GUASTA</p>
+                <p>Partita IVA 07570330485</p>
+                <p>Piazza Felice Cavallotti 6d, 50058 Signa (FI), Italia</p>
+                <p>
+                  Email:{" "}
+                  <a href="mailto:complementicouture@gmail.com" className="underline hover:text-foreground transition-colors">
+                    complementicouture@gmail.com
+                  </a>
+                </p>
               </div>
             </section>
 
             <section>
-              <h2 className="text-2xl font-light text-foreground mb-4">How We Use Your Information</h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                We use the information we collect for various purposes, including:
-              </p>
+              <h2 className="font-serif text-2xl text-foreground mb-4">Dati che raccogliamo</h2>
               <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                <li>Processing and fulfilling your orders</li>
-                <li>Providing customer support and responding to inquiries</li>
-                <li>Sending promotional communications (with your consent)</li>
-                <li>Improving our website functionality and user experience</li>
-                <li>Preventing fraud and ensuring security</li>
-                <li>Complying with legal obligations</li>
+                <li>Dati di contatto e spedizione forniti in fase di ordine (nome, cognome, email, telefono, indirizzo)</li>
+                <li>Dettagli dell'ordine, incluse eventuali misure personalizzate richieste</li>
+                <li>Indirizzo email e nome in caso di iscrizione alla newsletter</li>
+                <li>Dati tecnici di navigazione strettamente necessari al funzionamento del sito</li>
+              </ul>
+              <p className="text-muted-foreground leading-relaxed mt-4">
+                Non trattiamo né conserviamo i dati delle carte di pagamento: il pagamento è gestito da fornitori esterni specializzati.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl text-foreground mb-4">Finalità e basi giuridiche</h2>
+              <ul className="list-disc list-inside text-muted-foreground space-y-1">
+                <li>Gestione e spedizione degli ordini e assistenza clienti — esecuzione del contratto (art. 6.1.b GDPR)</li>
+                <li>Invio della newsletter — consenso, revocabile in qualsiasi momento (art. 6.1.a GDPR)</li>
+                <li>Adempimenti fiscali e contabili — obbligo di legge (art. 6.1.c GDPR)</li>
+                <li>Sicurezza e corretto funzionamento del sito — legittimo interesse (art. 6.1.f GDPR)</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-2xl font-light text-foreground mb-4">Information Sharing and Disclosure</h2>
+              <h2 className="font-serif text-2xl text-foreground mb-4">Conservazione</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                I dati degli ordini sono conservati per il tempo necessario alla gestione del rapporto e per i termini previsti dalla normativa fiscale (10 anni). I dati per la newsletter sono conservati fino alla revoca del consenso.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl text-foreground mb-4">Destinatari e trasferimenti</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                I dati possono essere comunicati a fornitori che operano come responsabili del trattamento (hosting e database, servizi di spedizione, fornitori di pagamento). Eventuali trasferimenti extra UE avvengono solo in presenza di adeguate garanzie previste dal GDPR.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="font-serif text-2xl text-foreground mb-4">I tuoi diritti</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:
+                Ai sensi degli artt. 15-22 GDPR puoi esercitare i diritti di accesso, rettifica, cancellazione, limitazione, opposizione e portabilità, oltre alla revoca del consenso. Per farlo scrivi a{" "}
+                <a href="mailto:complementicouture@gmail.com" className="underline hover:text-foreground transition-colors">
+                  complementicouture@gmail.com
+                </a>
+                .
               </p>
-              <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                <li>With service providers who assist us in operating our business</li>
-                <li>When required by law or to protect our rights</li>
-                <li>In connection with a business transaction (merger, acquisition, etc.)</li>
-                <li>With your explicit consent</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-light text-foreground mb-4">Data Security</h2>
               <p className="text-muted-foreground leading-relaxed">
-                We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure.
+                Hai inoltre diritto di proporre reclamo al Garante per la protezione dei dati personali (www.garanteprivacy.it).
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-light text-foreground mb-4">Your Rights and Choices</h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Depending on your location, you may have certain rights regarding your personal information:
-              </p>
-              <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                <li>Access to your personal information</li>
-                <li>Correction of inaccurate or incomplete information</li>
-                <li>Deletion of your personal information</li>
-                <li>Objection to or restriction of processing</li>
-                <li>Data portability</li>
-                <li>Withdrawal of consent (where applicable)</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-light text-foreground mb-4">Cookies and Tracking</h2>
+              <h2 className="font-serif text-2xl text-foreground mb-4">Cookie</h2>
               <p className="text-muted-foreground leading-relaxed">
-                We use cookies and similar tracking technologies to enhance your browsing experience, analyze website traffic, and personalize content. You can control cookie settings through your browser preferences, though this may affect website functionality.
+                Il sito utilizza cookie tecnici necessari al funzionamento (ad esempio per il carrello e la memorizzazione delle preferenze di consenso), che non richiedono consenso. Eventuali cookie non necessari vengono attivati solo previo consenso, esprimibile tramite il banner presente sul sito.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-light text-foreground mb-4">Changes to This Policy</h2>
+              <h2 className="font-serif text-2xl text-foreground mb-4">Modifiche</h2>
               <p className="text-muted-foreground leading-relaxed">
-                We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting the new policy on our website and updating the "Last updated" date above.
+                Questa informativa può essere aggiornata; le modifiche rilevanti saranno pubblicate su questa pagina con la relativa data di aggiornamento.
               </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-light text-foreground mb-4">Contact Us</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                If you have any questions about this Privacy Policy or our privacy practices, please contact us at:
-              </p>
-              <div className="mt-4 text-muted-foreground">
-                <p>Email: privacy@lineajewelry.com</p>
-                <p>Phone: +1 (212) 555-0123</p>
-                <p>Address: 123 Madison Avenue, New York, NY 10016</p>
-              </div>
             </section>
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
