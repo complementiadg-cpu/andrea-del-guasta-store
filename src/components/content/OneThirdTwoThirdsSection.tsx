@@ -5,34 +5,7 @@ const OneThirdTwoThirdsSection = () => {
     <section className="w-full mb-16 px-4 sm:px-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         
-        {/* Prima colonna (1/3 su desktop) - Video Formato 1:1 (Quadrato) */}
-        <div className="lg:col-span-1 flex flex-col">
-          <Link 
-            to="/category/orecchini" 
-            className="block overflow-hidden group rounded-sm"
-          >
-            <div className="w-full aspect-square mb-3 overflow-hidden bg-neutral-100">
-              <video
-                src="https://res.cloudinary.com/cjgxjyub/video/upload/v1786196973/OR2612_c54u62.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-              />
-            </div>
-          </Link>
-          <div>
-            <h3 className="text-sm font-normal text-foreground mb-1">
-              Fluid Forms
-            </h3>
-            <p className="text-sm font-light text-foreground/80">
-              Vintage-inspired pieces with fluid, sculptural details
-            </p>
-          </div>
-        </div>
-
-        {/* Seconda colonna (2/3 su desktop) - Immagine Metal Pride */}
+        {/* Prima colonna su desktop (2/3) - Immagine Metal Pride (Adattabile) */}
         <div className="lg:col-span-2 flex flex-col">
           <Link 
             to="/collection/metal" 
@@ -60,6 +33,33 @@ const OneThirdTwoThirdsSection = () => {
             </h3>
             <p className="text-sm font-light text-foreground/80">
               Geometric perfection meets contemporary minimalism
+            </p>
+          </div>
+        </div>
+
+        {/* Seconda colonna su desktop (1/3) - Video Formato 1:1 (Quadrato Fisso) */}
+        <div className="lg:col-span-1 flex flex-col">
+          <Link 
+            to="/category/orecchini" 
+            className="block overflow-hidden group rounded-sm"
+          >
+            <div className="w-full aspect-square mb-3 overflow-hidden bg-neutral-100">
+              <video
+                src="https://res.cloudinary.com/cjgxjyub/video/upload/v1786196973/OR2612_c54u62.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              />
+            </div>
+          </Link>
+          <div>
+            <h3 className="text-sm font-normal text-foreground mb-1">
+              Fluid Forms
+            </h3>
+            <p className="text-sm font-light text-foreground/80">
+              Vintage-inspired pieces with fluid, sculptural details
             </p>
           </div>
         </div>
