@@ -25,10 +25,10 @@ const FiftyFiftySection = () => {
           </Link>
           <div>
             <h3 className="text-sm font-normal text-foreground mb-1">
-              Fluid Forms
+              Timeless Elegance
             </h3>
             <p className="text-sm font-light text-foreground">
-              Vintage-inspired pieces with fluid, sculptural details
+              Flexible, luminous and endlessly expressive
             </p>
           </div>
         </div>
