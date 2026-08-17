@@ -25,7 +25,7 @@ const FiftyFiftySection = () => {
           </Link>
           <div>
             <h3 className="text-sm font-normal text-foreground mb-1">
-              Timeless Elegance
+              Minimal in form, bold in presence
             </h3>
             <p className="text-sm font-light text-foreground">
               Flexible, luminous and endlessly expressive
