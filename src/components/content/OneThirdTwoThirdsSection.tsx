@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 const OneThirdTwoThirdsSection = () => {
   return (
     <section className="w-full mb-16 px-4 sm:px-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         
-        {/* Prima colonna (1/3 su desktop) - Video */}
+        {/* Prima colonna (1/3 su desktop) - Video Formato 1:1 (Quadrato) */}
         <div className="lg:col-span-1 flex flex-col">
           <Link 
             to="/category/orecchini" 
             className="block overflow-hidden group rounded-sm"
           >
-            <div className="w-full h-[400px] sm:h-[550px] lg:h-[800px] mb-3 overflow-hidden bg-neutral-100">
+            <div className="w-full aspect-square mb-3 overflow-hidden bg-neutral-100">
               <video
                 src="https://res.cloudinary.com/cjgxjyub/video/upload/v1786196973/OR2612_c54u62.mp4"
                 autoPlay
@@ -32,7 +32,7 @@ const OneThirdTwoThirdsSection = () => {
           </div>
         </div>
 
-        {/* Seconda colonna (2/3 su desktop) - Immagine Cloudinary */}
+        {/* Seconda colonna (2/3 su desktop) - Immagine Metal Pride */}
         <div className="lg:col-span-2 flex flex-col">
           <Link 
             to="/collection/metal" 
