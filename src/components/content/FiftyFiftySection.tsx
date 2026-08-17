@@ -16,7 +16,7 @@ const FiftyFiftySection = () => {
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               >
                 <source
-                  src="https://res.cloudinary.com/cjgxjyub/video/upload/v1786196973/OR2612_c54u62.mp4"
+                  src="https://res.cloudinary.com/cjgxjyub/video/upload/v1786993547/stone_site_ecoqim.mp4"
                   type="video/mp4"
                 />
                 Il tuo browser non supporta i video HTML5.
