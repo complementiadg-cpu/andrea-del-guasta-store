@@ -49,10 +49,6 @@ const Checkout = () => {
   const [paymentComplete, setPaymentComplete] = useState(false);
   const { items: cartItems, updateQuantity, subtotal, clearCart } = useCart();
 
-  const hasCustomSize = cartItems.some(
-    (item) => item.customSize && item.customSize.trim() !== ""
-  );
-
   const getShippingCost = () => {
     switch (shippingOption) {
       case "international":
@@ -62,18 +58,15 @@ const Checkout = () => {
     }
   };
 
-  const standardDays = hasCustomSize ? "10/15 giorni" : "5 giorni";
-  const internationalDays = hasCustomSize ? "15/20 giorni" : "5–10 giorni";
-  const standardSuffix = hasCustomSize ? " lavorativi" : " lavorativi";
+  const standardDays = "5 giorni";
+  const internationalDays = "5 giorni";
+  const standardSuffix = " lavorativi";
   const internationalSuffix = " lavorativi";
 
-
-  
   const shipping = getShippingCost();
   const total = subtotal + shipping;
 
   const handleDiscountSubmit = () => {
-    // Handle discount code submission
     console.log("Discount code submitted:", discountCode);
     setShowDiscountInput(false);
   };
@@ -122,7 +115,6 @@ const Checkout = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-background">
       <CheckoutHeader />
@@ -131,7 +123,7 @@ const Checkout = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {/* Order Summary - First on mobile, last on desktop */}
+            {/* Order Summary */}
             <div className="lg:col-span-1 lg:order-2">
               <div className="bg-muted/20 p-8 rounded-none sticky top-6">
                 <h2 className="font-serif text-2xl text-foreground mb-6">Riepilogo Ordine</h2>
@@ -188,7 +180,6 @@ const Checkout = () => {
                     </div>
                   ))}
                 </div>
-
 
                 {/* Discount Code Section */}
                 <div className="mt-8 pt-6 border-t border-muted-foreground/20">
@@ -388,7 +379,7 @@ const Checkout = () => {
                     </div>
                   </div>
 
-                  {/* Billing Details - shown when checkbox is checked */}
+                  {/* Billing Details */}
                   {hasSeparateBilling && (
                     <div className="space-y-6 pt-4">
                       <h3 className="text-base font-light text-foreground">Billing Details</h3>
