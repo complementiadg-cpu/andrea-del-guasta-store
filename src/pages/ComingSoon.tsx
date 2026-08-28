@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { toast } from "sonner"; // o la libreria di toast usata nel progetto
+import { toast } from "sonner";
 
 export const ComingSoonForm = () => {
   const [email, setEmail] = useState("");
@@ -55,3 +55,5 @@ export const ComingSoonForm = () => {
     </form>
   );
 };
+
+export default ComingSoonForm;
