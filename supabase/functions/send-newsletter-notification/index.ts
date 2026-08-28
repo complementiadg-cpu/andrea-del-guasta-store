@@ -21,8 +21,8 @@ serve(async (req) => {
     const { subscriberEmail } = await req.json();
 
     const data = await resend.emails.send({
-      from: "Andrea Del Guasta <onboarding@resend.dev>",
-      to: ["complementiadg@gmail.com"],
+      from: "Andrea Del Guasta <info@andreadelguasta.com>",
+      to: ["info@andreadelguasta.com"],
       subject: "Nuovo iscritto alla Newsletter!",
       html: `<p>Un nuovo utente si è iscritto: <strong>${subscriberEmail}</strong></p>`,
     });
