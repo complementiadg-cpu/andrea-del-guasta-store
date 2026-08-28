@@ -6,13 +6,35 @@ import { toast } from "sonner";
 const ComingSoon = () => {
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    
-    // Qui puoi collegare la logica per salvare l'email (es. Supabase o Resend)
-    toast.success("Grazie! Ti avviseremo non appena saremo online.");
-    setEmail("");
+
+    setIsLoading(true);
+
+    try {
+      // Collegamento alla tabella "Newsletter" esistente
+      const { error } = await supabase
+        .from("Newsletter" as any)
+        .insert([{ email }]);
+
+      if (error) {
+        // Gestione dell'errore se l'email è già registrata
+        if (error.code === "23505") {
+          toast.info("Risulti già iscritto/a alla nostra newsletter!");
+        } else {
+          throw error;
+        }
+      } else {
+        toast.success("Grazie! Ti avviseremo non appena saremo online.");
+        setEmail("");
+      }
+    } catch (error) {
+      console.error("Errore salvataggio email:", error);
+      toast.error("Si è verificato un errore. Riprova più tardi.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
