@@ -13,20 +13,20 @@ const ComingSoon = () => {
     setIsLoading(true);
 
     try {
-      // 1. Collegamento alla tabella "Newsletter"
+      // Collegamento alla tabella "Newsletter" esistente
       const { error } = await supabase
         .from("Newsletter" as any)
         .insert([{ email }]);
 
       if (error) {
-        // Gestione dell'errore se l'email è già registrata (chiave univoca)
+        // Gestione dell'errore se l'email è già registrata
         if (error.code === "23505") {
           toast.info("Risulti già iscritto/a alla nostra newsletter!");
         } else {
           throw error;
         }
       } else {
-        // 2. Invocazione facoltativa della Edge Function per l'email di notifica
+        // Notifica tramite Edge Function
         try {
           await supabase.functions.invoke("send-newsletter-notification", {
             body: { subscriberEmail: email },
@@ -47,30 +47,33 @@ const ComingSoon = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between bg-black text-white px-6 py-12">
-      {/* Header / Logo */}
-      <header className="w-full text-center pt-8">
-        <h1 className="text-2xl md:text-3xl font-light tracking-[0.25em] uppercase text-zinc-100">
+    <div className="relative min-h-screen bg-black text-white flex flex-col justify-between overflow-hidden">
+      {/* Immagine / Overlay di Sfondo */}
+      <div className="absolute inset-0 z-0 opacity-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-zinc-800 via-black to-black pointer-events-none" />
+
+      {/* Header / Brand Logo */}
+      <header className="relative z-10 w-full py-8 text-center border-b border-zinc-900/50 backdrop-blur-sm">
+        <h1 className="text-2xl md:text-3xl font-light tracking-[0.3em] uppercase text-zinc-100">
           Andrea Del Guasta
         </h1>
       </header>
 
-      {/* Contenuto Centrale */}
-      <main className="max-w-xl w-full text-center space-y-8 my-auto">
+      {/* Contenuto Principale */}
+      <main className="relative z-10 max-w-2xl mx-auto px-6 text-center my-auto py-12 space-y-8">
         <div className="space-y-4">
-          <p className="text-xs uppercase tracking-[0.3em] text-zinc-400 font-medium">
-            Coming Soon
-          </p>
-          <h2 className="text-3xl md:text-5xl font-light tracking-wide text-white leading-tight">
-            Il nuovo store sarà presto disponibile.
+          <span className="text-xs uppercase tracking-[0.35em] text-zinc-400 font-medium">
+            Nuova Collezione In Arrivo
+          </span>
+          <h2 className="text-4xl md:text-6xl font-extralight tracking-tight text-white leading-tight">
+            Esclusività & Design
           </h2>
-          <p className="text-zinc-400 text-sm md:text-base tracking-wide font-light max-w-md mx-auto">
-            Iscriviti alla newsletter per ricevere un avviso in anteprima il giorno del lancio.
+          <p className="text-zinc-400 text-sm md:text-base tracking-wide font-light max-w-md mx-auto leading-relaxed">
+            Stiamo preparando il nuovo store online. Iscriviti per ricevere un invito riservato prima del lancio ufficiale.
           </p>
         </div>
 
-        {/* Form Iscrizione */}
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto w-full">
+        {/* Form di Iscrizione */}
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto w-full pt-2">
           <input
             type="email"
             placeholder="Inserisci la tua email..."
@@ -78,12 +81,12 @@ const ComingSoon = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={isLoading}
-            className="px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-md text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-zinc-400 transition-colors flex-1 disabled:opacity-50"
+            className="px-4 py-3 bg-zinc-900/80 border border-zinc-800 rounded-md text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-zinc-300 transition-all flex-1 disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={isLoading}
-            className="px-6 py-3 bg-white text-black text-sm font-medium rounded-md hover:bg-zinc-200 transition-colors disabled:opacity-50 flex items-center justify-center min-w-[110px]"
+            className="px-8 py-3 bg-white text-black text-sm font-medium rounded-md hover:bg-zinc-200 transition-all disabled:opacity-50 min-w-[120px]"
           >
             {isLoading ? "Invio..." : "Iscriviti"}
           </button>
@@ -91,8 +94,8 @@ const ComingSoon = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full text-center text-xs text-zinc-600 tracking-wider">
-        © {new Date().getFullYear()} Andrea Del Guasta. Tutti i diritti riservati.
+      <footer className="relative z-10 w-full py-6 text-center text-[11px] text-zinc-600 tracking-widest uppercase border-t border-zinc-900/50">
+        © {new Date().getFullYear()} Andrea Del Guasta. All rights reserved.
       </footer>
     </div>
   );
