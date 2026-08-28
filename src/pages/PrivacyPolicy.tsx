@@ -24,7 +24,7 @@ const PrivacyPolicy = () => {
               <div className="text-muted-foreground leading-relaxed space-y-1">
                 <p>ANDREA DEL GUASTA</p>
                 <p>Partita IVA 07570330485</p>
-                <p>Piazza Felice Cavallotti 6d, 50058 Signa (FI), Italia</p>
+                <p>Via Giotto, 1, 50058 Signa (FI), Italia</p>
                 <p>
                   Email:{" "}
                   <a href="mailto:complementicouture@gmail.com" className="underline hover:text-foreground transition-colors">
