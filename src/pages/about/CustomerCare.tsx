@@ -62,7 +62,7 @@ const CustomerCare = () => {
                   Quali sono le opzioni e i tempi di spedizione?
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  Offriamo la spedizione standard nazionale gratuita (5 giorni lavorativi). La spedizione internazionale (5–10 giorni lavorativi) è disponibile al costo di 25 €.
+                  Offriamo la spedizione standard nazionale gratuita (5 giorni lavorativi). La spedizione internazionale (5–10 giorni lavorativi) è disponibile al costo di 25,00 €, gratuita per ordini maggiori di 300,00 €.
                 </AccordionContent>
               </AccordionItem>
 
