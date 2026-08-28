@@ -43,7 +43,7 @@ const ComingSoon = () => {
     } catch (error) {
       console.error("Errore salvataggio email:", error);
       toast.error("Si è verificato un errore. Riprova più tardi.");
-    } fontally {
+    } finally {
       setIsLoading(false);
     }
   };
