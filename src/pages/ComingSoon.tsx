@@ -53,7 +53,7 @@ const ComingSoon = () => {
       {/* Header / Logo minimal */}
       <header className="flex justify-center">
         <h1 className="font-serif text-2xl uppercase tracking-widest text-foreground">
-          Andrea Del Guasta
+          AndreaDelGuasta
         </h1>
       </header>
 
