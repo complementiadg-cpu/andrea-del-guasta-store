@@ -27,8 +27,8 @@ const PrivacyPolicy = () => {
                 <p>Via Giotto, 1, 50058 Signa (FI), Italia</p>
                 <p>
                   Email:{" "}
-                  <a href="mailto:complementicouture@gmail.com" className="underline hover:text-foreground transition-colors">
-                    complementicouture@gmail.com
+                  <a href="mailto:info@andreadelguasta.com" className="underline hover:text-foreground transition-colors">
+                    info@andreadelguasta.com
                   </a>
                 </p>
               </div>
@@ -75,8 +75,8 @@ const PrivacyPolicy = () => {
               <h2 className="font-serif text-2xl text-foreground mb-4">I tuoi diritti</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Ai sensi degli artt. 15-22 GDPR puoi esercitare i diritti di accesso, rettifica, cancellazione, limitazione, opposizione e portabilità, oltre alla revoca del consenso. Per farlo scrivi a{" "}
-                <a href="mailto:complementicouture@gmail.com" className="underline hover:text-foreground transition-colors">
-                  complementicouture@gmail.com
+                <a href="mailto:info@andreadelguasta.com" className="underline hover:text-foreground transition-colors">
+                  info@andreadelguasta.com
                 </a>
                 .
               </p>
