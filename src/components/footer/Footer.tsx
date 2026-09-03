@@ -71,7 +71,7 @@ const Footer = () => {
               <h4 className="text-sm font-normal mb-4">Connettiti</h4>
               <ul className="space-y-2">
                 <li><a href="https://instagram.com/andreadelguasta66" target="_blank" rel="noopener noreferrer" className="text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
-                <li><a href="mailto:complementiadg@gmail.com" className="text-sm font-light text-black/70 hover:text-black transition-colors">Email</a></li>
+                <li><a href="mailto:info@andreadelguasta.com" className="text-sm font-light text-black/70 hover:text-black transition-colors">Email</a></li>
                 <li><Link to="/newsletter" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</Link></li>
               </ul>
             </div>
