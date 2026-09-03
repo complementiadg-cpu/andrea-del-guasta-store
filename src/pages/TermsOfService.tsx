@@ -27,8 +27,8 @@ const TermsOfService = () => {
                 <p>Via Giotto, 1, 50058 Signa (FI), Italia</p>
                 <p>
                   Email:{" "}
-                  <a href="mailto:complementicouture@gmail.com" className="underline hover:text-foreground transition-colors">
-                    complementicouture@gmail.com
+                  <a href="mailto:info@andreadelguasta.com" className="underline hover:text-foreground transition-colors">
+                    info@andreadelguasta.com
                   </a>
                 </p>
               </div>
