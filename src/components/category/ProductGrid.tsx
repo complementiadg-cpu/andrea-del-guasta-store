@@ -87,28 +87,6 @@ const ProductGrid = ({ filterCategory, filterCollection, showCategoryFilters }: 
             </div>
           )}
 
-          {collections.length > 0 && (
-            <div>
-              <p className="text-[10px] font-light uppercase tracking-[0.25em] text-muted-foreground mb-2">
-                Collezioni
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <FilterChip
-                  label="Tutte"
-                  active={activeCollection === "all"}
-                  onClick={() => setActiveCollection("all")}
-                />
-                {collections.map((c) => (
-                  <FilterChip
-                    key={c}
-                    label={c}
-                    active={normalize(activeCollection) === normalize(c)}
-                    onClick={() => setActiveCollection(c)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       )}
 
