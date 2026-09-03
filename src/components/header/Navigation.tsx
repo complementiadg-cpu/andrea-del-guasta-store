@@ -55,14 +55,6 @@ const Navigation = () => {
       })),
     },
     {
-      name: "Collezioni",
-      href: "/category/shop",
-      submenuItems: collections.map((c) => ({
-        label: c,
-        to: `/collection/${encodeURIComponent(c)}`,
-      })),
-    },
-    {
       name: "About",
       href: "/about/our-story",
       submenuItems: [
