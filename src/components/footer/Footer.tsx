@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
-import { useTaxonomy } from "@/hooks/useProducts";
 
 const Footer = () => {
-  const { categories } = useTaxonomy();
-
   return (
     <footer className="w-full bg-white text-black pt-8 pb-2 px-6 border-t border-[#e5e5e5] mt-48">
       <div className="">
@@ -38,24 +35,7 @@ const Footer = () => {
 
 
           {/* Link lists - Right side */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Categorie */}
-            <div>
-              <h4 className="text-sm font-normal mb-4">Categorie</h4>
-              <ul className="space-y-2">
-                {categories.map((category) => (
-                  <li key={category}>
-                    <Link
-                      to={`/category/${encodeURIComponent(category.toLowerCase())}`}
-                      className="text-sm font-light text-black/70 hover:text-black transition-colors"
-                    >
-                      {category}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Chi siamo */}
             <div>
               <h4 className="text-sm font-normal mb-4">Chi siamo</h4>
