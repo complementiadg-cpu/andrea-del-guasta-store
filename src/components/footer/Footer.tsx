@@ -29,8 +29,8 @@ const Footer = () => {
                 </a>
               </p>
               <p>
-                <a href="mailto:complementiadg@gmail.com" className="hover:text-black transition-colors">
-                  complementiadg@gmail.com
+                <a href="mailto:info@andreadelguasta.com" className="hover:text-black transition-colors">
+                  info@andreadelguasta.com
                 </a>
               </p>
             </div>
