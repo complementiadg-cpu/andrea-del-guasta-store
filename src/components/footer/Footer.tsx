@@ -35,33 +35,33 @@ const Footer = () => {
 
 
           {/* Link lists - Right side */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
             {/* Chi siamo */}
             <div>
               <h4 className="text-sm font-normal mb-4">Chi siamo</h4>
-              <ul className="space-y-2">
-                <li><Link to="/about/our-story" className="text-sm font-light text-black/70 hover:text-black transition-colors">La nostra storia</Link></li>
-                <li><Link to="/about/size-guide" className="text-sm font-light text-black/70 hover:text-black transition-colors">Guida alle taglie</Link></li>
-                <li><Link to="/about/customer-care" className="text-sm font-light text-black/70 hover:text-black transition-colors">Assistenza clienti</Link></li>
+              <ul className="space-y-1.5">
+                <li><Link to="/about/our-story" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">La nostra storia</Link></li>
+                <li><Link to="/about/size-guide" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Guida alle taglie</Link></li>
+                <li><Link to="/about/customer-care" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Assistenza clienti</Link></li>
               </ul>
             </div>
 
             {/* Connettiti */}
             <div>
               <h4 className="text-sm font-normal mb-4">Connettiti</h4>
-              <ul className="space-y-2">
-                <li><a href="https://instagram.com/andreadelguasta66" target="_blank" rel="noopener noreferrer" className="text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
-                <li><a href="mailto:info@andreadelguasta.com" className="text-sm font-light text-black/70 hover:text-black transition-colors">Email</a></li>
-                <li><Link to="/newsletter" className="text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</Link></li>
+              <ul className="space-y-1.5">
+                <li><a href="https://instagram.com/andreadelguasta66" target="_blank" rel="noopener noreferrer" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Instagram</a></li>
+                <li><a href="mailto:info@andreadelguasta.com" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Email</a></li>
+                <li><Link to="/newsletter" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Newsletter</Link></li>
               </ul>
             </div>
 
             {/* Legale */}
             <div>
               <h4 className="text-sm font-normal mb-4">Legale</h4>
-              <ul className="space-y-2">
-                <li><Link to="/privacy-policy" className="text-sm font-light text-black/70 hover:text-black transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms-of-service" className="text-sm font-light text-black/70 hover:text-black transition-colors">Terms of Service</Link></li>
+              <ul className="space-y-1.5">
+                <li><Link to="/privacy-policy" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms-of-service" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
