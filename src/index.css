@@ -115,7 +115,22 @@
     @apply border-border;
   }
 
+  html,
   body {
     @apply bg-background text-foreground font-light;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Prevent any wide element from forcing horizontal scroll on mobile */
+  body {
+    max-width: 100vw;
+  }
+
+  img,
+  video,
+  picture {
+    max-width: 100%;
+    height: auto;
   }
 }

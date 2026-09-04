@@ -262,8 +262,8 @@ const Navigation = () => {
       )}
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-nav border-b border-border z-50">
-          <div className="px-6 py-8">
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-nav border-b border-border z-50 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="px-4 sm:px-6 py-8">
             <div className="space-y-6">
               {navItems.map((item) => (
                 <div key={item.name}>
@@ -274,12 +274,12 @@ const Navigation = () => {
                   >
                     {item.name}
                   </Link>
-                  <div className="mt-3 pl-4 space-y-2">
+                  <div className="mt-2 pl-4 space-y-1">
                     {item.submenuItems.map((subItem, subIdx) => (
                       <Link
                         key={subIdx}
                         to={subItem.to}
-                        className="text-nav-foreground/70 hover:text-nav-hover text-sm font-light block py-1"
+                        className="text-nav-foreground/70 hover:text-nav-hover text-sm font-light block py-2"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {subItem.label}

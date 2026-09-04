@@ -77,19 +77,19 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       </div>
 
       {/* Title + price */}
-      <div className="flex justify-between items-start gap-6">
-        <div>
+      <div className="flex justify-between items-start gap-4 sm:gap-6">
+        <div className="min-w-0">
           {product.category && (
-            <p className="text-xs font-light uppercase tracking-widest text-muted-foreground mb-2">
+            <p className="text-[10px] sm:text-xs font-light uppercase tracking-widest text-muted-foreground mb-2">
               {product.category}
             </p>
           )}
-          <h1 className="font-serif text-4xl md:text-5xl leading-tight text-foreground">
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl leading-tight text-foreground break-words">
             {product.name}
           </h1>
         </div>
         <div className="text-right shrink-0">
-          <p className="text-xl font-light text-foreground">{product.priceLabel}</p>
+          <p className="text-lg sm:text-xl font-light text-foreground whitespace-nowrap">{product.priceLabel}</p>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           </h2>
           <dl className="divide-y divide-border">
             {details.map((d) => (
-              <div key={d.label} className="grid grid-cols-[8rem_1fr] gap-4 py-3">
+              <div key={d.label} className="grid grid-cols-[6rem_1fr] sm:grid-cols-[8rem_1fr] gap-3 sm:gap-4 py-3">
                 <dt className="text-sm font-light text-muted-foreground">{d.label}</dt>
                 <dd className="text-sm font-light text-foreground">{d.value}</dd>
               </div>
