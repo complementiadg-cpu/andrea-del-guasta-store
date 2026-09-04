@@ -110,7 +110,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           </h2>
           <dl className="divide-y divide-border">
             {details.map((d) => (
-              <div key={d.label} className="grid grid-cols-[8rem_1fr] gap-4 py-3">
+              <div key={d.label} className="grid grid-cols-[6rem_1fr] sm:grid-cols-[8rem_1fr] gap-3 sm:gap-4 py-3">
                 <dt className="text-sm font-light text-muted-foreground">{d.label}</dt>
                 <dd className="text-sm font-light text-foreground">{d.value}</dd>
               </div>
