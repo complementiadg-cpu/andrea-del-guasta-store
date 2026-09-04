@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-white text-black pt-8 pb-2 px-6 border-t border-[#e5e5e5] mt-48">
+    <footer className="w-full bg-white text-black pt-8 pb-2 px-4 sm:px-6 border-t border-[#e5e5e5] mt-16 sm:mt-32 lg:mt-48">
       <div className="">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 mb-8">
           {/* Brand - Left side */}
           <div>
             <p className="font-serif uppercase tracking-[0.18em] text-lg mb-1">ANDREADELGUASTA</p>
