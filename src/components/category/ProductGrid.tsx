@@ -61,7 +61,7 @@ const ProductGrid = ({ filterCategory, filterCollection, showCategoryFilters }: 
   }, [products, filterCategory, filterCollection, activeCategory, activeCollection, showCategoryFilters]);
 
   return (
-    <section className="w-full px-6 mb-16">
+    <section className="w-full px-4 sm:px-6 mb-16">
       {showCategoryFilters && (categories.length > 0 || collections.length > 0) && (
         <div className="mb-8 space-y-4">
           {categories.length > 0 && (
