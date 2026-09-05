@@ -26,8 +26,12 @@ const ProductImageGallery = ({ images, name }: ProductImageGalleryProps) => {
         <img
           src={current}
           alt={name}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
+
       </div>
 
       {gallery.length > 1 && (
