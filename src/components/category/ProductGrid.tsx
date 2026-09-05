@@ -145,6 +145,7 @@ const ProductCard = ({ product }: { product: Product }) => {
               src={product.image}
               alt={product.name}
               loading="lazy"
+              decoding="async"
               className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] ${
                 hasAltImage ? "group-hover:opacity-0" : ""
               }`}
@@ -154,6 +155,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                 src={product.image1}
                 alt={product.name}
                 loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-[1.03]"
               />
             )}
