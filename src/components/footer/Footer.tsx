@@ -44,6 +44,7 @@ const Footer = () => {
                 <li><Link to="/about/size-guide" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Guida alle taglie</Link></li>
                 <li><Link to="/about/customer-care" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Assistenza clienti</Link></li>
                 <li><Link to="/about/services" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Servizi</Link></li>
+                <li><Link to="/about/eventi" className="inline-block py-1 text-sm font-light text-black/70 hover:text-black transition-colors">Eventi</Link></li>
               </ul>
             </div>
 
