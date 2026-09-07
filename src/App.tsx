@@ -17,6 +17,7 @@ import OurStory from "./pages/about/OurStory";
 import SizeGuide from "./pages/about/SizeGuide";
 import CustomerCare from "./pages/about/CustomerCare";
 import Services from "./pages/about/Services";
+import Eventi from "./pages/about/Eventi";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Newsletter from "./pages/Newsletter";
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/about/size-guide" element={<SizeGuide />} />
             <Route path="/about/customer-care" element={<CustomerCare />} />
             <Route path="/about/services" element={<Services />} />
+            <Route path="/about/eventi" element={<Eventi />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/newsletter" element={<Newsletter />} />
