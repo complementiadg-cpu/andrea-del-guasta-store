@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import OurStory from "./pages/about/OurStory";
 import SizeGuide from "./pages/about/SizeGuide";
 import CustomerCare from "./pages/about/CustomerCare";
+import Services from "./pages/about/Services";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Newsletter from "./pages/Newsletter";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/about/our-story" element={<OurStory />} />
             <Route path="/about/size-guide" element={<SizeGuide />} />
             <Route path="/about/customer-care" element={<CustomerCare />} />
+            <Route path="/about/services" element={<Services />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/newsletter" element={<Newsletter />} />
