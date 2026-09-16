@@ -541,121 +541,53 @@ const Checkout = () => {
             <div className="bg-muted/20 p-8 rounded-none">
               <h2 className="text-lg font-light text-foreground mb-6">Payment Details</h2>
               
-              {!paymentComplete ? (
-                <div className="space-y-6">
-                  <div>
-                    <Label htmlFor="cardholderName" className="text-sm font-light text-foreground">
-                      Cardholder Name *
-                    </Label>
-                    <Input
-                      id="cardholderName"
-                      type="text"
-                      value={paymentDetails.cardholderName}
-                      onChange={(e) => handlePaymentDetailsChange("cardholderName", e.target.value)}
-                      className="mt-2 rounded-none"
-                      placeholder="Name on card"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="cardNumber" className="text-sm font-light text-foreground">
-                      Card Number *
-                    </Label>
-                    <div className="relative mt-2">
-                      <Input
-                        id="cardNumber"
-                        type="text"
-                        value={paymentDetails.cardNumber}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim();
-                          if (value.length <= 19) {
-                            handlePaymentDetailsChange("cardNumber", value);
-                          }
-                        }}
-                        className="rounded-none pl-10"
-                        placeholder="4242 4242 4242 4242"
-                        maxLength={19}
-                      />
-                      <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="expiryDate" className="text-sm font-light text-foreground">
-                        Expiry Date *
-                      </Label>
-                      <Input
-                        id="expiryDate"
-                        type="text"
-                        value={paymentDetails.expiryDate}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, '').replace(/(\d{2})(\d{2})/, '$1/$2');
-                          if (value.length <= 5) {
-                            handlePaymentDetailsChange("expiryDate", value);
-                          }
-                        }}
-                        className="mt-2 rounded-none"
-                        placeholder="MM/YY"
-                        maxLength={5}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="cvv" className="text-sm font-light text-foreground">
-                        CVV *
-                      </Label>
-                      <Input
-                        id="cvv"
-                        type="text"
-                        value={paymentDetails.cvv}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, '');
-                          if (value.length <= 3) {
-                            handlePaymentDetailsChange("cvv", value);
-                          }
-                        }}
-                        className="mt-2 rounded-none"
-                        placeholder="123"
-                        maxLength={3}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Order Total Summary */}
-                  <div className="bg-muted/10 p-6 rounded-none border border-muted-foreground/20 space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Subtotal</span>
-                      <span className="text-foreground">{formatEuro(subtotal)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Shipping</span>
-                      <span className="text-foreground">
-                        {shipping === 0 ? "Free" : `€${shipping}`}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-lg font-medium border-t border-muted-foreground/20 pt-3">
-                      <span className="text-foreground">Total</span>
-                      <span className="text-foreground">{formatEuro(total)}</span>
-                    </div>
-                  </div>
-
-                  <Button
-                    onClick={handleCompleteOrder}
-                    disabled={isProcessing || !paymentDetails.cardNumber || !paymentDetails.expiryDate || !paymentDetails.cvv || !paymentDetails.cardholderName}
-                    className="w-full rounded-none h-12 text-base"
-                  >
-                    {isProcessing ? "Processing..." : `Completa ordine • ${formatEuro(total)}`}
-                  </Button>
+              <div className="space-y-6">
+                <div className="flex items-start gap-3 text-sm font-light text-muted-foreground">
+                  <CreditCard className="h-4 w-4 mt-0.5 shrink-0" />
+                  <p>
+                    Il pagamento avviene sulla pagina sicura di Stripe. Carte di credito e debito,
+                    Apple Pay e Google Pay. I dati della carta non transitano mai su questo sito.
+                  </p>
                 </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                    <Check className="h-8 w-8 text-green-600" />
+
+                {/* Order Total Summary */}
+                <div className="bg-muted/10 p-6 rounded-none border border-muted-foreground/20 space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="text-foreground">{formatEuro(subtotal)}</span>
                   </div>
-                  <h3 className="text-xl font-light text-foreground mb-2">Order Complete!</h3>
-                  <p className="text-muted-foreground">Thank you for your purchase. Your order confirmation has been sent to your email.</p>
-                 </div>
-               )}
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-foreground">
+                      {shipping === 0 ? "Free" : `€${shipping}`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-lg font-medium border-t border-muted-foreground/20 pt-3">
+                    <span className="text-foreground">Total</span>
+                    <span className="text-foreground">{formatEuro(total)}</span>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleCompleteOrder}
+                  disabled={
+                    isProcessing ||
+                    cartItems.length === 0 ||
+                    !customerDetails.email ||
+                    !customerDetails.firstName ||
+                    !customerDetails.lastName ||
+                    !shippingAddress.address ||
+                    !shippingAddress.city ||
+                    !shippingAddress.postalCode ||
+                    !shippingAddress.country
+                  }
+                  className="w-full rounded-none h-12 text-base"
+                >
+                  {isProcessing
+                    ? "Reindirizzamento a Stripe…"
+                    : `Procedi al pagamento • ${formatEuro(total)}`}
+                </Button>
+              </div>
              </div>
             </div>
           </div>
