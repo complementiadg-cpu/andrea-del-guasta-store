@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Minus, Plus, CreditCard, Check } from "lucide-react";
+import { Minus, Plus, CreditCard } from "lucide-react";
 import CheckoutHeader from "../components/header/CheckoutHeader";
 import Footer from "../components/footer/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useCart } from "@/contexts/CartContext";
 import { formatEuro } from "@/lib/products";
 import { saveOrder } from "@/lib/orders";
+import { createStripeCheckout } from "@/lib/stripe";
 import { toast } from "sonner";
 
 const Checkout = () => {
@@ -94,7 +95,7 @@ const Checkout = () => {
     }
     setIsProcessing(true);
     try {
-      await saveOrder({
+      const orderId = await saveOrder({
         customer: customerDetails,
         shippingAddress,
         billingAddress: hasSeparateBilling ? billingDetails : null,
@@ -105,12 +106,22 @@ const Checkout = () => {
         items: cartItems,
         discountCode,
       });
-      setPaymentComplete(true);
-      clearCart();
+
+      const url = await createStripeCheckout({
+        items: cartItems,
+        shippingCost: shipping,
+        shippingLabel:
+          shippingOption === "international"
+            ? "Spedizione internazionale"
+            : "Spedizione standard nazionale",
+        email: customerDetails.email.trim().toLowerCase(),
+        orderId,
+      });
+
+      window.location.href = url;
     } catch (err) {
-      console.error("Order save failed:", err);
-      toast.error("Non è stato possibile registrare l'ordine. Riprova.");
-    } finally {
+      console.error("Checkout failed:", err);
+      toast.error("Non è stato possibile avviare il pagamento. Riprova.");
       setIsProcessing(false);
     }
   };
