@@ -24,30 +24,38 @@ export interface OrderPayload {
 }
 
 /**
- * Saves the order to the "Ordini" table. Payment card data is never stored.
+ * Saves the order to the "Ordini" table with status "pending".
+ * Payment card data is never stored (Stripe hosted checkout handles it).
+ * Returns the created order id when available.
  */
-export const saveOrder = async (payload: OrderPayload) => {
-  const { error } = await supabase.from("Ordini").insert({
-    email: payload.customer.email.trim().toLowerCase(),
-    nome: payload.customer.firstName.trim(),
-    cognome: payload.customer.lastName.trim(),
-    telefono: payload.customer.phone.trim(),
-    indirizzo_spedizione: payload.shippingAddress,
-    indirizzo_fatturazione: payload.billingAddress,
-    metodo_spedizione: payload.shippingOption,
-    costo_spedizione: payload.shippingCost,
-    subtotale: payload.subtotal,
-    totale: payload.total,
-    codice_sconto: payload.discountCode?.trim() || null,
-    articoli: payload.items.map((i) => ({
-      sku: i.sku,
-      nome: i.name,
-      categoria: i.category,
-      prezzo: i.price,
-      quantita: i.quantity,
-      misura_personalizzata: i.customSize ?? null,
-    })),
-  });
+export const saveOrder = async (payload: OrderPayload): Promise<string | null> => {
+  const { data, error } = await supabase
+    .from("Ordini")
+    .insert({
+      email: payload.customer.email.trim().toLowerCase(),
+      nome: payload.customer.firstName.trim(),
+      cognome: payload.customer.lastName.trim(),
+      telefono: payload.customer.phone.trim(),
+      indirizzo_spedizione: payload.shippingAddress,
+      indirizzo_fatturazione: payload.billingAddress,
+      metodo_spedizione: payload.shippingOption,
+      costo_spedizione: payload.shippingCost,
+      subtotale: payload.subtotal,
+      totale: payload.total,
+      stato: "pending",
+      codice_sconto: payload.discountCode?.trim() || null,
+      articoli: payload.items.map((i) => ({
+        sku: i.sku,
+        nome: i.name,
+        categoria: i.category,
+        prezzo: i.price,
+        quantita: i.quantity,
+        misura_personalizzata: i.customSize ?? null,
+      })),
+    })
+    .select("id")
+    .maybeSingle();
 
   if (error) throw error;
+  return data?.id ? String(data.id) : null;
 };
