@@ -40,15 +40,8 @@ const Checkout = () => {
     country: ""
   });
   const [shippingOption, setShippingOption] = useState("standard");
-  const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-    cardholderName: ""
-  });
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentComplete, setPaymentComplete] = useState(false);
-  const { items: cartItems, updateQuantity, subtotal, clearCart } = useCart();
+  const { items: cartItems, updateQuantity, subtotal } = useCart();
 
   const getShippingCost = () => {
     switch (shippingOption) {
@@ -84,9 +77,6 @@ const Checkout = () => {
     setBillingDetails(prev => ({ ...prev, [field]: value }));
   };
 
-  const handlePaymentDetailsChange = (field: string, value: string) => {
-    setPaymentDetails(prev => ({ ...prev, [field]: value }));
-  };
 
   const handleCompleteOrder = async () => {
     if (cartItems.length === 0) {
