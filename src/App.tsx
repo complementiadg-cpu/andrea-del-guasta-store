@@ -12,6 +12,7 @@ import Category from "./pages/Category";
 import Collection from "./pages/Collection";
 import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
+import Grazie from "./pages/Grazie";
 import NotFound from "./pages/NotFound";
 import OurStory from "./pages/about/OurStory";
 import SizeGuide from "./pages/about/SizeGuide";
@@ -44,6 +45,8 @@ const App = () => (
             <Route path="/collection/:collection" element={<Collection />} />
             <Route path="/product/:productId" element={<ProductDetail />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/carrello" element={<Checkout />} />
+            <Route path="/grazie" element={<Grazie />} />
             <Route path="/about/our-story" element={<OurStory />} />
             <Route path="/about/size-guide" element={<SizeGuide />} />
             <Route path="/about/customer-care" element={<CustomerCare />} />
