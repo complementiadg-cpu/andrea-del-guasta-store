@@ -25,7 +25,10 @@ serve(async (req) => {
     const secretKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!secretKey) throw new Error("STRIPE_SECRET_KEY non configurata.");
 
-    const stripe = new Stripe(secretKey, { apiVersion: "2023-10-16" });
+    const stripe = new Stripe(secretKey.trim(), {
+      apiVersion: "2023-10-16",
+      httpClient: Stripe.createFetchHttpClient(),
+    });
 
     const body = await req.json();
     const items: Item[] = Array.isArray(body?.items) ? body.items : [];
