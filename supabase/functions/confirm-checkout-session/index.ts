@@ -24,7 +24,10 @@ serve(async (req) => {
       });
     }
 
-    const stripe = new Stripe(secretKey, { apiVersion: "2023-10-16" });
+    const stripe = new Stripe(secretKey.trim(), {
+      apiVersion: "2023-10-16",
+      httpClient: Stripe.createFetchHttpClient(),
+    });
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ["line_items"],
     });
