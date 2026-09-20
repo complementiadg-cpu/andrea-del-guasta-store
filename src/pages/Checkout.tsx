@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useCart } from '@/contexts/CartContext';
-import { supabase } from '@/lib/supabase';
+import { useCart } from '@/context/CartContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -8,7 +8,7 @@ import { Loader2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Checkout() {
-  const { items, updateQuantity, removeFromCart, subtotal } = useCart();
+  const { cartItems, updateQuantity, removeFromCart, totalAmount } = useCart();
   const { toast } = useToast();
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -53,7 +53,7 @@ export default function Checkout() {
 
   // Validazione globale del modulo
   const isFormValid =
-    (items || []).length > 0 &&
+    (cartItems || []).length > 0 &&
     !!customerDetails.email.trim() &&
     !!customerDetails.firstName.trim() &&
     !!customerDetails.lastName.trim() &&
@@ -93,27 +93,27 @@ export default function Checkout() {
         fatturazione: hasSeparateBilling ? billingDetails : shippingAddress,
       };
 
-      // Helper per estrarre la misura personalizzata dall'item
+      // Helper per estrarre la misura personalizzata dall'item indipendentemente dal nome proprietà nel cartContext
       const getCustomSize = (item: any) => 
-        item.customSize || item.misurePersonalizzate || item.misura_personalizzata || item.misure || null;
+        item.misura_personalizzata || item.customSize || item.misurePersonalizzate || item.misure || null;
 
-      // 1. Creazione del record dell'ordine su Supabase
+      // 1. Crei prima il record dell'ordine su Supabase con la chiave 'misura_personalizzata'
       const { data: ordine, error: dbError } = await supabase
         .from('Ordini')
         .insert([
           {
-            totale: subtotal,
+            totale: totalAmount,
             stato: 'pending',
             email: customerDetails.email,
             nome: customerDetails.firstName,
             cognome: customerDetails.lastName,
             telefono: customerDetails.phone,
-            articoli: (items || []).map((item) => ({
+            articoli: (cartItems || []).map((item) => ({
               sku: item.sku || item.id,
               nome: item.name,
               prezzo: item.price,
               quantita: item.quantity,
-              categoria: item.category || null,
+              categoria: item.category || item.categoria || null,
               misura_personalizzata: getCustomSize(item),
             })),
             indirizzo_spedizione: datiSpedizioneCompleti,
@@ -127,7 +127,7 @@ export default function Checkout() {
         throw new Error(dbError?.message || "Impossibile salvare l'ordine.");
       }
 
-      // 2. Chiamata alla Edge Function per Stripe
+      // 2. Chiami la Edge Function passando order_id e gli articoli con le misure
       const { data: functionData, error: functionError } = await supabase.functions.invoke(
         'create-checkout-session',
         {
@@ -135,7 +135,7 @@ export default function Checkout() {
             order_id: ordine.id,
             email: customerDetails.email,
             discount_code: appliedDiscount,
-            items: (items || []).map((item) => ({
+            items: (cartItems || []).map((item) => ({
               nome: item.name,
               price: item.price,
               quantity: item.quantity || 1,
@@ -301,7 +301,7 @@ export default function Checkout() {
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Reindirizzamento a Stripe...
               </>
             ) : (
-              `Procedi al Pagamento • €${subtotal.toFixed(2)}`
+              `Procedi al Pagamento • €${(totalAmount || 0).toFixed(2)}`
             )}
           </Button>
         </form>
@@ -311,12 +311,12 @@ export default function Checkout() {
       <div className="lg:col-span-5 border rounded-lg p-6 h-fit space-y-6 bg-slate-50">
         <h2 className="text-xl font-semibold border-b pb-4">Riepilogo Ordine</h2>
 
-        {(items || []).length === 0 ? (
+        {(cartItems || []).length === 0 ? (
           <p className="text-gray-500 text-center py-6">Il carrello è vuoto.</p>
         ) : (
           <div className="space-y-4 divide-y">
-            {(items || []).map((item) => {
-              const itemSize = item.customSize || (item as any).misurePersonalizzate || (item as any).misura_personalizzata || (item as any).misure;
+            {(cartItems || []).map((item) => {
+              const itemSize = item.customSize || item.misurePersonalizzate || item.misura_personalizzata || item.misure;
               return (
                 <div key={item.id} className="pt-4 flex items-center justify-between gap-4">
                   <div className="flex-1">
@@ -376,7 +376,7 @@ export default function Checkout() {
           </div>
           <div className="flex justify-between text-lg font-bold">
             <span>Totale</span>
-            <span>€{subtotal.toFixed(2)}</span>
+            <span>€{(totalAmount || 0).toFixed(2)}</span>
           </div>
         </div>
       </div>
