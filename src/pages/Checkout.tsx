@@ -51,9 +51,9 @@ export default function Checkout() {
     !!billingDetails.country.trim()
   );
 
-  const safeItems = items || [];
+  // Validazione globale del modulo
   const isFormValid =
-    safeItems.length > 0 &&
+    (items || []).length > 0 &&
     !!customerDetails.email.trim() &&
     !!customerDetails.firstName.trim() &&
     !!customerDetails.lastName.trim() &&
@@ -93,9 +93,11 @@ export default function Checkout() {
         fatturazione: hasSeparateBilling ? billingDetails : shippingAddress,
       };
 
+      // Helper per estrarre la misura personalizzata dall'item
       const getCustomSize = (item: any) => 
         item.customSize || item.misurePersonalizzate || item.misura_personalizzata || item.misure || null;
 
+      // 1. Creazione del record dell'ordine su Supabase
       const { data: ordine, error: dbError } = await supabase
         .from('Ordini')
         .insert([
@@ -106,7 +108,7 @@ export default function Checkout() {
             nome: customerDetails.firstName,
             cognome: customerDetails.lastName,
             telefono: customerDetails.phone,
-            articoli: safeItems.map((item) => ({
+            articoli: (items || []).map((item) => ({
               sku: item.sku || item.id,
               nome: item.name,
               prezzo: item.price,
@@ -125,6 +127,7 @@ export default function Checkout() {
         throw new Error(dbError?.message || "Impossibile salvare l'ordine.");
       }
 
+      // 2. Chiamata alla Edge Function per Stripe
       const { data: functionData, error: functionError } = await supabase.functions.invoke(
         'create-checkout-session',
         {
@@ -132,7 +135,7 @@ export default function Checkout() {
             order_id: ordine.id,
             email: customerDetails.email,
             discount_code: appliedDiscount,
-            items: safeItems.map((item) => ({
+            items: (items || []).map((item) => ({
               nome: item.name,
               price: item.price,
               quantity: item.quantity || 1,
@@ -146,6 +149,7 @@ export default function Checkout() {
         throw new Error(functionError.message || "Errore nella creazione della sessione di pagamento.");
       }
 
+      // Reindirizzamento a Stripe Checkout
       if (functionData?.url) {
         window.location.href = functionData.url;
       } else {
@@ -307,11 +311,11 @@ export default function Checkout() {
       <div className="lg:col-span-5 border rounded-lg p-6 h-fit space-y-6 bg-slate-50">
         <h2 className="text-xl font-semibold border-b pb-4">Riepilogo Ordine</h2>
 
-        {safeItems.length === 0 ? (
+        {(items || []).length === 0 ? (
           <p className="text-gray-500 text-center py-6">Il carrello è vuoto.</p>
         ) : (
           <div className="space-y-4 divide-y">
-            {safeItems.map((item) => {
+            {(items || []).map((item) => {
               const itemSize = item.customSize || (item as any).misurePersonalizzate || (item as any).misura_personalizzata || (item as any).misure;
               return (
                 <div key={item.id} className="pt-4 flex items-center justify-between gap-4">
