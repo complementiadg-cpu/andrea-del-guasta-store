@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
-import { supabase } from '@/lib/supabase'; // <-- CORRETTO QUI
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -97,7 +97,7 @@ export default function Checkout() {
       const getCustomSize = (item: any) => 
         item.misura_personalizzata || item.customSize || item.misurePersonalizzate || item.misure || null;
 
-      // 1. Crei prima il record dell'ordine su Supabase con la chiave 'misura_personalizzata'
+      // 1. Creazione del record dell'ordine su Supabase
       const { data: ordine, error: dbError } = await supabase
         .from('Ordini')
         .insert([
@@ -127,7 +127,7 @@ export default function Checkout() {
         throw new Error(dbError?.message || "Impossibile salvare l'ordine.");
       }
 
-      // 2. Chiami la Edge Function passando order_id e gli articoli con le misure
+      // 2. Chiamata alla Edge Function per la sessione Stripe
       const { data: functionData, error: functionError } = await supabase.functions.invoke(
         'create-checkout-session',
         {
@@ -295,7 +295,7 @@ export default function Checkout() {
             )}
           </div>
 
-          <Button type="submit" className="w-full size-lg" disabled={isProcessing}>
+          <Button type="submit" size="lg" className="w-full" disabled={isProcessing}>
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Reindirizzamento a Stripe...
