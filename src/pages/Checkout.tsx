@@ -1,603 +1,373 @@
-import { useState } from "react";
-import { Minus, Plus, CreditCard } from "lucide-react";
-import CheckoutHeader from "../components/header/CheckoutHeader";
-import Footer from "../components/footer/Footer";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useCart } from "@/contexts/CartContext";
-import { formatEuro } from "@/lib/products";
-import { saveOrder } from "@/lib/orders";
-import { createStripeCheckout } from "@/lib/stripe";
-import { toast } from "sonner";
+import React, { useState } from 'react';
+import { useCart } from '@/context/CartContext'; // Modifica in base al tuo context
+import { supabase } from '@/integrations/supabase/client'; // Istanza Supabase
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Loader2, ShoppingBag, Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
-const Checkout = () => {
-  const [showDiscountInput, setShowDiscountInput] = useState(false);
-  const [discountCode, setDiscountCode] = useState("");
-  const [customerDetails, setCustomerDetails] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    phone: ""
-  });
-  const [shippingAddress, setShippingAddress] = useState({
-    address: "",
-    city: "",
-    postalCode: "",
-    country: ""
-  });
-  const [hasSeparateBilling, setHasSeparateBilling] = useState(false);
-  const [billingDetails, setBillingDetails] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    postalCode: "",
-    country: ""
-  });
-  const [shippingOption, setShippingOption] = useState("standard");
+export default function Checkout() {
+  const { cartItems, updateQuantity, removeFromCart, totalAmount } = useCart();
+  const { toast } = useToast();
+
   const [isProcessing, setIsProcessing] = useState(false);
-  const { items: cartItems, updateQuantity, subtotal } = useCart();
+  const [hasSeparateBilling, setHasSeparateBilling] = useState(false);
+  const [discountCode, setDiscountCode] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState<string | null>(null);
 
-  const getShippingCost = () => {
-    switch (shippingOption) {
-      case "international":
-        return subtotal > 300 ? 0 : 25;
-      default:
-        return 0;
-    }
+  // Dettagli Cliente e Spedizione
+  const [customerDetails, setCustomerDetails] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+  });
+
+  const [shippingAddress, setShippingAddress] = useState({
+    address: '',
+    city: '',
+    postalCode: '',
+    country: 'Italy',
+  });
+
+  // Dettagli Fatturazione (se separata)
+  const [billingDetails, setBillingDetails] = useState({
+    firstName: '',
+    lastName: '',
+    address: '',
+    city: '',
+    postalCode: '',
+    country: 'Italy',
+  });
+
+  // Validazione dinamica dei campi di fatturazione
+  const isBillingValid = !hasSeparateBilling || (
+    !!billingDetails.firstName.trim() &&
+    !!billingDetails.lastName.trim() &&
+    !!billingDetails.address.trim() &&
+    !!billingDetails.city.trim() &&
+    !!billingDetails.postalCode.trim() &&
+    !!billingDetails.country.trim()
+  );
+
+  // Validazione globale del modulo
+  const isFormValid =
+    cartItems.length > 0 &&
+    !!customerDetails.email.trim() &&
+    !!customerDetails.firstName.trim() &&
+    !!customerDetails.lastName.trim() &&
+    !!shippingAddress.address.trim() &&
+    !!shippingAddress.city.trim() &&
+    !!shippingAddress.postalCode.trim() &&
+    !!shippingAddress.country.trim() &&
+    isBillingValid;
+
+  const handleApplyDiscount = () => {
+    if (!discountCode.trim()) return;
+    setAppliedDiscount(discountCode.trim());
+    toast({
+      title: "Codice applicato",
+      description: `Il codice promozionale ${discountCode} verrà elaborato al pagamento.`,
+    });
   };
 
-  const standardDays = "5 giorni";
-  const internationalDays = "5 giorni";
-  const standardSuffix = " lavorativi";
-  const internationalSuffix = " lavorativi";
+  const handleCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const shipping = getShippingCost();
-  const total = subtotal + shipping;
-
-  const handleDiscountSubmit = () => {
-    console.log("Discount code submitted:", discountCode);
-    setShowDiscountInput(false);
-  };
-
-  const handleCustomerDetailsChange = (field: string, value: string) => {
-    setCustomerDetails(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleShippingAddressChange = (field: string, value: string) => {
-    setShippingAddress(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleBillingDetailsChange = (field: string, value: string) => {
-    setBillingDetails(prev => ({ ...prev, [field]: value }));
-  };
-
-
-  const handleCompleteOrder = async () => {
-    if (cartItems.length === 0) {
-      toast.error("Il carrello è vuoto.");
+    if (!isFormValid) {
+      toast({
+        variant: "destructive",
+        title: "Campi incompleti",
+        description: "Compila tutti i campi obbligatori per proseguire.",
+      });
       return;
     }
+
     setIsProcessing(true);
+
     try {
-      const orderId = await saveOrder({
-        customer: customerDetails,
-        shippingAddress,
-        billingAddress: hasSeparateBilling ? billingDetails : null,
-        shippingOption,
-        shippingCost: shipping,
-        subtotal,
-        total,
-        items: cartItems,
-        discountCode,
-      });
+      const datiSpedizioneCompleti = {
+        cliente: customerDetails,
+        spedizione: shippingAddress,
+        fatturazione: hasSeparateBilling ? billingDetails : shippingAddress,
+      };
 
-      const url = await createStripeCheckout({
-        items: cartItems,
-        shippingCost: shipping,
-        shippingLabel:
-          shippingOption === "international"
-            ? "Spedizione internazionale"
-            : "Spedizione standard nazionale",
-        email: customerDetails.email.trim().toLowerCase(),
-        orderId,
-      });
+      // 1. Crei prima il record dell'ordine su Supabase
+      const { data: ordine, error: dbError } = await supabase
+        .from('Ordini')
+        .insert([
+          {
+            totale: totalAmount,
+            stato: 'pending',
+            articoli: cartItems.map((item) => ({
+              sku: item.sku || item.id,
+              nome: item.name,
+              prezzo: item.price,
+              misure: item.customSize || item.misurePersonalizzate || null,
+              quantita: item.quantity,
+            })),
+            indirizzo_spedizione: datiSpedizioneCompleti,
+            codice_sconto: appliedDiscount,
+          },
+        ])
+        .select()
+        .single();
 
-      window.location.href = url;
-    } catch (err) {
-      console.error("Checkout failed:", err);
-      toast.error("Non è stato possibile avviare il pagamento. Riprova.");
+      if (dbError || !ordine) {
+        throw new Error(dbError?.message || "Impossibile salvare l'ordine.");
+      }
+
+      // 2. Chiami la Edge Function passando order_id e gli articoli con le misure
+      const { data: functionData, error: functionError } = await supabase.functions.invoke(
+        'create-checkout-session',
+        {
+          body: {
+            order_id: ordine.id,
+            email: customerDetails.email,
+            discount_code: appliedDiscount,
+            items: cartItems.map((item) => ({
+              nome: item.name,
+              price: item.price,
+              quantity: item.quantity || 1,
+              misure: item.customSize || item.misurePersonalizzate || null,
+            })),
+          },
+        }
+      );
+
+      if (functionError) {
+        throw new Error(functionError.message || "Errore nella creazione della sessione di pagamento.");
+      }
+
+      // Reindirizzamento a Stripe Checkout
+      if (functionData?.url) {
+        window.location.href = functionData.url;
+      } else {
+        throw new Error("URL di reindirizzamento Stripe non valido.");
+      }
+    } catch (err: any) {
+      console.error("Errore durante il checkout:", err);
+      toast({
+        variant: "destructive",
+        title: "Errore durante il pagamento",
+        description: err.message || "Si è verificato un problema, riprova più tardi.",
+      });
+    } finally {
       setIsProcessing(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <CheckoutHeader />
-      
-      <main className="pt-6 pb-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* Order Summary */}
-            <div className="lg:col-span-1 lg:order-2">
-              <div className="bg-muted/20 p-8 rounded-none sticky top-6">
-                <h2 className="font-serif text-2xl text-foreground mb-6">Riepilogo Ordine</h2>
-
-                <div className="space-y-6">
-                  {cartItems.length === 0 && (
-                    <p className="text-sm font-light text-muted-foreground">
-                      Il tuo carrello è vuoto.
-                    </p>
-                  )}
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="flex gap-4">
-                      <div className="w-20 h-20 bg-muted rounded-none overflow-hidden shrink-0">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-light text-muted-foreground">{item.category}</p>
-                        <h3 className="font-serif text-base text-foreground truncate">{item.name}</h3>
-                        {item.customSize && (
-                          <p className="text-xs font-light text-muted-foreground mt-0.5">
-                            Misura personalizzata: {item.customSize}
-                          </p>
-                        )}
-
-                        <div className="flex items-center gap-2 mt-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="h-8 w-8 p-0 rounded-none border-muted-foreground/20"
-                          >
-                            <Minus className="h-3 w-3" />
-                          </Button>
-                          <span className="text-sm font-medium text-foreground min-w-[2ch] text-center">
-                            {item.quantity}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="h-8 w-8 p-0 rounded-none border-muted-foreground/20"
-                          >
-                            <Plus className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="text-foreground font-light whitespace-nowrap">
-                        {formatEuro(item.price * item.quantity)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Discount Code Section */}
-                <div className="mt-8 pt-6 border-t border-muted-foreground/20">
-                  {!showDiscountInput ? (
-                    <button 
-                      onClick={() => setShowDiscountInput(true)}
-                      className="text-sm text-foreground underline hover:no-underline transition-all"
-                    >
-                      Discount code
-                    </button>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex gap-2">
-                        <Input
-                          type="text"
-                          value={discountCode}
-                          onChange={(e) => setDiscountCode(e.target.value)}
-                          placeholder="Enter discount code"
-                          className="flex-1 rounded-none"
-                        />
-                        <button 
-                          onClick={handleDiscountSubmit}
-                          className="text-sm text-foreground underline hover:no-underline transition-all px-2"
-                        >
-                          Apply
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="border-t border-muted-foreground/20 mt-4 pt-6 space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span className="text-foreground">{formatEuro(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span className="text-foreground">
-                      {shipping === 0 ? "Free" : `€${shipping}`}
-                      {shippingOption === "international" && subtotal > 300 && (
-                        <span className="block text-xs text-muted-foreground"> Internazionale gratuita</span>
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-lg font-medium border-t border-muted-foreground/20 pt-3">
-                    <span className="text-foreground">Total</span>
-                    <span className="text-foreground">{formatEuro(total)}</span>
-                  </div>
-                </div>
-              </div>
+    <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* SEZIONE FORM DETTAGLI E SPEDIZIONE */}
+      <div className="lg:col-span-7 space-y-6">
+        <form onSubmit={handleCheckout} className="space-y-6">
+          {/* Dati Cliente */}
+          <div className="p-6 border rounded-lg space-y-4">
+            <h2 className="text-xl font-semibold">Dettagli del Cliente</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                placeholder="Nome *"
+                value={customerDetails.firstName}
+                onChange={(e) => setCustomerDetails({ ...customerDetails, firstName: e.target.value })}
+                required
+              />
+              <Input
+                placeholder="Cognome *"
+                value={customerDetails.lastName}
+                onChange={(e) => setCustomerDetails({ ...customerDetails, lastName: e.target.value })}
+                required
+              />
             </div>
+            <Input
+              type="email"
+              placeholder="Email *"
+              value={customerDetails.email}
+              onChange={(e) => setCustomerDetails({ ...customerDetails, email: e.target.value })}
+              required
+            />
+            <Input
+              type="tel"
+              placeholder="Telefono"
+              value={customerDetails.phone}
+              onChange={(e) => setCustomerDetails({ ...customerDetails, phone: e.target.value })}
+            />
+          </div>
 
-            {/* Left Column - Forms */}
-            <div className="lg:col-span-2 lg:order-1 space-y-8">
-
-              {/* Customer Details Form */}
-              <div className="bg-muted/20 p-8 rounded-none">
-                <h2 className="text-lg font-light text-foreground mb-6">Customer Details</h2>
-                
-                <div className="space-y-6">
-                  <div>
-                    <Label htmlFor="email" className="text-sm font-light text-foreground">
-                      Email Address *
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={customerDetails.email}
-                      onChange={(e) => handleCustomerDetailsChange("email", e.target.value)}
-                      className="mt-2 rounded-none"
-                      placeholder="Enter your email"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName" className="text-sm font-light text-foreground">
-                        First Name *
-                      </Label>
-                      <Input
-                        id="firstName"
-                        type="text"
-                        value={customerDetails.firstName}
-                        onChange={(e) => handleCustomerDetailsChange("firstName", e.target.value)}
-                        className="mt-2 rounded-none"
-                        placeholder="First name"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="lastName" className="text-sm font-light text-foreground">
-                        Last Name *
-                      </Label>
-                      <Input
-                        id="lastName"
-                        type="text"
-                        value={customerDetails.lastName}
-                        onChange={(e) => handleCustomerDetailsChange("lastName", e.target.value)}
-                        className="mt-2 rounded-none"
-                        placeholder="Last name"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="phone" className="text-sm font-light text-foreground">
-                      Phone Number
-                    </Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={customerDetails.phone}
-                      onChange={(e) => handleCustomerDetailsChange("phone", e.target.value)}
-                      className="mt-2 rounded-none"
-                      placeholder="Enter your phone number"
-                    />
-                  </div>
-
-                  {/* Shipping Address */}
-                  <div className="border-t border-muted-foreground/20 pt-6 mt-8">
-                    <h3 className="text-base font-light text-foreground mb-4">Shipping Address</h3>
-                    
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="shippingAddress" className="text-sm font-light text-foreground">
-                          Address *
-                        </Label>
-                        <Input
-                          id="shippingAddress"
-                          type="text"
-                          value={shippingAddress.address}
-                          onChange={(e) => handleShippingAddressChange("address", e.target.value)}
-                          className="mt-2 rounded-none"
-                          placeholder="Street address"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="shippingCity" className="text-sm font-light text-foreground">
-                            City *
-                          </Label>
-                          <Input
-                            id="shippingCity"
-                            type="text"
-                            value={shippingAddress.city}
-                            onChange={(e) => handleShippingAddressChange("city", e.target.value)}
-                            className="mt-2 rounded-none"
-                            placeholder="City"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="shippingPostalCode" className="text-sm font-light text-foreground">
-                            Postal Code *
-                          </Label>
-                          <Input
-                            id="shippingPostalCode"
-                            type="text"
-                            value={shippingAddress.postalCode}
-                            onChange={(e) => handleShippingAddressChange("postalCode", e.target.value)}
-                            className="mt-2 rounded-none"
-                            placeholder="Postal code"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="shippingCountry" className="text-sm font-light text-foreground">
-                          Country *
-                        </Label>
-                        <Input
-                          id="shippingCountry"
-                          type="text"
-                          value={shippingAddress.country}
-                          onChange={(e) => handleShippingAddressChange("country", e.target.value)}
-                          className="mt-2 rounded-none"
-                          placeholder="Country"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Billing Address Checkbox */}
-                  <div className="border-t border-muted-foreground/20 pt-6 mt-8">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="separateBilling"
-                        checked={hasSeparateBilling}
-                        onCheckedChange={(checked) => setHasSeparateBilling(checked === true)}
-                      />
-                      <Label 
-                        htmlFor="separateBilling" 
-                        className="text-sm font-light text-foreground cursor-pointer"
-                      >
-                        Other billing address
-                      </Label>
-                    </div>
-                  </div>
-
-                  {/* Billing Details */}
-                  {hasSeparateBilling && (
-                    <div className="space-y-6 pt-4">
-                      <h3 className="text-base font-light text-foreground">Billing Details</h3>
-                      
-                      <div>
-                        <Label htmlFor="billingEmail" className="text-sm font-light text-foreground">
-                          Email Address *
-                        </Label>
-                        <Input
-                          id="billingEmail"
-                          type="email"
-                          value={billingDetails.email}
-                          onChange={(e) => handleBillingDetailsChange("email", e.target.value)}
-                          className="mt-2 rounded-none"
-                          placeholder="Enter billing email"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="billingFirstName" className="text-sm font-light text-foreground">
-                            First Name *
-                          </Label>
-                          <Input
-                            id="billingFirstName"
-                            type="text"
-                            value={billingDetails.firstName}
-                            onChange={(e) => handleBillingDetailsChange("firstName", e.target.value)}
-                            className="mt-2 rounded-none"
-                            placeholder="First name"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="billingLastName" className="text-sm font-light text-foreground">
-                            Last Name *
-                          </Label>
-                          <Input
-                            id="billingLastName"
-                            type="text"
-                            value={billingDetails.lastName}
-                            onChange={(e) => handleBillingDetailsChange("lastName", e.target.value)}
-                            className="mt-2 rounded-none"
-                            placeholder="Last name"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="billingPhone" className="text-sm font-light text-foreground">
-                          Phone Number
-                        </Label>
-                        <Input
-                          id="billingPhone"
-                          type="tel"
-                          value={billingDetails.phone}
-                          onChange={(e) => handleBillingDetailsChange("phone", e.target.value)}
-                          className="mt-2 rounded-none"
-                          placeholder="Enter billing phone number"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="billingAddress" className="text-sm font-light text-foreground">
-                          Address *
-                        </Label>
-                        <Input
-                          id="billingAddress"
-                          type="text"
-                          value={billingDetails.address}
-                          onChange={(e) => handleBillingDetailsChange("address", e.target.value)}
-                          className="mt-2 rounded-none"
-                          placeholder="Street address"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="billingCity" className="text-sm font-light text-foreground">
-                            City *
-                          </Label>
-                          <Input
-                            id="billingCity"
-                            type="text"
-                            value={billingDetails.city}
-                            onChange={(e) => handleBillingDetailsChange("city", e.target.value)}
-                            className="mt-2 rounded-none"
-                            placeholder="City"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="billingPostalCode" className="text-sm font-light text-foreground">
-                            Postal Code *
-                          </Label>
-                          <Input
-                            id="billingPostalCode"
-                            type="text"
-                            value={billingDetails.postalCode}
-                            onChange={(e) => handleBillingDetailsChange("postalCode", e.target.value)}
-                            className="mt-2 rounded-none"
-                            placeholder="Postal code"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="billingCountry" className="text-sm font-light text-foreground">
-                          Country *
-                        </Label>
-                        <Input
-                          id="billingCountry"
-                          type="text"
-                          value={billingDetails.country}
-                          onChange={(e) => handleBillingDetailsChange("country", e.target.value)}
-                          className="mt-2 rounded-none"
-                          placeholder="Country"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-            {/* Shipping Options */}
-            <div className="bg-muted/20 p-8 rounded-none">
-              <h2 className="text-lg font-light text-foreground mb-6">Shipping Options</h2>
-              
-              <RadioGroup 
-                value={shippingOption} 
-                onValueChange={setShippingOption}
-                className="space-y-4"
-              >
-                <div className="flex items-center justify-between p-4 border border-muted-foreground/20 rounded-none">
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="standard" id="standard" />
-                    <Label htmlFor="standard" className="font-light text-foreground">
-                      Spedizione standard nazionale gratuita
-                    </Label>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Gratis • {standardDays}{standardSuffix}
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 border border-muted-foreground/20 rounded-none">
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="international" id="international" />
-                    <Label htmlFor="international" className="font-light text-foreground">
-                      Spedizione internazionale
-                    </Label>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    €25 • {internationalDays}{internationalSuffix} • gratuita per ordini &gt; €300
-                  </div>
-                </div>
-              </RadioGroup>
-            </div>
-
-            {/* Payment Section */}
-            <div className="bg-muted/20 p-8 rounded-none">
-              <h2 className="text-lg font-light text-foreground mb-6">Payment Details</h2>
-              
-              <div className="space-y-6">
-                <div className="flex items-start gap-3 text-sm font-light text-muted-foreground">
-                  <CreditCard className="h-4 w-4 mt-0.5 shrink-0" />
-                  <p>
-                    Il pagamento avviene sulla pagina sicura di Stripe. Carte di credito e debito,
-                    Apple Pay e Google Pay. I dati della carta non transitano mai su questo sito.
-                  </p>
-                </div>
-
-                {/* Order Total Summary */}
-                <div className="bg-muted/10 p-6 rounded-none border border-muted-foreground/20 space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span className="text-foreground">{formatEuro(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span className="text-foreground">
-                      {shipping === 0 ? "Free" : `€${shipping}`}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-lg font-medium border-t border-muted-foreground/20 pt-3">
-                    <span className="text-foreground">Total</span>
-                    <span className="text-foreground">{formatEuro(total)}</span>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={handleCompleteOrder}
-                  disabled={
-                    isProcessing ||
-                    cartItems.length === 0 ||
-                    !customerDetails.email ||
-                    !customerDetails.firstName ||
-                    !customerDetails.lastName ||
-                    !shippingAddress.address ||
-                    !shippingAddress.city ||
-                    !shippingAddress.postalCode ||
-                    !shippingAddress.country
-                  }
-                  className="w-full rounded-none h-12 text-base"
-                >
-                  {isProcessing
-                    ? "Reindirizzamento a Stripe…"
-                    : `Procedi al pagamento • ${formatEuro(total)}`}
-                </Button>
-              </div>
-             </div>
+          {/* Indirizzo Spedizione */}
+          <div className="p-6 border rounded-lg space-y-4">
+            <h2 className="text-xl font-semibold">Indirizzo di Spedizione</h2>
+            <Input
+              placeholder="Indirizzo e Numero Civico *"
+              value={shippingAddress.address}
+              onChange={(e) => setShippingAddress({ ...shippingAddress, address: e.target.value })}
+              required
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Input
+                placeholder="Città *"
+                value={shippingAddress.city}
+                onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })}
+                required
+              />
+              <Input
+                placeholder="CAP *"
+                value={shippingAddress.postalCode}
+                onChange={(e) => setShippingAddress({ ...shippingAddress, postalCode: e.target.value })}
+                required
+              />
+              <Input
+                placeholder="Paese *"
+                value={shippingAddress.country}
+                onChange={(e) => setShippingAddress({ ...shippingAddress, country: e.target.value })}
+                required
+              />
             </div>
           </div>
-        </div>
-      </main>
 
-      <Footer />
+          {/* Indirizzo Fatturazione Separato */}
+          <div className="p-6 border rounded-lg space-y-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="separateBilling"
+                checked={hasSeparateBilling}
+                onCheckedChange={(checked) => setHasSeparateBilling(!!checked)}
+              />
+              <label htmlFor="separateBilling" className="text-sm font-medium leading-none cursor-pointer">
+                Utilizza un indirizzo di fatturazione diverso
+              </label>
+            </div>
+
+            {hasSeparateBilling && (
+              <div className="pt-4 space-y-4 border-t">
+                <h3 className="text-lg font-medium">Indirizzo di Fatturazione</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Nome *"
+                    value={billingDetails.firstName}
+                    onChange={(e) => setBillingDetails({ ...billingDetails, firstName: e.target.value })}
+                    required
+                  />
+                  <Input
+                    placeholder="Cognome *"
+                    value={billingDetails.lastName}
+                    onChange={(e) => setBillingDetails({ ...billingDetails, lastName: e.target.value })}
+                    required
+                  />
+                </div>
+                <Input
+                  placeholder="Indirizzo Fatturazione *"
+                  value={billingDetails.address}
+                  onChange={(e) => setBillingDetails({ ...billingDetails, address: e.target.value })}
+                  required
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <Input
+                    placeholder="Città *"
+                    value={billingDetails.city}
+                    onChange={(e) => setBillingDetails({ ...billingDetails, city: e.target.value })}
+                    required
+                  />
+                  <Input
+                    placeholder="CAP *"
+                    value={billingDetails.postalCode}
+                    onChange={(e) => setBillingDetails({ ...billingDetails, postalCode: e.target.value })}
+                    required
+                  />
+                  <Input
+                    placeholder="Paese *"
+                    value={billingDetails.country}
+                    onChange={(e) => setBillingDetails({ ...billingDetails, country: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <Button type="submit" className="w-full size-lg" disabled={isProcessing || !isFormValid}>
+            {isProcessing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Reindirizzamento a Stripe...
+              </>
+            ) : (
+              'Procedi al Pagamento'
+            )}
+          </Button>
+        </form>
+      </div>
+
+      {/* SEZIONE RIEPILOGO CARRELLO */}
+      <div className="lg:col-span-5 border rounded-lg p-6 h-fit space-y-6 bg-slate-50">
+        <h2 className="text-xl font-semibold border-b pb-4">Riepilogo Ordine</h2>
+
+        {cartItems.length === 0 ? (
+          <p className="text-gray-500 text-center py-6">Il carrello è vuoto.</p>
+        ) : (
+          <div className="space-y-4 divide-y">
+            {cartItems.map((item) => (
+              <div key={item.id} className="pt-4 flex items-center justify-between gap-4">
+                <div className="flex-1">
+                  <p className="font-medium">{item.name}</p>
+                  {(item.customSize || item.misurePersonalizzate) && (
+                    <p className="text-xs text-gray-500">
+                      Misura: {item.customSize || item.misurePersonalizzate}
+                    </p>
+                  )}
+                  <p className="text-sm text-gray-600">
+                    €{item.price.toFixed(2)} x {item.quantity}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    min="1"
+                    value={item.quantity}
+                    onChange={(e) => updateQuantity(item.id, Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-16 h-8 text-center"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-red-500 hover:text-red-700 h-8 w-8"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Codice Promozionale */}
+        <div className="pt-4 border-t space-y-2">
+          <label className="text-sm font-medium">Codice Promo / Voucher</label>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Inserisci codice"
+              value={discountCode}
+              onChange={(e) => setDiscountCode(e.target.value)}
+            />
+            <Button type="button" variant="outline" onClick={handleApplyDiscount}>
+              Applica
+            </Button>
+          </div>
+        </div>
+
+        {/* Totali */}
+        <div className="pt-4 border-t space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>Spedizione</span>
+            <span className="font-medium">Gratuita</span>
+          </div>
+          <div className="flex justify-between text-lg font-bold">
+            <span>Totale</span>
+            <span>€{totalAmount.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default Checkout;
+}
