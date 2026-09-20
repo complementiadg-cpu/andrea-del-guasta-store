@@ -18,26 +18,32 @@ const Grazie = () => {
   const done = useRef(false);
 
   useEffect(() => {
+    // Previene l'esecuzione doppiata in React 18 Strict Mode
     if (done.current) return;
-    done.current = true;
 
     if (!sessionId) {
-      setError("Nessun pagamento da confermare.");
+      setError("Nessun parametro di sessione trovato nell'URL.");
       setLoading(false);
       return;
     }
 
+    done.current = true;
+
     confirmStripeSession(sessionId)
       .then((result) => {
         setSession(result);
-        if (result.paid) clearCart();
+        if (result?.paid) {
+          clearCart(); // Svuota il carrello a pagamento confermato
+        } else {
+          setError("Il pagamento non risulta ancora confermato da Stripe.");
+        }
       })
       .catch((err) => {
-        console.error(err);
-        setError("Non è stato possibile verificare il pagamento.");
+        console.error("Errore verifica sessione Stripe:", err);
+        setError("Impossibile verificare lo stato del pagamento. Riprova più tardi.");
       })
       .finally(() => setLoading(false));
-  }, [sessionId, clearCart]);
+  }, [sessionId]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -45,6 +51,7 @@ const Grazie = () => {
 
       <main className="flex-1 pt-12 pb-20 px-6">
         <div className="max-w-2xl mx-auto text-center">
+          {/* Stato 1: Caricamento */}
           {loading && (
             <div className="py-24 flex flex-col items-center gap-4">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -54,6 +61,7 @@ const Grazie = () => {
             </div>
           )}
 
+          {/* Stato 2: Pagamento Confermato */}
           {!loading && session?.paid && (
             <>
               <div className="mx-auto w-14 h-14 border border-foreground/20 rounded-full flex items-center justify-center mb-8">
@@ -71,7 +79,7 @@ const Grazie = () => {
               <div className="mt-12 text-left border border-border p-6 md:p-8">
                 <h2 className="font-serif text-xl text-foreground mb-6">Riepilogo</h2>
                 <div className="space-y-4">
-                  {session.items.map((item, index) => (
+                  {session.items?.map((item, index) => (
                     <div key={index} className="flex justify-between gap-4 text-sm font-light">
                       <span className="text-foreground">
                         {item.name}
@@ -100,6 +108,7 @@ const Grazie = () => {
             </>
           )}
 
+          {/* Stato 3: Pagamento NON completato / Errore */}
           {!loading && !session?.paid && (
             <>
               <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-4">
@@ -112,6 +121,7 @@ const Grazie = () => {
             </>
           )}
 
+          {/* Pulsanti di navigazione */}
           {!loading && (
             <div className="mt-12 flex flex-col sm:flex-row gap-3 justify-center">
               <Button asChild className="rounded-none" size="lg">
