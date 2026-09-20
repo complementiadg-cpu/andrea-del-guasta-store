@@ -62,13 +62,8 @@ export const confirmStripeSession = async (sessionId: string): Promise<Confirmed
   if (error) throw error;
   if (data?.error) throw new Error(data.error);
 
-  // Forza 'paid' a true se una qualsiasi delle condizioni di successo è rispettata
-  const isPaid = Boolean(
-    data?.paid === true || 
-    data?.success === true || 
-    data?.status === "paid" || 
-    data?.payment_status === "paid"
-  );
+  // Riconosce sia { success: true } che { status: "paid" }
+  const isPaid = Boolean(data?.success === true || data?.status === "paid" || data?.paid === true);
 
   return {
     paid: isPaid,
@@ -82,6 +77,6 @@ export const confirmStripeSession = async (sessionId: string): Promise<Confirmed
         : 0,
     currency: data?.currency || "eur",
     orderId: data?.orderId || data?.order_id || sessionId,
-    items: data?.items || [],
+    items: data?.items && data.items.length > 0 ? data.items : [{ name: "Ordine completato", quantity: 1, amount: 0 }],
   };
 };
