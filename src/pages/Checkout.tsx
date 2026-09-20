@@ -93,19 +93,28 @@ export default function Checkout() {
         fatturazione: hasSeparateBilling ? billingDetails : shippingAddress,
       };
 
-      // 1. Crei prima il record dell'ordine su Supabase
+      // Helper per estrarre la misura personalizzata dall'item indipendentemente dal nome proprietà nel cartContext
+      const getCustomSize = (item: any) => 
+        item.misura_personalizzata || item.customSize || item.misurePersonalizzate || item.misure || null;
+
+      // 1. Crei prima il record dell'ordine su Supabase con la chiave 'misura_personalizzata'
       const { data: ordine, error: dbError } = await supabase
         .from('Ordini')
         .insert([
           {
             totale: totalAmount,
             stato: 'pending',
+            email: customerDetails.email,
+            nome: customerDetails.firstName,
+            cognome: customerDetails.lastName,
+            telefono: customerDetails.phone,
             articoli: cartItems.map((item) => ({
               sku: item.sku || item.id,
               nome: item.name,
               prezzo: item.price,
-              misure: item.customSize || item.misurePersonalizzate || null,
               quantita: item.quantity,
+              categoria: item.category || item.categoria || null,
+              misura_personalizzata: getCustomSize(item),
             })),
             indirizzo_spedizione: datiSpedizioneCompleti,
             codice_sconto: appliedDiscount,
@@ -130,7 +139,7 @@ export default function Checkout() {
               nome: item.name,
               price: item.price,
               quantity: item.quantity || 1,
-              misure: item.customSize || item.misurePersonalizzate || null,
+              misura_personalizzata: getCustomSize(item),
             })),
           },
         }
@@ -286,18 +295,13 @@ export default function Checkout() {
             )}
           </div>
 
-          {/* Tasto sbloccato: disabilitato solo se l'invio è in corso o se il carrello è vuoto */}
-          <Button 
-            type="submit" 
-            className="w-full size-lg" 
-            disabled={isProcessing || cartItems.length === 0}
-          >
+          <Button type="submit" className="w-full size-lg" disabled={isProcessing}>
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Reindirizzamento a Stripe...
               </>
             ) : (
-              `Procedi al pagamento • €${totalAmount.toFixed(2)}`
+              `Procedi al Pagamento • €${totalAmount.toFixed(2)}`
             )}
           </Button>
         </form>
@@ -311,38 +315,41 @@ export default function Checkout() {
           <p className="text-gray-500 text-center py-6">Il carrello è vuoto.</p>
         ) : (
           <div className="space-y-4 divide-y">
-            {cartItems.map((item) => (
-              <div key={item.id} className="pt-4 flex items-center justify-between gap-4">
-                <div className="flex-1">
-                  <p className="font-medium">{item.name}</p>
-                  {(item.customSize || item.misurePersonalizzate) && (
-                    <p className="text-xs text-gray-500">
-                      Misura: {item.customSize || item.misurePersonalizzate}
+            {cartItems.map((item) => {
+              const itemSize = item.customSize || item.misurePersonalizzate || item.misura_personalizzata || item.misure;
+              return (
+                <div key={item.id} className="pt-4 flex items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <p className="font-medium">{item.name}</p>
+                    {itemSize && (
+                      <p className="text-xs text-gray-500">
+                        Misura: {itemSize}
+                      </p>
+                    )}
+                    <p className="text-sm text-gray-600">
+                      €{item.price.toFixed(2)} x {item.quantity}
                     </p>
-                  )}
-                  <p className="text-sm text-gray-600">
-                    €{item.price.toFixed(2)} x {item.quantity}
-                  </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      min="1"
+                      value={item.quantity}
+                      onChange={(e) => updateQuantity(item.id, Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-16 h-8 text-center"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-red-500 hover:text-red-700 h-8 w-8"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="number"
-                    min="1"
-                    value={item.quantity}
-                    onChange={(e) => updateQuantity(item.id, Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 h-8 text-center"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeFromCart(item.id)}
-                    className="text-red-500 hover:text-red-700 h-8 w-8"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
