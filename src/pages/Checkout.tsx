@@ -1,8 +1,3 @@
-Ripristiniamo subito il layout precedente! Guardando l'immagine, la modifica è dovuta al fatto che nel codice precedente usavo il nome `items` (del tuo `CartContext`) ma mappandolo come `cartItems` e mancava la gestione esatta dello stile dei bottoni o della struttura precedente.
-
-Ecco il codice completo e definitivo per il file `Checkout.tsx` con la struttura e il design originale che preferisci, perfettamente integrato con il tuo `CartContext` (`items`, `subtotal`) senza alcun errore:
-
-```tsx
 import React, { useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/lib/supabase';
@@ -389,5 +384,3 @@ export default function Checkout() {
     </div>
   );
 }
-
-```
