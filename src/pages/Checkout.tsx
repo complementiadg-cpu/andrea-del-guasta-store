@@ -8,7 +8,7 @@ import { Loader2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Checkout() {
-  const { cartItems, updateQuantity, removeFromCart, totalAmount } = useCart();
+  const { items: cartItems, updateQuantity, removeFromCart, subtotal: totalAmount } = useCart();
   const { toast } = useToast();
 
   const [isProcessing, setIsProcessing] = useState(false);
