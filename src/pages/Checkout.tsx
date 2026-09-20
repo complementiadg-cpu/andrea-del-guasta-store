@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useCart } from '@/context/CartContext'; // Modifica in base al tuo context
-import { supabase } from '@/integrations/supabase/client'; // Istanza Supabase
+import { useCart } from '@/context/CartContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, ShoppingBag, Trash2 } from 'lucide-react';
+import { Loader2, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Checkout() {
@@ -286,13 +286,18 @@ export default function Checkout() {
             )}
           </div>
 
-          <Button type="submit" className="w-full size-lg" disabled={isProcessing || !isFormValid}>
+          {/* Tasto sbloccato: disabilitato solo se l'invio è in corso o se il carrello è vuoto */}
+          <Button 
+            type="submit" 
+            className="w-full size-lg" 
+            disabled={isProcessing || cartItems.length === 0}
+          >
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Reindirizzamento a Stripe...
               </>
             ) : (
-              'Procedi al Pagamento'
+              `Procedi al pagamento • €${totalAmount.toFixed(2)}`
             )}
           </Button>
         </form>
