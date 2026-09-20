@@ -51,7 +51,6 @@ export default function Checkout() {
     !!billingDetails.country.trim()
   );
 
-  // Validazione globale del modulo con protezione anti-crash
   const safeItems = items || [];
   const isFormValid =
     safeItems.length > 0 &&
@@ -94,11 +93,9 @@ export default function Checkout() {
         fatturazione: hasSeparateBilling ? billingDetails : shippingAddress,
       };
 
-      // Helper per estrarre la misura personalizzata dall'item
       const getCustomSize = (item: any) => 
         item.customSize || item.misurePersonalizzate || item.misura_personalizzata || item.misure || null;
 
-      // 1. Creazione del record dell'ordine su Supabase
       const { data: ordine, error: dbError } = await supabase
         .from('Ordini')
         .insert([
@@ -128,7 +125,6 @@ export default function Checkout() {
         throw new Error(dbError?.message || "Impossibile salvare l'ordine.");
       }
 
-      // 2. Chiamata alla Edge Function per Stripe
       const { data: functionData, error: functionError } = await supabase.functions.invoke(
         'create-checkout-session',
         {
@@ -150,7 +146,6 @@ export default function Checkout() {
         throw new Error(functionError.message || "Errore nella creazione della sessione di pagamento.");
       }
 
-      // Reindirizzamento a Stripe Checkout
       if (functionData?.url) {
         window.location.href = functionData.url;
       } else {
@@ -296,7 +291,7 @@ export default function Checkout() {
             )}
           </div>
 
-          <Button type="submit" className="w-full bg-black text-white hover:bg-gray-800 h-12 text-base font-medium" disabled={isProcessing}>
+          <Button type="submit" className="w-full size-lg" disabled={isProcessing}>
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Reindirizzamento a Stripe...
