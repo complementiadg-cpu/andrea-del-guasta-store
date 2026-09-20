@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCart } from '@/context/CartContext';
+import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/lib/supabase'; // <-- CORRETTO QUI
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
