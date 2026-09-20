@@ -1,98 +1,101 @@
-import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
-import type { Product } from "@/lib/products";
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface CartItem {
-  id: string; // unique line id: sku + custom size
-  sku: string;
+  id: string;
   name: string;
-  category: string;
   price: number;
-  priceLabel: string;
-  image: string;
   quantity: number;
+  image?: string;
+  immagine?: string;
+  category?: string;
+  misura_personalizzata?: string;
   customSize?: string;
+  [key: string]: any;
 }
 
-interface CartContextValue {
-  items: CartItem[];
-  totalItems: number;
-  subtotal: number;
-  addToCart: (product: Product, quantity?: number, customSize?: string) => void;
+interface CartContextType {
+  cartItems: CartItem[];
+  addToCart: (product: CartItem) => void;
   updateQuantity: (id: string, quantity: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
+  totalAmount: number;
 }
 
-const CartContext = createContext<CartContextValue | undefined>(undefined);
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const STORAGE_KEY = "linea_cart_v2";
-
-const lineId = (sku: string, customSize?: string) =>
-  customSize && customSize.trim() !== "" ? `${sku}__${customSize.trim()}` : sku;
-
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>(() => {
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // 1. Inizializzazione che legge da localStorage al caricamento della pagina
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? (JSON.parse(raw) as CartItem[]) : [];
-      return parsed.map((i) => ({ ...i, id: i.id ?? lineId(i.sku, i.customSize) }));
-    } catch {
+      const savedCart = localStorage.getItem('adg_cart');
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error("Errore nel recupero del carrello da localStorage:", error);
       return [];
     }
   });
 
+  // 2. Salvataggio automatico in localStorage ad ogni modifica del carrello
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [items]);
+    try {
+      localStorage.setItem('adg_cart', JSON.stringify(cartItems));
+    } catch (error) {
+      console.error("Errore nel salvataggio del carrello in localStorage:", error);
+    }
+  }, [cartItems]);
 
-  const addToCart = (product: Product, quantity = 1, customSize?: string) => {
-    const size = customSize && customSize.trim() !== "" ? customSize.trim() : undefined;
-    const id = lineId(product.sku, size);
-    setItems((prev) => {
-      const existing = prev.find((i) => i.id === id);
-      if (existing) {
-        return prev.map((i) => (i.id === id ? { ...i, quantity: i.quantity + quantity } : i));
+  const addToCart = (product: CartItem) => {
+    setCartItems((prevItems) => {
+      const existingIndex = prevItems.findIndex((item) => item.id === product.id);
+      if (existingIndex > -1) {
+        const updated = [...prevItems];
+        updated[existingIndex].quantity += product.quantity || 1;
+        return updated;
       }
-      return [
-        ...prev,
-        {
-          id,
-          sku: product.sku,
-          name: product.name,
-          category: product.category,
-          price: product.price,
-          priceLabel: product.priceLabel,
-          image: product.image,
-          quantity,
-          customSize: size,
-        },
-      ];
+      return [...prevItems, { ...product, quantity: product.quantity || 1 }];
     });
   };
 
   const updateQuantity = (id: string, quantity: number) => {
-    setItems((prev) =>
-      quantity <= 0
-        ? prev.filter((i) => i.id !== id)
-        : prev.map((i) => (i.id === id ? { ...i, quantity } : i))
+    setCartItems((prevItems) =>
+      prevItems.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item))
     );
   };
 
-  const removeFromCart = (id: string) => setItems((prev) => prev.filter((i) => i.id !== id));
+  const removeFromCart = (id: string) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  };
 
-  const clearCart = () => setItems([]);
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
-  const value = useMemo<CartContextValue>(() => {
-    const totalItems = items.reduce((s, i) => s + i.quantity, 0);
-    const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
-    return { items, totalItems, subtotal, addToCart, updateQuantity, removeFromCart, clearCart };
-  }, [items]);
+  const totalAmount = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+        totalAmount,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
 };
 
 export const useCart = () => {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error("useCart must be used within CartProvider");
-  return ctx;
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart deve essere utilizzato all\'interno di un CartProvider');
+  }
+  return context;
 };
