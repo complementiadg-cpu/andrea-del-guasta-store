@@ -16,7 +16,8 @@ export const createStripeCheckout = async (input: CheckoutSessionInput): Promise
       order_id: input.orderId ?? null,
       email: input.email,
       items: input.items.map((i) => {
-        const customSizeVal = i.customSize || (i as any).misurePersonalizzate || (i as any).misura_personalizzata || null;
+        const customSizeVal =
+          i.customSize || (i as any).misurePersonalizzate || (i as any).misura_personalizzata || null;
         return {
           sku: i.sku || i.id,
           name: i.name,
@@ -61,11 +62,19 @@ export const confirmStripeSession = async (sessionId: string): Promise<Confirmed
   if (error) throw error;
   if (data?.error) throw new Error(data.error);
 
+  // Controllo completo di tutte le varianti con cui la Edge Function specifica l'avvenuto pagamento
+  const isPaid = Boolean(data?.paid === true || data?.success === true || data?.status === "paid");
+
   return {
-    paid: data?.success || data?.status === "paid",
-    status: data?.status || (data?.success ? "paid" : "unpaid"),
-    email: data?.customerEmail || data?.email || null,
-    amountTotal: typeof data?.amountTotal === "number" ? data.amountTotal : (data?.amount_total ? data.amount_total / 100 : 0),
+    paid: isPaid,
+    status: data?.status || (isPaid ? "paid" : "unpaid"),
+    email: data?.customerEmail || data?.customer_email || data?.email || null,
+    amountTotal:
+      typeof data?.amountTotal === "number"
+        ? data.amountTotal
+        : data?.amount_total
+        ? data.amount_total / 100
+        : 0,
     currency: data?.currency || "eur",
     orderId: data?.orderId || data?.order_id || sessionId,
     items: data?.items || [],
