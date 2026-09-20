@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import type { CartItem } from "@/contexts/CartContext";
 
 export interface CheckoutSessionInput {
@@ -13,19 +13,23 @@ export interface CheckoutSessionInput {
 export const createStripeCheckout = async (input: CheckoutSessionInput): Promise<string> => {
   const { data, error } = await supabase.functions.invoke("create-checkout-session", {
     body: {
-      items: input.items.map((i) => ({
-        sku: i.sku,
-        name: i.name,
-        category: i.category,
-        price: i.price,
-        quantity: i.quantity,
-        image: i.image,
-        customSize: i.customSize ?? null,
-      })),
+      order_id: input.orderId ?? null,
+      email: input.email,
+      items: input.items.map((i) => {
+        const customSizeVal = i.customSize || (i as any).misurePersonalizzate || (i as any).misura_personalizzata || null;
+        return {
+          sku: i.sku || i.id,
+          name: i.name,
+          category: i.category,
+          price: i.price,
+          quantity: i.quantity,
+          image: i.image,
+          customSize: customSizeVal,
+          misura_personalizzata: customSizeVal,
+        };
+      }),
       shippingCost: input.shippingCost,
       shippingLabel: input.shippingLabel,
-      email: input.email,
-      orderId: input.orderId ?? null,
       origin: window.location.origin,
     },
   });
@@ -48,9 +52,22 @@ export interface ConfirmedSession {
 /** Verifies a Stripe session and marks the matching order as paid. */
 export const confirmStripeSession = async (sessionId: string): Promise<ConfirmedSession> => {
   const { data, error } = await supabase.functions.invoke("confirm-checkout-session", {
-    body: { sessionId },
+    body: { 
+      session_id: sessionId,
+      sessionId: sessionId 
+    },
   });
+
   if (error) throw error;
   if (data?.error) throw new Error(data.error);
-  return data as ConfirmedSession;
+
+  return {
+    paid: data?.success || data?.status === "paid",
+    status: data?.status || (data?.success ? "paid" : "unpaid"),
+    email: data?.customerEmail || data?.email || null,
+    amountTotal: typeof data?.amountTotal === "number" ? data.amountTotal : (data?.amount_total ? data.amount_total / 100 : 0),
+    currency: data?.currency || "eur",
+    orderId: data?.orderId || data?.order_id || sessionId,
+    items: data?.items || [],
+  };
 };
