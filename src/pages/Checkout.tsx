@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useCart } from '@/contexts/CartContext';
-import { supabase } from '@/lib/supabase';
+import { useCart } from '@/contexts/CartContext'; // Se il tuo percorso è @/context/CartContext, cambia solo questo import
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -72,6 +72,10 @@ export default function Checkout() {
     });
   };
 
+  // Helper per estrarre la misura personalizzata
+  const getCustomSize = (item: any) => 
+    item.misura_personalizzata || item.customSize || item.misurePersonalizzate || item.misure || null;
+
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -93,11 +97,7 @@ export default function Checkout() {
         fatturazione: hasSeparateBilling ? billingDetails : shippingAddress,
       };
 
-      // Helper per estrarre la misura personalizzata dall'item indipendentemente dal nome proprietà nel cartContext
-      const getCustomSize = (item: any) => 
-        item.misura_personalizzata || item.customSize || item.misurePersonalizzate || item.misure || null;
-
-      // 1. Crei prima il record dell'ordine su Supabase con la chiave 'misura_personalizzata'
+      // 1. Creazione dell'ordine su Supabase
       const { data: ordine, error: dbError } = await supabase
         .from('Ordini')
         .insert([
@@ -127,7 +127,7 @@ export default function Checkout() {
         throw new Error(dbError?.message || "Impossibile salvare l'ordine.");
       }
 
-      // 2. Chiami la Edge Function passando order_id e gli articoli con le misure
+      // 2. Chiamata Edge Function per Checkout Session Stripe
       const { data: functionData, error: functionError } = await supabase.functions.invoke(
         'create-checkout-session',
         {
@@ -173,7 +173,7 @@ export default function Checkout() {
       <div className="lg:col-span-7 space-y-6">
         <form onSubmit={handleCheckout} className="space-y-6">
           {/* Dati Cliente */}
-          <div className="p-6 border rounded-lg space-y-4">
+          <div className="p-6 border rounded-lg space-y-4 bg-white shadow-sm">
             <h2 className="text-xl font-semibold">Dettagli del Cliente</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
@@ -205,7 +205,7 @@ export default function Checkout() {
           </div>
 
           {/* Indirizzo Spedizione */}
-          <div className="p-6 border rounded-lg space-y-4">
+          <div className="p-6 border rounded-lg space-y-4 bg-white shadow-sm">
             <h2 className="text-xl font-semibold">Indirizzo di Spedizione</h2>
             <Input
               placeholder="Indirizzo e Numero Civico *"
@@ -236,7 +236,7 @@ export default function Checkout() {
           </div>
 
           {/* Indirizzo Fatturazione Separato */}
-          <div className="p-6 border rounded-lg space-y-4">
+          <div className="p-6 border rounded-lg space-y-4 bg-white shadow-sm">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="separateBilling"
@@ -295,20 +295,25 @@ export default function Checkout() {
             )}
           </div>
 
-          <Button type="submit" className="w-full size-lg" disabled={isProcessing}>
+          {/* Tasto sbloccato */}
+          <Button 
+            type="submit" 
+            className="w-full h-12 text-base font-medium" 
+            disabled={isProcessing || (cartItems || []).length === 0}
+          >
             {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Reindirizzamento a Stripe...
               </>
             ) : (
-              `Procedi al Pagamento • €${(totalAmount || 0).toFixed(2)}`
+              `Procedi al pagamento • €${(totalAmount || 0).toFixed(2)}`
             )}
           </Button>
         </form>
       </div>
 
       {/* SEZIONE RIEPILOGO CARRELLO */}
-      <div className="lg:col-span-5 border rounded-lg p-6 h-fit space-y-6 bg-slate-50">
+      <div className="lg:col-span-5 border rounded-lg p-6 h-fit space-y-6 bg-slate-50 shadow-sm">
         <h2 className="text-xl font-semibold border-b pb-4">Riepilogo Ordine</h2>
 
         {(cartItems || []).length === 0 ? (
@@ -316,17 +321,26 @@ export default function Checkout() {
         ) : (
           <div className="space-y-4 divide-y">
             {(cartItems || []).map((item) => {
-              const itemSize = item.customSize || item.misurePersonalizzate || item.misura_personalizzata || item.misure;
+              const itemSize = getCustomSize(item);
+              const itemImage = item.image || item.immagine || item.images?.[0];
+
               return (
                 <div key={item.id} className="pt-4 flex items-center justify-between gap-4">
+                  {itemImage && (
+                    <img 
+                      src={itemImage} 
+                      alt={item.name} 
+                      className="w-16 h-16 object-cover rounded border bg-white"
+                    />
+                  )}
                   <div className="flex-1">
-                    <p className="font-medium">{item.name}</p>
+                    <p className="font-medium text-sm leading-snug">{item.name}</p>
                     {itemSize && (
-                      <p className="text-xs text-gray-500">
-                        Misura: {itemSize}
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        Misura: <span className="font-medium">{itemSize}</span>
                       </p>
                     )}
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 mt-1">
                       €{item.price.toFixed(2)} x {item.quantity}
                     </p>
                   </div>
@@ -336,7 +350,7 @@ export default function Checkout() {
                       min="1"
                       value={item.quantity}
                       onChange={(e) => updateQuantity(item.id, Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-16 h-8 text-center"
+                      className="w-16 h-8 text-center bg-white"
                     />
                     <Button
                       variant="ghost"
@@ -361,6 +375,7 @@ export default function Checkout() {
               placeholder="Inserisci codice"
               value={discountCode}
               onChange={(e) => setDiscountCode(e.target.value)}
+              className="bg-white"
             />
             <Button type="button" variant="outline" onClick={handleApplyDiscount}>
               Applica
@@ -372,7 +387,7 @@ export default function Checkout() {
         <div className="pt-4 border-t space-y-2">
           <div className="flex justify-between text-sm">
             <span>Spedizione</span>
-            <span className="font-medium">Gratuita</span>
+            <span className="font-medium text-green-700">Gratuita</span>
           </div>
           <div className="flex justify-between text-lg font-bold">
             <span>Totale</span>
