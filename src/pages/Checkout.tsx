@@ -51,9 +51,10 @@ export default function Checkout() {
     !!billingDetails.country.trim()
   );
 
-  // Validazione globale del modulo
+  // Validazione globale del modulo con protezione anti-crash su cartItems
+  const safeCartItems = cartItems || [];
   const isFormValid =
-    cartItems.length > 0 &&
+    safeCartItems.length > 0 &&
     !!customerDetails.email.trim() &&
     !!customerDetails.firstName.trim() &&
     !!customerDetails.lastName.trim() &&
@@ -93,7 +94,7 @@ export default function Checkout() {
         fatturazione: hasSeparateBilling ? billingDetails : shippingAddress,
       };
 
-      // Helper per estrarre la misura personalizzata dall'item indipendentemente dal nome proprietà nel cartContext
+      // Helper per estrarre la misura personalizzata dall'item
       const getCustomSize = (item: any) => 
         item.misura_personalizzata || item.customSize || item.misurePersonalizzate || item.misure || null;
 
@@ -108,7 +109,7 @@ export default function Checkout() {
             nome: customerDetails.firstName,
             cognome: customerDetails.lastName,
             telefono: customerDetails.phone,
-            articoli: cartItems.map((item) => ({
+            articoli: safeCartItems.map((item) => ({
               sku: item.sku || item.id,
               nome: item.name,
               prezzo: item.price,
@@ -127,7 +128,7 @@ export default function Checkout() {
         throw new Error(dbError?.message || "Impossibile salvare l'ordine.");
       }
 
-      // 2. Chiamata alla Edge Function per la sessione Stripe
+      // 2. Chiamata alla Edge Function per Stripe
       const { data: functionData, error: functionError } = await supabase.functions.invoke(
         'create-checkout-session',
         {
@@ -135,7 +136,7 @@ export default function Checkout() {
             order_id: ordine.id,
             email: customerDetails.email,
             discount_code: appliedDiscount,
-            items: cartItems.map((item) => ({
+            items: safeCartItems.map((item) => ({
               nome: item.name,
               price: item.price,
               quantity: item.quantity || 1,
@@ -311,11 +312,11 @@ export default function Checkout() {
       <div className="lg:col-span-5 border rounded-lg p-6 h-fit space-y-6 bg-slate-50">
         <h2 className="text-xl font-semibold border-b pb-4">Riepilogo Ordine</h2>
 
-        {cartItems.length === 0 ? (
+        {safeCartItems.length === 0 ? (
           <p className="text-gray-500 text-center py-6">Il carrello è vuoto.</p>
         ) : (
           <div className="space-y-4 divide-y">
-            {cartItems.map((item) => {
+            {safeCartItems.map((item) => {
               const itemSize = item.customSize || item.misurePersonalizzate || item.misura_personalizzata || item.misure;
               return (
                 <div key={item.id} className="pt-4 flex items-center justify-between gap-4">
