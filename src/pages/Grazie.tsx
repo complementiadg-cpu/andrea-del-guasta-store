@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Check, Loader2 } from "lucide-react";
 import CheckoutHeader from "@/components/header/CheckoutHeader";
@@ -15,64 +15,28 @@ const Grazie = () => {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<ConfirmedSession | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const done = useRef(false);
 
   useEffect(() => {
-    console.log("Inizializzazione pagina /grazie. Session ID trovato:", sessionId);
+    if (done.current) return;
+    done.current = true;
 
     if (!sessionId) {
-      console.warn("Nessun session_id presente nell'URL");
-      setError("Nessun parametro di sessione trovato nell'URL.");
+      setError("Nessun pagamento da confermare.");
       setLoading(false);
       return;
     }
 
-    let isMounted = true;
-
     confirmStripeSession(sessionId)
       .then((result) => {
-        console.log("Risultato da confirmStripeSession:", result);
-        if (isMounted) {
-          // Normalizziamo l'oggetto per assicurarci che 'paid' sia true se la chiamata ha successo
-          const normalizedSession: ConfirmedSession = {
-            ...result,
-            paid: Boolean(result?.paid || (result as any)?.success || result?.status === "paid"),
-            status: result?.status || "paid",
-            amountTotal: result?.amountTotal || 180,
-            items: result?.items?.length ? result.items : [{ name: "Articolo ordinato", quantity: 1, amount: 180 }]
-          };
-
-          setSession(normalizedSession);
-
-          if (normalizedSession.paid) {
-            clearCart();
-          } else {
-            setError("Il pagamento risulta ancora in elaborazione o non è andato a buon fine.");
-          }
-        }
+        setSession(result);
+        if (result.paid) clearCart();
       })
       .catch((err) => {
-        console.error("Errore durante la verifica della sessione Stripe:", err);
-        if (isMounted) {
-          // Fallback di sicurezza: se Stripe ha completato il pagamento ma c'è un errore di parsing, forziamo il successo
-          setSession({
-            paid: true,
-            status: "paid",
-            email: "complementiadg@gmail.com",
-            amountTotal: 180,
-            currency: "eur",
-            orderId: sessionId,
-            items: [{ name: "Articolo ordinato", quantity: 1, amount: 180 }]
-          });
-          clearCart();
-        }
+        console.error(err);
+        setError("Non è stato possibile verificare il pagamento.");
       })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
+      .finally(() => setLoading(false));
   }, [sessionId, clearCart]);
 
   return (
@@ -81,7 +45,6 @@ const Grazie = () => {
 
       <main className="flex-1 pt-12 pb-20 px-6">
         <div className="max-w-2xl mx-auto text-center">
-          {/* 1. CARICAMENTO */}
           {loading && (
             <div className="py-24 flex flex-col items-center gap-4">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -91,7 +54,6 @@ const Grazie = () => {
             </div>
           )}
 
-          {/* 2. PAGAMENTO RIUSCITO */}
           {!loading && session?.paid && (
             <>
               <div className="mx-auto w-14 h-14 border border-foreground/20 rounded-full flex items-center justify-center mb-8">
@@ -109,7 +71,7 @@ const Grazie = () => {
               <div className="mt-12 text-left border border-border p-6 md:p-8">
                 <h2 className="font-serif text-xl text-foreground mb-6">Riepilogo</h2>
                 <div className="space-y-4">
-                  {session.items?.map((item, index) => (
+                  {session.items.map((item, index) => (
                     <div key={index} className="flex justify-between gap-4 text-sm font-light">
                       <span className="text-foreground">
                         {item.name}
@@ -138,7 +100,6 @@ const Grazie = () => {
             </>
           )}
 
-          {/* 3. PAGAMENTO NON RIUSCITO */}
           {!loading && !session?.paid && (
             <>
               <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-4">
@@ -151,7 +112,6 @@ const Grazie = () => {
             </>
           )}
 
-          {/* PULSANTI DI NAVIGAZIONE */}
           {!loading && (
             <div className="mt-12 flex flex-col sm:flex-row gap-3 justify-center">
               <Button asChild className="rounded-none" size="lg">

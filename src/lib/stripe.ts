@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import type { CartItem } from "@/contexts/CartContext";
 
 export interface CheckoutSessionInput {
@@ -13,24 +13,19 @@ export interface CheckoutSessionInput {
 export const createStripeCheckout = async (input: CheckoutSessionInput): Promise<string> => {
   const { data, error } = await supabase.functions.invoke("create-checkout-session", {
     body: {
-      order_id: input.orderId ?? null,
-      email: input.email,
-      items: input.items.map((i) => {
-        const customSizeVal =
-          i.customSize || (i as any).misurePersonalizzate || (i as any).misura_personalizzata || null;
-        return {
-          sku: i.sku || i.id,
-          name: i.name,
-          category: i.category,
-          price: i.price,
-          quantity: i.quantity,
-          image: i.image,
-          customSize: customSizeVal,
-          misura_personalizzata: customSizeVal,
-        };
-      }),
+      items: input.items.map((i) => ({
+        sku: i.sku,
+        name: i.name,
+        category: i.category,
+        price: i.price,
+        quantity: i.quantity,
+        image: i.image,
+        customSize: i.customSize ?? null,
+      })),
       shippingCost: input.shippingCost,
       shippingLabel: input.shippingLabel,
+      email: input.email,
+      orderId: input.orderId ?? null,
       origin: window.location.origin,
     },
   });
@@ -53,30 +48,9 @@ export interface ConfirmedSession {
 /** Verifies a Stripe session and marks the matching order as paid. */
 export const confirmStripeSession = async (sessionId: string): Promise<ConfirmedSession> => {
   const { data, error } = await supabase.functions.invoke("confirm-checkout-session", {
-    body: { 
-      session_id: sessionId,
-      sessionId: sessionId 
-    },
+    body: { sessionId },
   });
-
   if (error) throw error;
   if (data?.error) throw new Error(data.error);
-
-  // Riconosce sia { success: true } che { status: "paid" }
-  const isPaid = Boolean(data?.success === true || data?.status === "paid" || data?.paid === true);
-
-  return {
-    paid: isPaid,
-    status: data?.status || (isPaid ? "paid" : "unpaid"),
-    email: data?.customerEmail || data?.customer_email || data?.email || null,
-    amountTotal:
-      typeof data?.amountTotal === "number"
-        ? data.amountTotal
-        : data?.amount_total
-        ? data.amount_total / 100
-        : 0,
-    currency: data?.currency || "eur",
-    orderId: data?.orderId || data?.order_id || sessionId,
-    items: data?.items && data.items.length > 0 ? data.items : [{ name: "Ordine completato", quantity: 1, amount: 0 }],
-  };
+  return data as ConfirmedSession;
 };
