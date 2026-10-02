@@ -52,8 +52,9 @@ const Checkout = () => {
     }
   };
 
-  const standardDays = "5 giorni";
-  const internationalDays = "5 giorni";
+  const hasCustomSize = cartItems.some((i) => !!i.customSize);
+  const standardDays = hasCustomSize ? "10/15 giorni" : "5 giorni";
+  const internationalDays = hasCustomSize ? "15/20 giorni" : "5–10 giorni";
   const standardSuffix = " lavorativi";
   const internationalSuffix = " lavorativi";
 
