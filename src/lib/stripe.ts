@@ -52,5 +52,14 @@ export const confirmStripeSession = async (sessionId: string): Promise<Confirmed
   });
   if (error) throw error;
   if (data?.error) throw new Error(data.error);
-  return data as ConfirmedSession;
+  const status = String(data?.status ?? data?.payment_status ?? "");
+  return {
+    paid: Boolean(data?.paid ?? (status === "paid" || data?.success === true && status === "paid")),
+    status,
+    email: data?.email ?? null,
+    amountTotal: Number(data?.amountTotal ?? 0),
+    currency: data?.currency ?? "eur",
+    orderId: data?.orderId ?? null,
+    items: Array.isArray(data?.items) ? data.items : [],
+  };
 };
