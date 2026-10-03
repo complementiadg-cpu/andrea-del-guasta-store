@@ -4,7 +4,17 @@ import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import AboutSidebar from "../../components/about/AboutSidebar";
+import SectionImage from "../../components/about/SectionImage";
 import { toast } from "@/hooks/use-toast";
+
+// Inserisci qui gli URL delle foto per ogni sezione (lasciali vuoti per vedere lo spazio riservato)
+const IMMAGINI = {
+  hero: "",
+  filosofia: "",
+  servizi: "",
+  perche: "",
+  contatti: "",
+};
 
 const Eventi = () => {
   const [form, setForm] = useState({
@@ -60,6 +70,11 @@ const Eventi = () => {
               progetti trasformano desideri, emozioni e idee in scenografie
               vive, eleganti e indimenticabili.
             </p>
+            <SectionImage
+              image={IMMAGINI.hero}
+              alt="Foto di un evento ADG — scenografia e allestimento"
+              caption="Scegli la foto da mostrare in questa sezione."
+            />
           </ContentSection>
 
           {/* 2. La Nostra Filosofia */}
@@ -82,6 +97,11 @@ const Eventi = () => {
               dell'evento, coordinando fornitori e tempistiche affinché tu possa
               goderti ogni istante in assoluta serenità.
             </p>
+            <SectionImage
+              image={IMMAGINI.filosofia}
+              alt="Foto della filosofia ADG Eventi — dettaglio sartoriale"
+              caption="Scegli la foto da mostrare in questa sezione."
+            />
           </ContentSection>
 
           {/* 3. I Nostri Servizi */}
@@ -142,6 +162,11 @@ const Eventi = () => {
                 </ul>
               </div>
             </div>
+            <SectionImage
+              image={IMMAGINI.servizi}
+              alt="Foto dei servizi ADG Eventi — allestimento e floral design"
+              caption="Scegli la foto da mostrare in questa sezione."
+            />
           </ContentSection>
 
           {/* 4. Perché Scegliere ADG Eventi */}
@@ -177,6 +202,11 @@ const Eventi = () => {
                 </p>
               </div>
             </div>
+            <SectionImage
+              image={IMMAGINI.perche}
+              alt="Foto perché scegliere ADG Eventi — evento in Toscana"
+              caption="Scegli la foto da mostrare in questa sezione."
+            />
           </ContentSection>
 
           {/* 5. Call to Action / Contatti */}
@@ -195,6 +225,12 @@ const Eventi = () => {
                 info@andreadelguasta.com
               </a>
             </p>
+
+            <SectionImage
+              image={IMMAGINI.contatti}
+              alt="Foto per iniziare a progettare il tuo evento"
+              caption="Scegli la foto da mostrare in questa sezione."
+            />
 
             {/* Form di richiesta informazioni */}
             <div className="border border-border p-6 md:p-8 max-w-3xl">
