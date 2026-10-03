@@ -5,15 +5,20 @@ import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import AboutSidebar from "../../components/about/AboutSidebar";
 import SectionImage from "../../components/about/SectionImage";
+import SectionVideo from "../../components/about/SectionVideo";
 import { toast } from "@/hooks/use-toast";
 
 // Inserisci qui gli URL delle foto per ogni sezione (lasciali vuoti per vedere lo spazio riservato)
 const IMMAGINI = {
   hero: "",
-  filosofia: "",
   servizi: "",
   perche: "",
   contatti: "",
+};
+
+// Inserisci qui l'URL del video verticale (9:16) della sezione Filosofia
+const VIDEO = {
+  filosofia: "",
 };
 
 const Eventi = () => {
