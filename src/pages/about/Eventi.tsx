@@ -227,7 +227,7 @@ const Eventi = () => {
               fiorentine o un evento privato esclusivo, siamo pronti ad
               ascoltare la tua storia e a trasformarla in realtà.
             </p>
-            <p className="text-muted-foreground max-w-3xl mb-8">
+            <p className="text-muted-foreground mb-8">
               Email:{" "}
               <a
                 href="mailto:info@andreadelguasta.com"
@@ -244,7 +244,7 @@ const Eventi = () => {
             />
 
             {/* Form di richiesta informazioni */}
-            <div className="border border-border p-6 md:p-8 max-w-3xl">
+            <div className="border border-border p-6 md:p-8">
               <h3 className="text-xl font-light text-foreground mb-6">
                 Prenota una Consulenza
               </h3>
