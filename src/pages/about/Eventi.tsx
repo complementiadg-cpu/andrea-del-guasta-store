@@ -5,15 +5,20 @@ import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import AboutSidebar from "../../components/about/AboutSidebar";
 import SectionImage from "../../components/about/SectionImage";
+import SectionVideo from "../../components/about/SectionVideo";
 import { toast } from "@/hooks/use-toast";
 
 // Inserisci qui gli URL delle foto per ogni sezione (lasciali vuoti per vedere lo spazio riservato)
 const IMMAGINI = {
   hero: "",
-  filosofia: "",
   servizi: "",
   perche: "",
   contatti: "",
+};
+
+// Inserisci qui l'URL del video verticale (9:16) della sezione Filosofia
+const VIDEO = {
+  filosofia: "",
 };
 
 const Eventi = () => {
@@ -79,29 +84,35 @@ const Eventi = () => {
 
           {/* 2. La Nostra Filosofia */}
           <ContentSection title="La Nostra Filosofia">
-            <p className="font-serif text-2xl md:text-3xl font-light text-foreground leading-relaxed max-w-3xl mb-8">
-              Dall'Idea al Coordinamento Finale: L'Arte di Creare Esperienze
-            </p>
-            <p className="text-muted-foreground leading-relaxed max-w-3xl mb-6">
-              Per noi, un matrimonio o un evento privato non è solo
-              un'organizzazione logistica, ma una vera e propria creazione
-              sartoriale. Dalla consulenza d'immagine per gli sposi e per gli
-              ospiti, alla scelta delle location più suggestive nel cuore della
-              Toscana, fino agli allestimenti floreali e alle scenografie
-              luminose: ogni dettaglio viene studiato per rispecchiare la tua
-              personalità e la tua storia.
-            </p>
-            <p className="text-muted-foreground leading-relaxed max-w-3xl">
-              Il nostro punto di forza è la presenza costante: ti affianchiamo
-              dal primo incontro conoscitivo fino alla regia completa del giorno
-              dell'evento, coordinando fornitori e tempistiche affinché tu possa
-              goderti ogni istante in assoluta serenità.
-            </p>
-            <SectionImage
-              image={IMMAGINI.filosofia}
-              alt="Foto della filosofia ADG Eventi — dettaglio sartoriale"
-              caption="Scegli la foto da mostrare in questa sezione."
-            />
+            <div className="flex flex-col lg:flex-row items-start gap-10 lg:gap-16">
+              <div className="flex-1 max-w-2xl">
+                <p className="font-serif text-2xl md:text-3xl font-light text-foreground leading-relaxed mb-8">
+                  Dall'Idea al Coordinamento Finale: L'Arte di Creare Esperienze
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-6">
+                  Per noi, un matrimonio o un evento privato non è solo
+                  un'organizzazione logistica, ma una vera e propria creazione
+                  sartoriale. Dalla consulenza d'immagine per gli sposi e per gli
+                  ospiti, alla scelta delle location più suggestive nel cuore della
+                  Toscana, fino agli allestimenti floreali e alle scenografie
+                  luminose: ogni dettaglio viene studiato per rispecchiare la tua
+                  personalità e la tua storia.
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  Il nostro punto di forza è la presenza costante: ti affianchiamo
+                  dal primo incontro conoscitivo fino alla regia completa del giorno
+                  dell'evento, coordinando fornitori e tempistiche affinché tu possa
+                  goderti ogni istante in assoluta serenità.
+                </p>
+              </div>
+              <SectionVideo
+                video={VIDEO.filosofia}
+                label="Spazio video"
+                hint="Inserisci qui il tuo video verticale 9:16"
+                caption="Scegli il video da mostrare in questa sezione."
+                className="w-full shrink-0 lg:w-[300px] xl:w-[340px]"
+              />
+            </div>
           </ContentSection>
 
           {/* 3. I Nostri Servizi */}
