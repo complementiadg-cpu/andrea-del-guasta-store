@@ -59,10 +59,11 @@ const Eventi = () => {
           <PageHeader
             title="ADG Eventi & Wedding Planning"
             subtitle="L'eleganza del design toscano, la cura del dettaglio stilistico, la magia del tuo evento a Firenze."
+            centered
           />
 
-          <ContentSection>
-            <p className="text-muted-foreground leading-relaxed max-w-3xl">
+          <ContentSection centered>
+            <p className="text-muted-foreground leading-relaxed">
               Dietro ogni grande evento c'è una visione. ADG Eventi nasce dalla
               fusione tra il background stilistico, l'artigianalità fiorentina e
               la passione per il wedding & event planning. Firmati dallo
@@ -78,9 +79,13 @@ const Eventi = () => {
           </ContentSection>
 
           {/* 2. La Nostra Filosofia */}
-          <ContentSection title="La Nostra Filosofia">
+          <ContentSection
+            title="La Nostra Filosofia"
+            centered
+            containerClassName="max-w-5xl"
+          >
             <div className="flex flex-col lg:flex-row items-start gap-10 lg:gap-16">
-              <div className="flex-1 max-w-2xl">
+              <div className="min-w-0 flex-1">
                 <p className="font-serif text-2xl md:text-3xl font-light text-foreground leading-relaxed mb-8">
                   Dall'Idea al Coordinamento Finale: L'Arte di Creare Esperienze
                 </p>
@@ -111,8 +116,8 @@ const Eventi = () => {
           </ContentSection>
 
           {/* 3. I Nostri Servizi */}
-          <ContentSection title="I Nostri Servizi">
-            <div className="space-y-12 max-w-3xl">
+          <ContentSection title="I Nostri Servizi" centered>
+            <div className="space-y-12">
               {/* Wedding Planning & Design */}
               <div>
                 <h3 className="text-xl font-light text-foreground mb-4">
@@ -176,8 +181,8 @@ const Eventi = () => {
           </ContentSection>
 
           {/* 4. Perché Scegliere ADG Eventi */}
-          <ContentSection title="Perché Scegliere ADG Eventi">
-            <div className="grid md:grid-cols-3 gap-8 max-w-3xl">
+          <ContentSection title="Perché Scegliere ADG Eventi" centered>
+            <div className="grid md:grid-cols-3 gap-8">
               <div className="space-y-4">
                 <h3 className="text-lg font-light text-foreground">
                   Visione da Stilista
@@ -216,8 +221,8 @@ const Eventi = () => {
           </ContentSection>
 
           {/* 5. Call to Action / Contatti */}
-          <ContentSection title="Iniziamo a Progettare il Tuo Evento">
-            <p className="text-muted-foreground leading-relaxed max-w-3xl mb-6">
+          <ContentSection title="Iniziamo a Progettare il Tuo Evento" centered>
+            <p className="text-muted-foreground leading-relaxed mb-6">
               Che tu stia sognando un matrimonio romantico tra le colline
               fiorentine o un evento privato esclusivo, siamo pronti ad
               ascoltare la tua storia e a trasformarla in realtà.
