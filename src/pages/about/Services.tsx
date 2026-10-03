@@ -3,7 +3,6 @@ import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import ImageTextBlock from "../../components/about/ImageTextBlock";
-import AboutSidebar from "../../components/about/AboutSidebar";
 
 const Services = () => {
   return (
@@ -11,11 +10,7 @@ const Services = () => {
       <Header />
 
       <div className="flex">
-        <div className="hidden lg:block">
-          <AboutSidebar />
-        </div>
-
-        <main className="w-full lg:w-[70vw] lg:ml-auto px-6">
+        <main className="w-full px-6">
           <PageHeader
             title="Servizi"
             subtitle="Moda artigianale in Toscana: eccellenza e identità"

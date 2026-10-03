@@ -3,7 +3,6 @@ import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
-import AboutSidebar from "../../components/about/AboutSidebar";
 import SectionImage from "../../components/about/SectionImage";
 import SectionVideo from "../../components/about/SectionVideo";
 import { toast } from "@/hooks/use-toast";
@@ -55,11 +54,7 @@ const Eventi = () => {
       <Header />
 
       <div className="flex">
-        <div className="hidden lg:block">
-          <AboutSidebar />
-        </div>
-
-        <main className="w-full lg:w-[70vw] lg:ml-auto px-6">
+        <main className="w-full px-6">
           {/* 1. Hero Section */}
           <PageHeader
             title="ADG Eventi & Wedding Planning"

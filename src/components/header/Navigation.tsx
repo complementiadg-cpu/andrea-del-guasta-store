@@ -63,6 +63,16 @@ const Navigation = () => {
       })),
     },
     {
+      name: "Servizi",
+      href: "/servizi",
+      submenuItems: [],
+    },
+    {
+      name: "Eventi",
+      href: "/eventi",
+      submenuItems: [],
+    },
+    {
       name: "About",
       href: "/about/our-story",
       submenuItems: [
