@@ -17,7 +17,7 @@ const IMMAGINI = {
 
 // Inserisci qui l'URL del video verticale (9:16) della sezione Filosofia
 const VIDEO = {
-  filosofia: "",
+  filosofia: "https://res.cloudinary.com/cjgxjyub/video/upload/f_auto,q_auto/v1791021193/WhatsApp_Video_2026-09-16_at_21.22.06_z2fjli.mp4",
 };
 
 const Eventi = () => {
