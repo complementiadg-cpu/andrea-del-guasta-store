@@ -6,6 +6,7 @@ import ContentSection from "../../components/about/ContentSection";
 import SectionImage from "../../components/about/SectionImage";
 import { toast } from "@/hooks/use-toast";
 import { Volume2, VolumeX } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 // URL Media Ottimizzati Cloudinary
 const IMMAGINI = {
@@ -16,6 +17,34 @@ const IMMAGINI = {
 };
 
 const VIDEO_URL = "https://res.cloudinary.com/cjgxjyub/video/upload/f_auto,q_auto/v1791021193/WhatsApp_Video_2026-09-16_at_21.22.06_z2fjli.mp4";
+
+// Componente Parallasse Verticale a Larghezza Piena per Servizi
+const ServiziParallaxImage = ({ src }: { src: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Traccia lo scorrimento della sezione rispetto al viewport
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Muove l'immagine verticalmente dall'alto verso il basso durante lo scroll
+  const y = useTransform(scrollYProgress, [0, 1], ["-18%", "18%"]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full h-[450px] md:h-[600px] overflow-hidden rounded-2xl shadow-2xl border border-border"
+    >
+      <motion.img
+        src={src}
+        alt="Servizi ADG Eventi"
+        style={{ y }}
+        className="absolute inset-0 w-full h-[140%] object-cover object-center -top-[20%]"
+      />
+    </div>
+  );
+};
 
 // Componente Video Filosofia (Autoplay, Loop, Muto + Toggle Audio)
 export const FilosofiaVideo = () => {
@@ -208,15 +237,9 @@ const Eventi = () => {
               </div>
             </div>
 
-            {/* Immagine Servizi: visualizzazione completa senza ritagli */}
+            {/* Immagine Servizi a larghezza piena con Parallasse Verticale */}
             {IMMAGINI.servizi ? (
-              <div className="w-full flex justify-center items-center overflow-hidden rounded-2xl shadow-xl border border-border bg-neutral-950/20 p-2 md:p-4">
-                <img
-                  src={IMMAGINI.servizi}
-                  alt="Servizi ADG Eventi"
-                  className="w-full h-auto max-h-[600px] object-contain rounded-xl"
-                />
-              </div>
+              <ServiziParallaxImage src={IMMAGINI.servizi} />
             ) : (
               <SectionImage
                 image=""
