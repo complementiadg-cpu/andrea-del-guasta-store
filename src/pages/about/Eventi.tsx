@@ -208,19 +208,23 @@ const Eventi = () => {
               </div>
             </div>
 
-            {/* Immagine Servizi con Parallasse e adattamento completo (senza tagli ai lati) */}
-{IMMAGINI.servizi ? (
-  <div
-    className="w-full h-[450px] md:h-[600px] rounded-2xl shadow-2xl bg-fixed bg-center bg-contain bg-no-repeat bg-neutral-950/50 border border-border"
-    style={{ backgroundImage: `url('${IMMAGINI.servizi}')` }}
-  />
-) : (
-  <SectionImage
-    image=""
-    alt="Foto dei servizi ADG Eventi"
-    caption="Scegli la foto da mostrare in questa sezione."
-  />
-)}
+            {/* Immagine Servizi: visualizzazione completa senza ritagli */}
+            {IMMAGINI.servizi ? (
+              <div className="w-full flex justify-center items-center overflow-hidden rounded-2xl shadow-xl border border-border bg-neutral-950/20 p-2 md:p-4">
+                <img
+                  src={IMMAGINI.servizi}
+                  alt="Servizi ADG Eventi"
+                  className="w-full h-auto max-h-[600px] object-contain rounded-xl"
+                />
+              </div>
+            ) : (
+              <SectionImage
+                image=""
+                alt="Foto dei servizi ADG Eventi"
+                caption="Scegli la foto da mostrare in questa sezione."
+              />
+            )}
+          </ContentSection>
 
           {/* 4. Perché Scegliere ADG Eventi */}
           <ContentSection title="Perché Scegliere ADG Eventi" centered>
