@@ -208,20 +208,19 @@ const Eventi = () => {
               </div>
             </div>
 
-            {/* Immagine Servizi con Parallasse CSS */}
-            {IMMAGINI.servizi ? (
-              <div
-                className="w-full h-[450px] md:h-[550px] rounded-2xl shadow-2xl bg-fixed bg-center bg-cover border border-border"
-                style={{ backgroundImage: `url('${IMMAGINI.servizi}')` }}
-              />
-            ) : (
-              <SectionImage
-                image=""
-                alt="Foto dei servizi ADG Eventi"
-                caption="Scegli la foto da mostrare in questa sezione."
-              />
-            )}
-          </ContentSection>
+            {/* Immagine Servizi con Parallasse e adattamento completo (senza tagli ai lati) */}
+{IMMAGINI.servizi ? (
+  <div
+    className="w-full h-[450px] md:h-[600px] rounded-2xl shadow-2xl bg-fixed bg-center bg-contain bg-no-repeat bg-neutral-950/50 border border-border"
+    style={{ backgroundImage: `url('${IMMAGINI.servizi}')` }}
+  />
+) : (
+  <SectionImage
+    image=""
+    alt="Foto dei servizi ADG Eventi"
+    caption="Scegli la foto da mostrare in questa sezione."
+  />
+)}
 
           {/* 4. Perché Scegliere ADG Eventi */}
           <ContentSection title="Perché Scegliere ADG Eventi" centered>
