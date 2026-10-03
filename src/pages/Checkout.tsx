@@ -13,6 +13,9 @@ import { saveOrder } from "@/lib/orders";
 import { createStripeCheckout } from "@/lib/stripe";
 import { toast } from "sonner";
 
+const normalizePhone = (value: string) => value.replace(/[\s().\-]/g, "");
+const isValidPhone = (value: string) => /^\+?\d{8,15}$/.test(normalizePhone(value.trim()));
+
 const Checkout = () => {
   const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
@@ -41,6 +44,7 @@ const Checkout = () => {
   });
   const [shippingOption, setShippingOption] = useState("standard");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const { items: cartItems, updateQuantity, subtotal } = useCart();
 
   const getShippingCost = () => {
@@ -82,6 +86,11 @@ const Checkout = () => {
   const handleCompleteOrder = async () => {
     if (cartItems.length === 0) {
       toast.error("Il carrello è vuoto.");
+      return;
+    }
+    if (!isValidPhone(customerDetails.phone)) {
+      setPhoneTouched(true);
+      toast.error("Inserisci un numero di telefono valido.");
       return;
     }
     setIsProcessing(true);
@@ -288,16 +297,24 @@ const Checkout = () => {
 
                   <div>
                     <Label htmlFor="phone" className="text-sm font-light text-foreground">
-                      Phone Number
+                      Phone Number <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="phone"
                       type="tel"
+                      required
+                      aria-required="true"
                       value={customerDetails.phone}
                       onChange={(e) => handleCustomerDetailsChange("phone", e.target.value)}
+                      onBlur={() => setPhoneTouched(true)}
                       className="mt-2 rounded-none"
                       placeholder="Enter your phone number"
                     />
+                    {phoneTouched && !isValidPhone(customerDetails.phone) && (
+                      <p className="mt-1 text-xs font-light text-destructive">
+                        Inserisci un numero di telefono valido (almeno 8 cifre).
+                      </p>
+                    )}
                   </div>
 
                   {/* Shipping Address */}
@@ -578,6 +595,7 @@ const Checkout = () => {
                     !customerDetails.email ||
                     !customerDetails.firstName ||
                     !customerDetails.lastName ||
+                    !isValidPhone(customerDetails.phone) ||
                     !shippingAddress.address ||
                     !shippingAddress.city ||
                     !shippingAddress.postalCode ||
