@@ -88,6 +88,11 @@ const Checkout = () => {
       toast.error("Il carrello è vuoto.");
       return;
     }
+    if (!isValidPhone(customerDetails.phone)) {
+      setPhoneTouched(true);
+      toast.error("Inserisci un numero di telefono valido.");
+      return;
+    }
     setIsProcessing(true);
     try {
       const orderId = await saveOrder({
@@ -292,16 +297,24 @@ const Checkout = () => {
 
                   <div>
                     <Label htmlFor="phone" className="text-sm font-light text-foreground">
-                      Phone Number
+                      Phone Number <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id="phone"
                       type="tel"
+                      required
+                      aria-required="true"
                       value={customerDetails.phone}
                       onChange={(e) => handleCustomerDetailsChange("phone", e.target.value)}
+                      onBlur={() => setPhoneTouched(true)}
                       className="mt-2 rounded-none"
                       placeholder="Enter your phone number"
                     />
+                    {phoneTouched && !isValidPhone(customerDetails.phone) && (
+                      <p className="mt-1 text-xs font-light text-destructive">
+                        Inserisci un numero di telefono valido (almeno 8 cifre).
+                      </p>
+                    )}
                   </div>
 
                   {/* Shipping Address */}
@@ -582,6 +595,7 @@ const Checkout = () => {
                     !customerDetails.email ||
                     !customerDetails.firstName ||
                     !customerDetails.lastName ||
+                    !isValidPhone(customerDetails.phone) ||
                     !shippingAddress.address ||
                     !shippingAddress.city ||
                     !shippingAddress.postalCode ||
