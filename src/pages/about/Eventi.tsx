@@ -1,23 +1,61 @@
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import SectionImage from "../../components/about/SectionImage";
-import SectionVideo from "../../components/about/SectionVideo";
 import { toast } from "@/hooks/use-toast";
+import { Volume2, VolumeX } from "lucide-react";
 
-// Inserisci qui gli URL delle foto per ogni sezione (lasciali vuoti per vedere lo spazio riservato)
+// URL Media Ottimizzati Cloudinary
 const IMMAGINI = {
   hero: "",
-  servizi: "",
+  servizi: "https://res.cloudinary.com/cjgxjyub/image/upload/f_auto,q_auto/v1791021764/WhatsApp_Image_2026-09-16_at_21.21.08_3_m8zfzk.jpg",
   perche: "",
   contatti: "",
 };
 
-// Inserisci qui l'URL del video verticale (9:16) della sezione Filosofia
-const VIDEO = {
-  filosofia: "https://res.cloudinary.com/cjgxjyub/video/upload/f_auto,q_auto/v1791021193/WhatsApp_Video_2026-09-16_at_21.22.06_z2fjli.mp4",
+const VIDEO_URL = "https://res.cloudinary.com/cjgxjyub/video/upload/f_auto,q_auto/v1791021193/WhatsApp_Video_2026-09-16_at_21.22.06_z2fjli.mp4";
+
+// Componente Video Filosofia (Autoplay, Loop, Muto + Toggle Audio)
+export const FilosofiaVideo = () => {
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  return (
+    <div className="relative w-full shrink-0 lg:w-[300px] xl:w-[340px] aspect-[9/16] overflow-hidden rounded-2xl shadow-lg group mx-auto">
+      <video
+        ref={videoRef}
+        src={VIDEO_URL}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="w-full h-full object-cover"
+      />
+
+      {/* Pulsante attivazione/disattivazione audio */}
+      <button
+        onClick={toggleMute}
+        type="button"
+        aria-label={isMuted ? "Attiva audio" : "Disattiva audio"}
+        className="absolute bottom-4 right-4 z-10 p-3 bg-black/40 hover:bg-black/70 backdrop-blur-md text-white rounded-full transition-all duration-300 border border-white/20 shadow-md focus:outline-none"
+      >
+        {isMuted ? (
+          <VolumeX className="w-5 h-5 stroke-[1.5]" />
+        ) : (
+          <Volume2 className="w-5 h-5 stroke-[1.5]" />
+        )}
+      </button>
+    </div>
+  );
 };
 
 const Eventi = () => {
@@ -84,8 +122,8 @@ const Eventi = () => {
             centered
             containerClassName="max-w-5xl"
           >
-            <div className="flex flex-col lg:flex-row items-start gap-10 lg:gap-16">
-              <div className="min-w-0 flex-1">
+            <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+              <div className="min-w-0 flex-1 text-left">
                 <p className="font-serif text-2xl md:text-3xl font-light text-foreground leading-relaxed mb-8">
                   Dall'Idea al Coordinamento Finale: L'Arte di Creare Esperienze
                 </p>
@@ -105,19 +143,15 @@ const Eventi = () => {
                   goderti ogni istante in assoluta serenità.
                 </p>
               </div>
-              <SectionVideo
-                video={VIDEO.filosofia}
-                label="Spazio video"
-                hint="Inserisci qui il tuo video verticale 9:16"
-                caption="Scegli il video da mostrare in questa sezione."
-                className="w-full shrink-0 lg:w-[300px] xl:w-[340px]"
-              />
+
+              {/* Inserimento Video Filosofia */}
+              <FilosofiaVideo />
             </div>
           </ContentSection>
 
           {/* 3. I Nostri Servizi */}
           <ContentSection title="I Nostri Servizi" centered>
-            <div className="space-y-12">
+            <div className="space-y-12 text-left mb-12">
               {/* Wedding Planning & Design */}
               <div>
                 <h3 className="text-xl font-light text-foreground mb-4">
@@ -173,16 +207,25 @@ const Eventi = () => {
                 </ul>
               </div>
             </div>
-            <SectionImage
-              image={IMMAGINI.servizi}
-              alt="Foto dei servizi ADG Eventi — allestimento e floral design"
-              caption="Scegli la foto da mostrare in questa sezione."
-            />
+
+            {/* Immagine Servizi con Parallasse CSS */}
+            {IMMAGINI.servizi ? (
+              <div
+                className="w-full h-[450px] md:h-[550px] rounded-2xl shadow-2xl bg-fixed bg-center bg-cover border border-border"
+                style={{ backgroundImage: `url('${IMMAGINI.servizi}')` }}
+              />
+            ) : (
+              <SectionImage
+                image=""
+                alt="Foto dei servizi ADG Eventi"
+                caption="Scegli la foto da mostrare in questa sezione."
+              />
+            )}
           </ContentSection>
 
           {/* 4. Perché Scegliere ADG Eventi */}
           <ContentSection title="Perché Scegliere ADG Eventi" centered>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-8 text-left">
               <div className="space-y-4">
                 <h3 className="text-lg font-light text-foreground">
                   Visione da Stilista
@@ -244,7 +287,7 @@ const Eventi = () => {
             />
 
             {/* Form di richiesta informazioni */}
-            <div className="border border-border p-6 md:p-8">
+            <div className="border border-border p-6 md:p-8 text-left mt-8">
               <h3 className="text-xl font-light text-foreground mb-6">
                 Prenota una Consulenza
               </h3>
