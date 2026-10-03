@@ -3,9 +3,7 @@ import { NavLink } from 'react-router-dom';
 const aboutPages = [
   { name: 'Our Story', path: '/about/our-story' },
   { name: 'Size Guide', path: '/about/size-guide' },
-  { name: 'Customer Care', path: '/about/customer-care' },
-  { name: 'Servizi', path: '/about/services' },
-  { name: 'Eventi', path: '/about/eventi' }
+  { name: 'Customer Care', path: '/about/customer-care' }
 ];
 
 const AboutSidebar = () => {
