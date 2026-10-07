@@ -1,7 +1,5 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2?target=deno";
-import { Resend } from "npm:resend";
+import Stripe from "npm:stripe@14.21.0";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,7 +12,7 @@ const FROM = "Andrea Del Guasta <info@andreadelguasta.com>";
 const euro = (n: number) =>
   new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(n);
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -184,30 +182,29 @@ serve(async (req) => {
             ${summary}
           </div>`;
 
-        const resend = new Resend(apiKey);
+        const sendEmail = async (to: string, subject: string, html: string) => {
+          const res = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ from: FROM, to: [to], subject, html }),
+          });
+          const text = await res.text();
+          if (!res.ok) throw new Error(`Resend [${res.status}]: ${text}`);
+          console.log(`Email inviata a ${to}: ${text}`);
+        };
 
         try {
-          await resend.emails.send({
-            from: FROM,
-            to: [OWNER_EMAIL],
-            subject: `Nuovo ordine pagato${orderId ? ` #${orderId}` : ""} — ${euro(amountTotal)}`,
-            html: ownerHtml,
-          });
+          await sendEmail(OWNER_EMAIL, `Nuovo ordine pagato${orderId ? ` #${orderId}` : ""} — ${euro(amountTotal)}`, ownerHtml);
         } catch (e) {
           console.error("Invio notifica titolare fallito:", (e as Error).message);
         }
 
         if (customerEmail) {
           try {
-            await resend.emails.send({
-              from: FROM,
-              to: [customerEmail],
-              subject: "Conferma del tuo ordine — ANDREADELGUASTA",
-              html: `<p style="font-family:Helvetica,Arial,sans-serif">Grazie per il tuo ordine.</p>
+            await sendEmail(customerEmail, "Conferma del tuo ordine — ANDREADELGUASTA", `<p style="font-family:Helvetica,Arial,sans-serif">Grazie per il tuo ordine.</p>
                      ${summary}
                      <p style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#666">
-                     Ti scriveremo appena il tuo ordine sarà spedito. Per qualsiasi domanda: ${OWNER_EMAIL}</p>`,
-            });
+                     Ti scriveremo appena il tuo ordine sarà spedito. Per qualsiasi domanda: ${OWNER_EMAIL}</p>`);
           } catch (e) {
             console.error("Invio conferma cliente fallito:", (e as Error).message);
           }
