@@ -56,55 +56,53 @@ export const CustomMediaCarousel = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const imageTimerRef = useRef<number | null>(null);
+  const timerRef = useRef<number | null>(null);
   const transitionTimerRef = useRef<number | null>(null);
 
-  const FADE_DURATION = 1800;
-  const IMAGE_DURATION = 5000;
-  const VIDEO_FADE_BEFORE_END = 2200;
+  // Ogni contenuto resta visibile esattamente 3 secondi
+  const SLIDE_DURATION = 3000;
 
-  // ----------------------------------------------------------
-  // Cambio slide
-  // ----------------------------------------------------------
+  // Crossfade più breve e naturale
+  const FADE_DURATION = 800;
 
   const goToNextSlide = () => {
     if (isTransitioning) return;
 
-    setIsTransitioning(true);
-
     const nextIndex =
       (currentIndex + 1) % MEDIA_CAROUSEL.length;
 
-    // Avviamo subito il video della slide successiva,
-    // così durante il fade è già pronto.
     const nextMedia = MEDIA_CAROUSEL[nextIndex];
+    const nextVideo = videoRefs.current[nextIndex];
 
-    if (nextMedia.type === "video") {
-      const nextVideo = videoRefs.current[nextIndex];
+    setIsTransitioning(true);
 
-      if (nextVideo) {
-        nextVideo.currentTime = 0;
+    /*
+     * Avviamo il video successivo PRIMA di renderizzarlo.
+     * In questo modo durante il crossfade il video è già in movimento
+     * e non parte da un fotogramma "bloccato".
+     */
+    if (nextMedia.type === "video" && nextVideo) {
+      nextVideo.currentTime = 0;
 
-        const playPromise = nextVideo.play();
+      const playPromise = nextVideo.play();
 
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // Autoplay eventualmente bloccato dal browser
-          });
-        }
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Autoplay eventualmente bloccato dal browser
+        });
       }
     }
 
-    // Cambiamo slide.
     setCurrentIndex(nextIndex);
 
-    // Aspettiamo che il fade sia terminato prima di fermare
-    // definitivamente il video precedente.
+    /*
+     * Lasciamo il contenuto precedente in riproduzione durante
+     * tutto il crossfade. Lo fermiamo solo quando è completamente
+     * scomparso.
+     */
     transitionTimerRef.current = window.setTimeout(() => {
       const previousIndex =
-        nextIndex === 0
-          ? MEDIA_CAROUSEL.length - 1
-          : nextIndex - 1;
+        currentIndex;
 
       const previousVideo = videoRefs.current[previousIndex];
 
@@ -117,79 +115,42 @@ export const CustomMediaCarousel = () => {
     }, FADE_DURATION);
   };
 
-  // ----------------------------------------------------------
-  // Gestione immagini
-  // ----------------------------------------------------------
-
+  /*
+   * TIMER UNICO:
+   * immagini e video hanno esattamente la stessa durata.
+   */
   useEffect(() => {
-    const currentMedia = MEDIA_CAROUSEL[currentIndex];
-
-    // Se siamo su un'immagine, impostiamo il timer.
-    if (currentMedia.type === "image") {
-      if (imageTimerRef.current) {
-        window.clearTimeout(imageTimerRef.current);
-      }
-
-      imageTimerRef.current = window.setTimeout(() => {
-        goToNextSlide();
-      }, IMAGE_DURATION);
-    }
+    timerRef.current = window.setTimeout(() => {
+      goToNextSlide();
+    }, SLIDE_DURATION);
 
     return () => {
-      if (imageTimerRef.current) {
-        window.clearTimeout(imageTimerRef.current);
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
       }
     };
   }, [currentIndex, isTransitioning]);
 
-  // ----------------------------------------------------------
-  // Gestione video
-  // ----------------------------------------------------------
-
-  const handleVideoTimeUpdate = (
-    index: number,
-    event: React.SyntheticEvent<HTMLVideoElement>
-  ) => {
-    // Consideriamo solo il video attualmente visibile.
-    if (index !== currentIndex) return;
-
-    if (isTransitioning) return;
-
-    const video = event.currentTarget;
-
-    if (!video.duration || !isFinite(video.duration)) {
-      return;
-    }
-
-    const timeRemaining = video.duration - video.currentTime;
-
-    // Iniziamo il fade prima che il video arrivi alla fine.
-    if (timeRemaining <= VIDEO_FADE_BEFORE_END) {
-      goToNextSlide();
-    }
-  };
-
-  // ----------------------------------------------------------
-  // Avvio video quando entra nella slide
-  // ----------------------------------------------------------
-
+  /*
+   * Avvio del video quando entra nella slide.
+   */
   useEffect(() => {
     const currentMedia = MEDIA_CAROUSEL[currentIndex];
 
-    if (currentMedia.type === "video") {
-      const video = videoRefs.current[currentIndex];
+    if (currentMedia.type !== "video") return;
 
-      if (video) {
-        video.currentTime = 0;
+    const video = videoRefs.current[currentIndex];
 
-        const playPromise = video.play();
+    if (!video) return;
 
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // Autoplay bloccato dal browser.
-          });
-        }
-      }
+    video.currentTime = 0;
+
+    const playPromise = video.play();
+
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay eventualmente bloccato dal browser
+      });
     }
 
     return () => {
@@ -199,14 +160,13 @@ export const CustomMediaCarousel = () => {
     };
   }, [currentIndex]);
 
-  // ----------------------------------------------------------
-  // Cleanup finale
-  // ----------------------------------------------------------
-
+  /*
+   * Cleanup finale.
+   */
   useEffect(() => {
     return () => {
-      if (imageTimerRef.current) {
-        window.clearTimeout(imageTimerRef.current);
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
       }
 
       if (transitionTimerRef.current) {
@@ -220,10 +180,6 @@ export const CustomMediaCarousel = () => {
       });
     };
   }, []);
-
-  // ----------------------------------------------------------
-  // Render
-  // ----------------------------------------------------------
 
   return (
     <div
@@ -239,9 +195,17 @@ export const CustomMediaCarousel = () => {
             className="absolute inset-0 w-full h-full"
             style={{
               opacity: isActive ? 1 : 0,
+
+              /*
+               * Durante il crossfade teniamo la slide precedente
+               * sopra quella successiva.
+               */
               zIndex: isActive ? 2 : 1,
 
-              transition: `opacity ${FADE_DURATION}ms cubic-bezier(0.45, 0, 0.15, 1)`,
+              transition: `
+                opacity ${FADE_DURATION}ms
+                cubic-bezier(0.4, 0, 0.2, 1)
+              `,
 
               pointerEvents: isActive ? "auto" : "none",
 
@@ -254,6 +218,8 @@ export const CustomMediaCarousel = () => {
                 alt={item.alt}
                 className="w-full h-full object-cover"
                 draggable={false}
+                loading="eager"
+                decoding="async"
               />
             ) : (
               <video
@@ -264,9 +230,6 @@ export const CustomMediaCarousel = () => {
                 muted
                 playsInline
                 preload="auto"
-                onTimeUpdate={(event) =>
-                  handleVideoTimeUpdate(index, event)
-                }
                 className="w-full h-full object-cover"
               />
             )}
@@ -276,18 +239,6 @@ export const CustomMediaCarousel = () => {
     </div>
   );
 };
-
-
-Il punto fondamentale è questo:
-
-const VIDEO_FADE_BEFORE_END = 2200;
-
-
-e:
-
-if (timeRemaining <= VIDEO_FADE_BEFORE_END) {
-  goToNextSlide();
-}
 
 // ============================================================
 // VIDEO FILOSOFIA
@@ -360,21 +311,47 @@ export const ParallaxImage = ({
       const rect = container.getBoundingClientRect();
       const viewportH = window.innerHeight;
 
-      const progress =
-        (rect.top + rect.height / 2 - viewportH / 2) /
-        (viewportH / 2 + rect.height / 2);
+      /*
+       * Progress:
+       *
+       * 0 = immagine ancora allineata al margine inferiore
+       * 1 = immagine arrivata alla posizione finale superiore
+       */
+      const progress = Math.min(
+        1,
+        Math.max(
+          0,
+          (viewportH - rect.top) /
+            (viewportH + rect.height)
+        )
+      );
 
-      const overflow = img.offsetHeight - container.offsetHeight;
+      const overflow =
+        img.offsetHeight - container.offsetHeight;
 
       if (overflow > 0) {
-        img.style.transform = `translateY(${(-progress * overflow) / 2}px)`;
+        /*
+         * L'immagine parte dal basso:
+         * translateY(0)
+         *
+         * e sale progressivamente:
+         * translateY(-overflow)
+         */
+        img.style.transform = `translate3d(
+          0,
+          ${-progress * overflow}px,
+          0
+        )`;
       } else {
-        img.style.transform = "";
+        img.style.transform = "translate3d(0, 0, 0)";
       }
     };
 
     const handleScroll = () => {
-      cancelAnimationFrame(raf);
+      if (raf) {
+        cancelAnimationFrame(raf);
+      }
+
       raf = requestAnimationFrame(update);
     };
 
@@ -397,7 +374,17 @@ export const ParallaxImage = ({
   return (
     <div
       ref={containerRef}
-      className="w-full h-[450px] md:h-[600px] overflow-hidden rounded-2xl shadow-2xl border border-border"
+      className="
+        relative
+        w-full
+        h-[450px]
+        md:h-[600px]
+        overflow-hidden
+        rounded-2xl
+        shadow-2xl
+        border
+        border-border
+      "
     >
       <img
         ref={imgRef}
@@ -405,7 +392,17 @@ export const ParallaxImage = ({
         alt={alt}
         loading="lazy"
         decoding="async"
-        className="w-full h-auto will-change-transform"
+        draggable={false}
+        className="
+          absolute
+          left-0
+          bottom-0
+          w-full
+          h-[125%]
+          object-cover
+          max-w-none
+          will-change-transform
+        "
       />
     </div>
   );
