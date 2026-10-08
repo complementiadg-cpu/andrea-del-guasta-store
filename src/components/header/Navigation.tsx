@@ -1,4 +1,4 @@
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, ChevronDown, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ShoppingBag from "./ShoppingBag";
@@ -12,6 +12,7 @@ const Navigation = () => {
   const [offCanvasType, setOffCanvasType] = useState<"favorites" | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isShoppingBagOpen, setIsShoppingBagOpen] = useState(false);
+  const [expandedMobileGroup, setExpandedMobileGroup] = useState<string | null>(null);
 
   const { totalItems } = useCart();
   const { categories, collections } = useTaxonomy();
@@ -300,6 +301,18 @@ const Navigation = () => {
               </Button>
               {navItems.map((item) => (
                 <div key={item.name}>
+                  {item.name === "Categorie" || item.name === "Collezioni" ? (
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between px-0 text-lg font-light text-nav-foreground hover:text-nav-hover"
+                      aria-expanded={expandedMobileGroup === item.name}
+                      aria-controls={`mobile-${item.name}`}
+                      onClick={() => setExpandedMobileGroup((current) => current === item.name ? null : item.name)}
+                    >
+                      {item.name}
+                      <ChevronDown className={`transition-transform motion-reduce:transition-none ${expandedMobileGroup === item.name ? "rotate-180" : ""}`} />
+                    </Button>
+                  ) : (
                   <Link
                     to={item.href}
                     className="text-nav-foreground hover:text-nav-hover transition-colors text-lg font-light block py-2"
@@ -307,7 +320,12 @@ const Navigation = () => {
                   >
                     {item.name}
                   </Link>
-                  <div className="mt-2 pl-4 space-y-1">
+                  )}
+                  <div
+                    id={`mobile-${item.name}`}
+                    hidden={(item.name === "Categorie" || item.name === "Collezioni") && expandedMobileGroup !== item.name}
+                    className="mt-2 pl-4 space-y-1"
+                  >
                     {item.submenuItems.map((subItem, subIdx) => (
                       <Link
                         key={subIdx}
