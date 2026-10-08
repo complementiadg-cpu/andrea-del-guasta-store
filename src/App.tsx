@@ -1,4 +1,3 @@
-import ComingSoon from "./pages/ComingSoon";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,13 +33,13 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
-            {/* Pagina principale: Sito in costruzione */}
-            <Route path="/" element={<ComingSoon />} />
+            {/* Home pubblica del negozio */}
+            <Route path="/" element={<Index />} />
 
             {/* Rotta di anteprima per continuare a testare la Home dello shop */}
             <Route path="/dev-home" element={<Index />} />
 
-            {/* Rotte dello shop attive per test interni */}
+            {/* Pagine del negozio */}
             <Route path="/category/:category" element={<Category />} />
             <Route path="/collection/:collection" element={<Collection />} />
             <Route path="/product/:productId" element={<ProductDetail />} />
