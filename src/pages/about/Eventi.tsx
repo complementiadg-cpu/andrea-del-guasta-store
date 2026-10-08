@@ -168,7 +168,7 @@ export const CustomMediaCarousel = () => {
 };
 
 // ============================================================
-// VIDEO FILOSOFIA
+// VIDEO FILOSOFIA (Ottimizzato per caricamento velocissimo)
 // ============================================================
 
 export const FilosofiaVideo = () => {
@@ -183,7 +183,7 @@ export const FilosofiaVideo = () => {
   };
 
   return (
-    <div className="relative w-full shrink-0 lg:w-[300px] xl:w-[340px] aspect-[9/16] overflow-hidden rounded-2xl shadow-lg group mx-auto">
+    <div className="relative w-full shrink-0 lg:w-[300px] xl:w-[340px] aspect-[9/16] overflow-hidden rounded-2xl shadow-lg group mx-auto bg-black">
       <video
         ref={videoRef}
         src={VIDEO_URL}
@@ -191,6 +191,7 @@ export const FilosofiaVideo = () => {
         loop
         muted
         playsInline
+        preload="auto"
         className="w-full h-full object-cover"
       />
 
