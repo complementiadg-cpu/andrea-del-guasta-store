@@ -53,55 +53,177 @@ const VIDEO_URL =
 
 export const CustomMediaCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const imageTimerRef = useRef<number | null>(null);
+  const transitionTimerRef = useRef<number | null>(null);
 
-  // Durata della transizione
-  const FADE_DURATION = 1200;
+  const FADE_DURATION = 1800;
+  const IMAGE_DURATION = 5000;
+  const VIDEO_FADE_BEFORE_END = 2200;
 
-  // Durata di visualizzazione di ogni slide
-  const SLIDE_DURATION = 5000;
+  // ----------------------------------------------------------
+  // Cambio slide
+  // ----------------------------------------------------------
 
-  // Cambio automatico slide
+  const goToNextSlide = () => {
+    if (isTransitioning) return;
+
+    setIsTransitioning(true);
+
+    const nextIndex =
+      (currentIndex + 1) % MEDIA_CAROUSEL.length;
+
+    // Avviamo subito il video della slide successiva,
+    // così durante il fade è già pronto.
+    const nextMedia = MEDIA_CAROUSEL[nextIndex];
+
+    if (nextMedia.type === "video") {
+      const nextVideo = videoRefs.current[nextIndex];
+
+      if (nextVideo) {
+        nextVideo.currentTime = 0;
+
+        const playPromise = nextVideo.play();
+
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Autoplay eventualmente bloccato dal browser
+          });
+        }
+      }
+    }
+
+    // Cambiamo slide.
+    setCurrentIndex(nextIndex);
+
+    // Aspettiamo che il fade sia terminato prima di fermare
+    // definitivamente il video precedente.
+    transitionTimerRef.current = window.setTimeout(() => {
+      const previousIndex =
+        nextIndex === 0
+          ? MEDIA_CAROUSEL.length - 1
+          : nextIndex - 1;
+
+      const previousVideo = videoRefs.current[previousIndex];
+
+      if (previousVideo) {
+        previousVideo.pause();
+        previousVideo.currentTime = 0;
+      }
+
+      setIsTransitioning(false);
+    }, FADE_DURATION);
+  };
+
+  // ----------------------------------------------------------
+  // Gestione immagini
+  // ----------------------------------------------------------
+
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setCurrentIndex((prevIndex) => {
-        return (prevIndex + 1) % MEDIA_CAROUSEL.length;
-      });
-    }, SLIDE_DURATION);
+    const currentMedia = MEDIA_CAROUSEL[currentIndex];
 
-    return () => window.clearInterval(interval);
-  }, []);
+    // Se siamo su un'immagine, impostiamo il timer.
+    if (currentMedia.type === "image") {
+      if (imageTimerRef.current) {
+        window.clearTimeout(imageTimerRef.current);
+      }
 
-  // Gestione riproduzione video quando cambia slide
+      imageTimerRef.current = window.setTimeout(() => {
+        goToNextSlide();
+      }, IMAGE_DURATION);
+    }
+
+    return () => {
+      if (imageTimerRef.current) {
+        window.clearTimeout(imageTimerRef.current);
+      }
+    };
+  }, [currentIndex, isTransitioning]);
+
+  // ----------------------------------------------------------
+  // Gestione video
+  // ----------------------------------------------------------
+
+  const handleVideoTimeUpdate = (
+    index: number,
+    event: React.SyntheticEvent<HTMLVideoElement>
+  ) => {
+    // Consideriamo solo il video attualmente visibile.
+    if (index !== currentIndex) return;
+
+    if (isTransitioning) return;
+
+    const video = event.currentTarget;
+
+    if (!video.duration || !isFinite(video.duration)) {
+      return;
+    }
+
+    const timeRemaining = video.duration - video.currentTime;
+
+    // Iniziamo il fade prima che il video arrivi alla fine.
+    if (timeRemaining <= VIDEO_FADE_BEFORE_END) {
+      goToNextSlide();
+    }
+  };
+
+  // ----------------------------------------------------------
+  // Avvio video quando entra nella slide
+  // ----------------------------------------------------------
+
   useEffect(() => {
-    MEDIA_CAROUSEL.forEach((item, index) => {
-      if (item.type !== "video") return;
+    const currentMedia = MEDIA_CAROUSEL[currentIndex];
 
-      const video = videoRefs.current[index];
+    if (currentMedia.type === "video") {
+      const video = videoRefs.current[currentIndex];
 
-      if (!video) return;
-
-      if (index === currentIndex) {
-        // Quando il video entra:
-        // lo riportiamo all'inizio e lo avviamo.
+      if (video) {
         video.currentTime = 0;
 
         const playPromise = video.play();
 
         if (playPromise !== undefined) {
           playPromise.catch(() => {
-            // Alcuni browser possono bloccare l'autoplay.
+            // Autoplay bloccato dal browser.
           });
         }
-      } else {
-        // Quando il video esce:
-        // lo fermiamo e lo riportiamo all'inizio.
-        video.pause();
-        video.currentTime = 0;
       }
-    });
+    }
+
+    return () => {
+      if (transitionTimerRef.current) {
+        window.clearTimeout(transitionTimerRef.current);
+      }
+    };
   }, [currentIndex]);
+
+  // ----------------------------------------------------------
+  // Cleanup finale
+  // ----------------------------------------------------------
+
+  useEffect(() => {
+    return () => {
+      if (imageTimerRef.current) {
+        window.clearTimeout(imageTimerRef.current);
+      }
+
+      if (transitionTimerRef.current) {
+        window.clearTimeout(transitionTimerRef.current);
+      }
+
+      videoRefs.current.forEach((video) => {
+        if (video) {
+          video.pause();
+        }
+      });
+    };
+  }, []);
+
+  // ----------------------------------------------------------
+  // Render
+  // ----------------------------------------------------------
 
   return (
     <div
@@ -118,8 +240,11 @@ export const CustomMediaCarousel = () => {
             style={{
               opacity: isActive ? 1 : 0,
               zIndex: isActive ? 2 : 1,
-              transition: `opacity ${FADE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`,
+
+              transition: `opacity ${FADE_DURATION}ms cubic-bezier(0.45, 0, 0.15, 1)`,
+
               pointerEvents: isActive ? "auto" : "none",
+
               willChange: "opacity",
             }}
           >
@@ -139,6 +264,9 @@ export const CustomMediaCarousel = () => {
                 muted
                 playsInline
                 preload="auto"
+                onTimeUpdate={(event) =>
+                  handleVideoTimeUpdate(index, event)
+                }
                 className="w-full h-full object-cover"
               />
             )}
@@ -148,6 +276,18 @@ export const CustomMediaCarousel = () => {
     </div>
   );
 };
+
+
+Il punto fondamentale è questo:
+
+const VIDEO_FADE_BEFORE_END = 2200;
+
+
+e:
+
+if (timeRemaining <= VIDEO_FADE_BEFORE_END) {
+  goToNextSlide();
+}
 
 // ============================================================
 // VIDEO FILOSOFIA
