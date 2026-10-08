@@ -211,7 +211,7 @@ export const FilosofiaVideo = () => {
 };
 
 // ============================================================
-// IMMAGINE CON EFFETTO PARALLASSE (Ancorata in basso, no barra nera)
+// IMMAGINE CON EFFETTO PARALLASSE (Ancorata in basso, movimento verso il basso)
 // ============================================================
 
 export const ParallaxImage = ({
@@ -248,11 +248,11 @@ export const ParallaxImage = ({
       const imageHeight = image.offsetHeight;
       const containerHeight = container.offsetHeight;
       
-      // Calcolo dello spazio di scorrimento disponibile
+      // Calcolo dello spazio massimo di scorrimento
       const maxTravel = Math.max(0, imageHeight - containerHeight);
 
-      // Parte ancorata in basso (translateY = 0) e sale gradualmente verso l'alto durante lo scroll
-      const translateY = -progress * maxTravel;
+      // Parte ancorata in basso (translateY = 0) e si sposta verso il basso (+translateY) allo scroll
+      const translateY = progress * maxTravel;
 
       image.style.transform = `translate3d(0, ${translateY}px, 0)`;
     };
@@ -286,7 +286,7 @@ export const ParallaxImage = ({
         loading="lazy"
         decoding="async"
         draggable={false}
-        className="absolute left-0 bottom-0 w-full h-[150%] max-w-none object-cover will-change-transform"
+        className="absolute left-0 -top-[50%] w-full h-[150%] max-w-none object-cover will-change-transform"
       />
     </div>
   );
