@@ -38,7 +38,7 @@ const MEDIA_CAROUSEL = [
 const IMMAGINI = {
   hero: "https://res.cloudinary.com/cjgxjyub/image/upload/v1791473048/events-adg_tigmw1.jpg",
   servizi:
-    "https://res.cloudinary.com/cjgxjyub/image/upload/f_auto,q_auto/v1791021764/WhatsApp_Image_2026-09-16_at_21.21.08_3_m8zfzk.jpg",
+    "https://res.cloudinary.com/cjgxjyub/image/upload/v1791475481/WhatsApp_Image_2026-09-16_at_21.21.08_3_m8zfzk.png",
   perche: "",
   contatti: "",
 };
@@ -619,12 +619,7 @@ ${form.messaggio || "Nessun messaggio aggiuntivo."}`;
               </a>
             </p>
 
-            <SectionImage
-              image={IMMAGINI.contatti}
-              alt="Foto per iniziare a progettare il tuo evento"
-              caption="Scegli la foto da mostrare in questa sezione."
-            />
-
+           
             {/* ==================================================
                 FORM WHATSAPP
             ================================================== */}
