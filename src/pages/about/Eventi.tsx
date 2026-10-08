@@ -45,9 +45,10 @@ const IMMAGINI = {
 
 const VIDEO_URL = "https://res.cloudinary.com/cjgxjyub/video/upload/f_auto,q_auto/v1791021193/WhatsApp_Video_2026-09-16_at_21.22.06_z2fjli.mp4";
 
-// Carosello Personalizzato in React (Autoplay 4s, Fade, Loop, Muto, Senza pulsanti)
+// Carosello Personalizzato in React (Formato 16:9, Autoplay 4s, Fade armonioso, Loop, Muto)
 export const CustomMediaCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -57,8 +58,22 @@ export const CustomMediaCarousel = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Riproduzione fluida dei video all'attivazione della slide
+  useEffect(() => {
+    const currentMedia = MEDIA_CAROUSEL[currentIndex];
+    if (currentMedia.type === "video") {
+      const activeVideo = videoRefs.current[currentIndex];
+      if (activeVideo) {
+        activeVideo.currentTime = 0;
+        activeVideo.play().catch(() => {
+          // Gestione silenziosa delle restrizioni autoplay del browser
+        });
+      }
+    }
+  }, [currentIndex]);
+
   return (
-    <div className="relative w-full mt-10 h-[350px] sm:h-[450px] md:h-[550px] overflow-hidden rounded-2xl shadow-xl border border-border bg-black/5">
+    <div className="relative w-full mt-10 aspect-video overflow-hidden rounded-2xl shadow-xl border border-border bg-black/5">
       {MEDIA_CAROUSEL.map((item, index) => {
         const isActive = index === currentIndex;
         return (
@@ -76,11 +91,12 @@ export const CustomMediaCarousel = () => {
               />
             ) : (
               <video
+                ref={(el) => (videoRefs.current[index] = el)}
                 src={item.url}
-                autoPlay
                 loop
                 muted
                 playsInline
+                preload="auto"
                 className="w-full h-full object-cover"
               />
             )}
@@ -264,7 +280,7 @@ const Eventi = () => {
                   personalità e la tua storia.
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  Il nostro punto di forza è la presenza constante: ti affianchiamo
+                  Il nostro punto di forza è la presenza costante: ti affianchiamo
                   dal primo incontro conoscitivo fino alla regia completa del giorno
                   dell'evento, coordinando fornitori e tempistiche affinché tu possa
                   goderti ogni istante in assoluta serenità.
@@ -384,7 +400,7 @@ const Eventi = () => {
               </div>
             </div>
 
-            {/* Carosello personalizzato React con i media di Cloudinary */}
+            {/* Carosello personalizzato React in formato 16:9 con riproduzione video armoniosa */}
             <CustomMediaCarousel />
           </ContentSection>
 
