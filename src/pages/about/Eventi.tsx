@@ -9,7 +9,7 @@ import { Volume2, VolumeX } from "lucide-react";
 
 // URL Media Ottimizzati Cloudinary
 const IMMAGINI = {
-  hero: "",
+  hero: "https://res.cloudinary.com/cjgxjyub/image/upload/v1791473048/events-adg_tigmw1.jpg",
   servizi: "https://res.cloudinary.com/cjgxjyub/image/upload/f_auto,q_auto/v1791021764/WhatsApp_Image_2026-09-16_at_21.21.08_3_m8zfzk.jpg",
   perche: "",
   contatti: "",
