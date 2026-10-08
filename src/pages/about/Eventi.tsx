@@ -53,34 +53,20 @@ const VIDEO_URL =
 
 export const CustomMediaCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const timerRef = useRef<number | null>(null);
+  const slideTimerRef = useRef<number | null>(null);
   const transitionTimerRef = useRef<number | null>(null);
 
-  // Ogni contenuto resta visibile esattamente 3 secondi
   const SLIDE_DURATION = 3000;
-
-  // Crossfade più breve e naturale
   const FADE_DURATION = 800;
 
   const goToNextSlide = () => {
-    if (isTransitioning) return;
-
-    const nextIndex =
-      (currentIndex + 1) % MEDIA_CAROUSEL.length;
-
+    const nextIndex = (currentIndex + 1) % MEDIA_CAROUSEL.length;
     const nextMedia = MEDIA_CAROUSEL[nextIndex];
     const nextVideo = videoRefs.current[nextIndex];
 
-    setIsTransitioning(true);
-
-    /*
-     * Avviamo il video successivo PRIMA di renderizzarlo.
-     * In questo modo durante il crossfade il video è già in movimento
-     * e non parte da un fotogramma "bloccato".
-     */
+    // Avvia il video successivo prima del crossfade.
     if (nextMedia.type === "video" && nextVideo) {
       nextVideo.currentTime = 0;
 
@@ -88,60 +74,50 @@ export const CustomMediaCarousel = () => {
 
       if (playPromise !== undefined) {
         playPromise.catch(() => {
-          // Autoplay eventualmente bloccato dal browser
+          // Autoplay eventualmente bloccato dal browser.
         });
       }
     }
 
     setCurrentIndex(nextIndex);
 
-    /*
-     * Lasciamo il contenuto precedente in riproduzione durante
-     * tutto il crossfade. Lo fermiamo solo quando è completamente
-     * scomparso.
-     */
+    // Ferma il video precedente solo dopo il crossfade.
     transitionTimerRef.current = window.setTimeout(() => {
-      const previousIndex =
-        currentIndex;
-
-      const previousVideo = videoRefs.current[previousIndex];
+      const previousVideo = videoRefs.current[currentIndex];
 
       if (previousVideo) {
         previousVideo.pause();
         previousVideo.currentTime = 0;
       }
-
-      setIsTransitioning(false);
     }, FADE_DURATION);
   };
 
-  /*
-   * TIMER UNICO:
-   * immagini e video hanno esattamente la stessa durata.
-   */
+  // Ogni slide, immagine o video, resta visibile esattamente 3 secondi.
   useEffect(() => {
-    timerRef.current = window.setTimeout(() => {
+    slideTimerRef.current = window.setTimeout(() => {
       goToNextSlide();
     }, SLIDE_DURATION);
 
     return () => {
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current);
+      if (slideTimerRef.current) {
+        window.clearTimeout(slideTimerRef.current);
       }
     };
-  }, [currentIndex, isTransitioning]);
+  }, [currentIndex]);
 
-  /*
-   * Avvio del video quando entra nella slide.
-   */
+  // Avvia il video quando diventa la slide attiva.
   useEffect(() => {
     const currentMedia = MEDIA_CAROUSEL[currentIndex];
 
-    if (currentMedia.type !== "video") return;
+    if (currentMedia.type !== "video") {
+      return;
+    }
 
     const video = videoRefs.current[currentIndex];
 
-    if (!video) return;
+    if (!video) {
+      return;
+    }
 
     video.currentTime = 0;
 
@@ -149,24 +125,16 @@ export const CustomMediaCarousel = () => {
 
     if (playPromise !== undefined) {
       playPromise.catch(() => {
-        // Autoplay eventualmente bloccato dal browser
+        // Autoplay eventualmente bloccato dal browser.
       });
     }
-
-    return () => {
-      if (transitionTimerRef.current) {
-        window.clearTimeout(transitionTimerRef.current);
-      }
-    };
   }, [currentIndex]);
 
-  /*
-   * Cleanup finale.
-   */
+  // Cleanup.
   useEffect(() => {
     return () => {
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current);
+      if (slideTimerRef.current) {
+        window.clearTimeout(slideTimerRef.current);
       }
 
       if (transitionTimerRef.current) {
@@ -195,20 +163,9 @@ export const CustomMediaCarousel = () => {
             className="absolute inset-0 w-full h-full"
             style={{
               opacity: isActive ? 1 : 0,
-
-              /*
-               * Durante il crossfade teniamo la slide precedente
-               * sopra quella successiva.
-               */
               zIndex: isActive ? 2 : 1,
-
-              transition: `
-                opacity ${FADE_DURATION}ms
-                cubic-bezier(0.4, 0, 0.2, 1)
-              `,
-
+              transition: `opacity ${FADE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`,
               pointerEvents: isActive ? "auto" : "none",
-
               willChange: "opacity",
             }}
           >
@@ -223,8 +180,8 @@ export const CustomMediaCarousel = () => {
               />
             ) : (
               <video
-                ref={(el) => {
-                  videoRefs.current[index] = el;
+                ref={(element) => {
+                  videoRefs.current[index] = element;
                 }}
                 src={item.url}
                 muted
@@ -306,52 +263,34 @@ export const ParallaxImage = ({
       const container = containerRef.current;
       const img = imgRef.current;
 
-      if (!container || !img) return;
+      if (!container || !img) {
+        return;
+      }
 
       const rect = container.getBoundingClientRect();
-      const viewportH = window.innerHeight;
+      const viewportHeight = window.innerHeight;
 
-      /*
-       * Progress:
-       *
-       * 0 = immagine ancora allineata al margine inferiore
-       * 1 = immagine arrivata alla posizione finale superiore
-       */
+      // 0 = immagine al margine inferiore.
+      // 1 = immagine arrivata alla posizione superiore.
       const progress = Math.min(
         1,
         Math.max(
           0,
-          (viewportH - rect.top) /
-            (viewportH + rect.height)
+          (viewportHeight - rect.top) /
+            (viewportHeight + rect.height)
         )
       );
 
-      const overflow =
-        img.offsetHeight - container.offsetHeight;
+      const overflow = Math.max(
+        0,
+        img.offsetHeight - container.offsetHeight
+      );
 
-      if (overflow > 0) {
-        /*
-         * L'immagine parte dal basso:
-         * translateY(0)
-         *
-         * e sale progressivamente:
-         * translateY(-overflow)
-         */
-        img.style.transform = `translate3d(
-          0,
-          ${-progress * overflow}px,
-          0
-        )`;
-      } else {
-        img.style.transform = "translate3d(0, 0, 0)";
-      }
+      img.style.transform = `translate3d(0, ${-progress * overflow}px, 0)`;
     };
 
     const handleScroll = () => {
-      if (raf) {
-        cancelAnimationFrame(raf);
-      }
-
+      cancelAnimationFrame(raf);
       raf = requestAnimationFrame(update);
     };
 
@@ -360,12 +299,10 @@ export const ParallaxImage = ({
     window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
-
     window.addEventListener("resize", handleScroll);
 
     return () => {
       cancelAnimationFrame(raf);
-
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
@@ -374,17 +311,7 @@ export const ParallaxImage = ({
   return (
     <div
       ref={containerRef}
-      className="
-        relative
-        w-full
-        h-[450px]
-        md:h-[600px]
-        overflow-hidden
-        rounded-2xl
-        shadow-2xl
-        border
-        border-border
-      "
+      className="relative w-full h-[450px] md:h-[600px] overflow-hidden rounded-2xl shadow-2xl border border-border"
     >
       <img
         ref={imgRef}
@@ -393,16 +320,7 @@ export const ParallaxImage = ({
         loading="lazy"
         decoding="async"
         draggable={false}
-        className="
-          absolute
-          left-0
-          bottom-0
-          w-full
-          h-[125%]
-          object-cover
-          max-w-none
-          will-change-transform
-        "
+        className="absolute left-0 bottom-0 w-full h-[125%] max-w-none object-cover will-change-transform"
       />
     </div>
   );
@@ -848,4 +766,4 @@ ${form.messaggio || "Nessun messaggio aggiuntivo."}`;
   );
 };
 
-export default Eventi;
+export default Eventi; controlla e pulisci questo code
