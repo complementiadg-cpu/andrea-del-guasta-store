@@ -58,6 +58,62 @@ export const FilosofiaVideo = () => {
   );
 };
 
+// Immagine con effetto parallasse: larghezza esatta del contenitore,
+// si sposta verticalmente durante lo scroll senza essere ingrandita.
+export const ParallaxImage = ({ src, alt }: { src: string; alt: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  React.useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      const container = containerRef.current;
+      const img = imgRef.current;
+      if (!container || !img) return;
+      const rect = container.getBoundingClientRect();
+      const viewportH = window.innerHeight;
+      // progress: -1 (sotto il viewport) → 1 (sopra il viewport)
+      const progress =
+        (rect.top + rect.height / 2 - viewportH / 2) /
+        (viewportH / 2 + rect.height / 2);
+      const overflow = img.offsetHeight - container.offsetHeight;
+      if (overflow > 0) {
+        img.style.transform = `translateY(${(-progress * overflow) / 2}px)`;
+      } else {
+        img.style.transform = "";
+      }
+    };
+    const handleScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full h-[450px] md:h-[600px] overflow-hidden rounded-2xl shadow-2xl border border-border"
+    >
+      <img
+        ref={imgRef}
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className="w-full h-auto will-change-transform"
+      />
+    </div>
+  );
+};
+
 const Eventi = () => {
   const [form, setForm] = useState({
     nome: "",
@@ -208,11 +264,11 @@ const Eventi = () => {
               </div>
             </div>
 
-            {/* Immagine Servizi a larghezza piena con Parallasse CSS Nativo */}
+            {/* Immagine Servizi: larghezza esatta del contenitore, parallasse allo scroll */}
             {IMMAGINI.servizi ? (
-              <div
-                className="w-full h-[450px] md:h-[600px] rounded-2xl shadow-2xl bg-fixed bg-center bg-cover bg-no-repeat border border-border"
-                style={{ backgroundImage: `url('${IMMAGINI.servizi}')` }}
+              <ParallaxImage
+                src={IMMAGINI.servizi}
+                alt="Foto dei servizi ADG Eventi"
               />
             ) : (
               <SectionImage
