@@ -66,7 +66,6 @@ export const CustomMediaCarousel = () => {
     const nextMedia = MEDIA_CAROUSEL[nextIndex];
     const nextVideo = videoRefs.current[nextIndex];
 
-    // Preriscaldiamo e avviamo la riproduzione del video prima di mostrare la slide
     if (nextMedia.type === "video" && nextVideo) {
       nextVideo.currentTime = 0;
       const playPromise = nextVideo.play();
@@ -81,7 +80,6 @@ export const CustomMediaCarousel = () => {
       window.clearTimeout(transitionTimerRef.current);
     }
 
-    // Manteniamo in esecuzione il video precedente finché il crossfade non è terminato
     transitionTimerRef.current = window.setTimeout(() => {
       const previousVideo = videoRefs.current[previousIndex];
       if (previousVideo) {
@@ -213,7 +211,7 @@ export const FilosofiaVideo = () => {
 };
 
 // ============================================================
-// IMMAGINE CON EFFETTO PARALLASSE (Dal basso verso l'alto)
+// IMMAGINE CON EFFETTO PARALLASSE (Ancorata in basso, no barra nera)
 // ============================================================
 
 export const ParallaxImage = ({
@@ -238,7 +236,7 @@ export const ParallaxImage = ({
       const rect = container.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
 
-      // Progresso visibilità della sezione nello schermo (0 a 1)
+      // Progresso visibilità della sezione nello schermo (da 0 a 1)
       const progress = Math.min(
         1,
         Math.max(
@@ -249,10 +247,14 @@ export const ParallaxImage = ({
 
       const imageHeight = image.offsetHeight;
       const containerHeight = container.offsetHeight;
-      const travel = Math.max(0, imageHeight - containerHeight);
+      
+      // Calcolo dello spazio di scorrimento disponibile
+      const maxTravel = Math.max(0, imageHeight - containerHeight);
 
-      // Parte allineata in basso e sale durante lo scroll verso l'alto
-      image.style.transform = `translate3d(0, ${-progress * travel}px, 0)`;
+      // Parte ancorata in basso (translateY = 0) e sale gradualmente verso l'alto durante lo scroll
+      const translateY = -progress * maxTravel;
+
+      image.style.transform = `translate3d(0, ${translateY}px, 0)`;
     };
 
     const handleScroll = () => {
@@ -275,7 +277,7 @@ export const ParallaxImage = ({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[450px] md:h-[600px] overflow-hidden rounded-2xl shadow-2xl border border-border bg-black"
+      className="relative w-full h-[450px] md:h-[600px] overflow-hidden rounded-2xl shadow-2xl border border-border"
     >
       <img
         ref={imgRef}
@@ -284,7 +286,7 @@ export const ParallaxImage = ({
         loading="lazy"
         decoding="async"
         draggable={false}
-        className="absolute left-0 bottom-0 w-full h-[130%] max-w-none object-cover will-change-transform"
+        className="absolute left-0 bottom-0 w-full h-[150%] max-w-none object-cover will-change-transform"
       />
     </div>
   );
