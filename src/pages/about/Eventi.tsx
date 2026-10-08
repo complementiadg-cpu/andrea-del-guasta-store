@@ -366,7 +366,7 @@ ${form.messaggio || "Nessun messaggio aggiuntivo."}`;
             <SectionImage
               image={IMMAGINI.hero}
               alt="Foto di un evento ADG — scenografia e allestimento"
-              caption="Scegli la foto da mostrare in questa sezione."
+              caption=""
             />
           </ContentSection>
 
