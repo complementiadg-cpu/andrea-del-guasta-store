@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
@@ -6,6 +6,17 @@ import ContentSection from "../../components/about/ContentSection";
 import SectionImage from "../../components/about/SectionImage";
 import { toast } from "@/hooks/use-toast";
 import { Volume2, VolumeX } from "lucide-react";
+
+// Estensione interfaccia window per TypeScript per riconoscere il widget Cloudinary
+declare global {
+  interface Window {
+    cloudinary?: {
+      galleryWidget: (config: Record<string, unknown>) => {
+        render: () => void;
+      };
+    };
+  }
+}
 
 // URL Media Ottimizzati Cloudinary
 const IMMAGINI = {
@@ -16,6 +27,69 @@ const IMMAGINI = {
 };
 
 const VIDEO_URL = "https://res.cloudinary.com/cjgxjyub/video/upload/f_auto,q_auto/v1791021193/WhatsApp_Video_2026-09-16_at_21.22.06_z2fjli.mp4";
+
+// Componente Carosello Cloudinary Media Gallery
+export const CloudinaryCarousel = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scriptId = "cloudinary-gallery-script";
+
+    const initWidget = () => {
+      if (window.cloudinary && containerRef.current) {
+        // Pulisce il contenitore prima di ri-renderizzare
+        containerRef.current.innerHTML = "";
+
+        const myGallery = window.cloudinary.galleryWidget({
+          container: containerRef.current,
+          cloudName: "cjgxjyub",
+          mediaAssets: [
+            { publicId: "magnific__-__41601_ng43ea", mediaType: "image" },
+            { publicId: "image-to-video/i2v_1b9a7819937b49628491c5ce8a6b9005", mediaType: "video" },
+            { publicId: "magnific__ricrea-la-foto-senza-persone-con-un-angolo-di-inqu__41603_wh02yj", mediaType: "image" },
+            { publicId: "image-to-video/i2v_09460d195ba945c58dd3283aa9b862a4", mediaType: "video" },
+            { publicId: "magnific__ricrea-la-foto-senza-persone-con-un-angolo-di-inqu__41607_vndwsz", mediaType: "image" }
+          ],
+          autoplay: true,
+          autoplayInterval: 4000,
+          loop: true,
+          transition: "fade",
+          carouselLocation: "none",
+          navigation: "none",
+          zoom: false,
+          aspectRatio: "16:9",
+          videoProps: {
+            autoplay: true,
+            loop: false,
+            controls: false,
+            sound: false
+          }
+        });
+
+        myGallery.render();
+      }
+    };
+
+    // Se lo script è già presente nella pagina
+    if (document.getElementById(scriptId)) {
+      initWidget();
+    } else {
+      // Caricamento dinamico dello script Cloudinary Product Gallery
+      const script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://product-gallery.cloudinary.com/all.js";
+      script.type = "text/javascript";
+      script.onload = () => initWidget();
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  return (
+    <div className="w-full mt-10 overflow-hidden rounded-2xl shadow-xl border border-border">
+      <div ref={containerRef} className="w-full h-[400px] md:h-[550px]" />
+    </div>
+  );
+};
 
 // Componente Video Filosofia (Autoplay, Loop, Muto + Toggle Audio)
 export const FilosofiaVideo = () => {
@@ -58,8 +132,7 @@ export const FilosofiaVideo = () => {
   );
 };
 
-// Immagine con effetto parallasse: larghezza esatta del contenitore,
-// si sposta verticalmente durante lo scroll senza essere ingrandita.
+// Immagine con effetto parallasse
 export const ParallaxImage = ({ src, alt }: { src: string; alt: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -72,7 +145,6 @@ export const ParallaxImage = ({ src, alt }: { src: string; alt: string }) => {
       if (!container || !img) return;
       const rect = container.getBoundingClientRect();
       const viewportH = window.innerHeight;
-      // progress: -1 (sotto il viewport) → 1 (sopra il viewport)
       const progress =
         (rect.top + rect.height / 2 - viewportH / 2) /
         (viewportH / 2 + rect.height / 2);
@@ -264,7 +336,7 @@ const Eventi = () => {
               </div>
             </div>
 
-            {/* Immagine Servizi: larghezza esatta del contenitore, parallasse allo scroll */}
+            {/* Immagine Servizi */}
             {IMMAGINI.servizi ? (
               <ParallaxImage
                 src={IMMAGINI.servizi}
@@ -312,11 +384,9 @@ const Eventi = () => {
                 </p>
               </div>
             </div>
-            <SectionImage
-              image={IMMAGINI.perche}
-              alt="Foto perché scegliere ADG Eventi — evento in Toscana"
-              caption="Scegli la foto da mostrare in questa sezione."
-            />
+
+            {/* Sostituita la SectionImage con il Carosello Cloudinary */}
+            <CloudinaryCarousel />
           </ContentSection>
 
           {/* 5. Call to Action / Contatti */}
