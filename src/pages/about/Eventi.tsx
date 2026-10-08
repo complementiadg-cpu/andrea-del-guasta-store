@@ -7,18 +7,35 @@ import SectionImage from "../../components/about/SectionImage";
 import { toast } from "@/hooks/use-toast";
 import { Volume2, VolumeX } from "lucide-react";
 
-// Estensione interfaccia window per TypeScript per riconoscere il widget Cloudinary
-declare global {
-  interface Window {
-    cloudinary?: {
-      galleryWidget: (config: Record<string, unknown>) => {
-        render: () => void;
-      };
-    };
-  }
-}
+// URL Media
+const MEDIA_CAROUSEL = [
+  {
+    type: "image",
+    url: "https://res.cloudinary.com/cjgxjyub/image/upload/v1791473047/magnific__-__41601_ng43ea.png",
+    alt: "Scenografia evento ADG 1",
+  },
+  {
+    type: "video",
+    url: "https://res.cloudinary.com/cjgxjyub/video/upload/v1791473431/image-to-video/i2v_1b9a7819937b49628491c5ce8a6b9005.mp4",
+    alt: "Video evento ADG 1",
+  },
+  {
+    type: "image",
+    url: "https://res.cloudinary.com/cjgxjyub/image/upload/v1791473055/magnific__ricrea-la-foto-senza-persone-con-un-angolo-di-inqu__41603_wh02yj.png",
+    alt: "Scenografia evento ADG 2",
+  },
+  {
+    type: "video",
+    url: "https://res.cloudinary.com/cjgxjyub/video/upload/v1791473185/image-to-video/i2v_09460d195ba945c58dd3283aa9b862a4.mp4",
+    alt: "Video evento ADG 2",
+  },
+  {
+    type: "image",
+    url: "https://res.cloudinary.com/cjgxjyub/image/upload/v1791473546/magnific__ricrea-la-foto-senza-persone-con-un-angolo-di-inqu__41607_vndwsz.png",
+    alt: "Scenografia evento ADG 3",
+  },
+];
 
-// URL Media Ottimizzati Cloudinary
 const IMMAGINI = {
   hero: "https://res.cloudinary.com/cjgxjyub/image/upload/v1791473048/events-adg_tigmw1.jpg",
   servizi: "https://res.cloudinary.com/cjgxjyub/image/upload/f_auto,q_auto/v1791021764/WhatsApp_Image_2026-09-16_at_21.21.08_3_m8zfzk.jpg",
@@ -28,65 +45,48 @@ const IMMAGINI = {
 
 const VIDEO_URL = "https://res.cloudinary.com/cjgxjyub/video/upload/f_auto,q_auto/v1791021193/WhatsApp_Video_2026-09-16_at_21.22.06_z2fjli.mp4";
 
-// Componente Carosello Cloudinary Media Gallery
-export const CloudinaryCarousel = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
+// Carosello Personalizzato in React (Autoplay 4s, Fade, Loop, Muto, Senza pulsanti)
+export const CustomMediaCarousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const scriptId = "cloudinary-gallery-script";
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % MEDIA_CAROUSEL.length);
+    }, 4000); // Cambio ogni 4 secondi
 
-    const initWidget = () => {
-      if (window.cloudinary && containerRef.current) {
-        // Pulisce il contenitore prima di ri-renderizzare
-        containerRef.current.innerHTML = "";
-
-        const myGallery = window.cloudinary.galleryWidget({
-          container: containerRef.current,
-          cloudName: "cjgxjyub",
-          mediaAssets: [
-            { publicId: "magnific__-__41601_ng43ea", mediaType: "image" },
-            { publicId: "image-to-video/i2v_1b9a7819937b49628491c5ce8a6b9005", mediaType: "video" },
-            { publicId: "magnific__ricrea-la-foto-senza-persone-con-un-angolo-di-inqu__41603_wh02yj", mediaType: "image" },
-            { publicId: "image-to-video/i2v_09460d195ba945c58dd3283aa9b862a4", mediaType: "video" },
-            { publicId: "magnific__ricrea-la-foto-senza-persone-con-un-angolo-di-inqu__41607_vndwsz", mediaType: "image" }
-          ],
-          autoplay: true,
-          autoplayInterval: 4000,
-          loop: true,
-          transition: "fade",
-          carouselLocation: "none",
-          navigation: "none",
-          zoom: false,
-          aspectRatio: "16:9",
-          videoProps: {
-            autoplay: true,
-            loop: false,
-            controls: false,
-            sound: false
-          }
-        });
-
-        myGallery.render();
-      }
-    };
-
-    // Se lo script è già presente nella pagina
-    if (document.getElementById(scriptId)) {
-      initWidget();
-    } else {
-      // Caricamento dinamico dello script Cloudinary Product Gallery
-      const script = document.createElement("script");
-      script.id = scriptId;
-      script.src = "https://product-gallery.cloudinary.com/all.js";
-      script.type = "text/javascript";
-      script.onload = () => initWidget();
-      document.body.appendChild(script);
-    }
+    return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="w-full mt-10 overflow-hidden rounded-2xl shadow-xl border border-border">
-      <div ref={containerRef} className="w-full h-[400px] md:h-[550px]" />
+    <div className="relative w-full mt-10 h-[350px] sm:h-[450px] md:h-[550px] overflow-hidden rounded-2xl shadow-xl border border-border bg-black/5">
+      {MEDIA_CAROUSEL.map((item, index) => {
+        const isActive = index === currentIndex;
+        return (
+          <div
+            key={item.url}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+              isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+            }`}
+          >
+            {item.type === "image" ? (
+              <img
+                src={item.url}
+                alt={item.alt}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <video
+                src={item.url}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -115,7 +115,6 @@ export const FilosofiaVideo = () => {
         className="w-full h-full object-cover"
       />
 
-      {/* Pulsante attivazione/disattivazione audio */}
       <button
         onClick={toggleMute}
         type="button"
@@ -265,7 +264,7 @@ const Eventi = () => {
                   personalità e la tua storia.
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  Il nostro punto di forza è la presenza costante: ti affianchiamo
+                  Il nostro punto di forza è la presenza constante: ti affianchiamo
                   dal primo incontro conoscitivo fino alla regia completa del giorno
                   dell'evento, coordinando fornitori e tempistiche affinché tu possa
                   goderti ogni istante in assoluta serenità.
@@ -385,8 +384,8 @@ const Eventi = () => {
               </div>
             </div>
 
-            {/* Sostituita la SectionImage con il Carosello Cloudinary */}
-            <CloudinaryCarousel />
+            {/* Carosello personalizzato React con i media di Cloudinary */}
+            <CustomMediaCarousel />
           </ContentSection>
 
           {/* 5. Call to Action / Contatti */}
