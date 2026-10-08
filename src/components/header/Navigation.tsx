@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import ShoppingBag from "./ShoppingBag";
 import { useCart } from "@/contexts/CartContext";
 import { useTaxonomy } from "@/hooks/useProducts";
+import { Button } from "@/components/ui/button";
 
 const Navigation = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -99,7 +100,10 @@ const Navigation = () => {
       <div className="flex items-center justify-between h-16 px-6">
         <button
           className="lg:hidden p-2 mt-0.5 text-nav-foreground hover:text-nav-hover transition-colors"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={() => {
+            setIsMobileMenuOpen(!isMobileMenuOpen);
+            setIsSearchOpen(false);
+          }}
           aria-label="Toggle menu"
         >
           <div className="w-5 h-5 relative">
@@ -152,7 +156,7 @@ const Navigation = () => {
 
         <div className="flex items-center space-x-2">
           <button
-            className="p-2 text-nav-foreground hover:text-nav-hover transition-colors"
+            className="hidden lg:block p-2 text-nav-foreground hover:text-nav-hover transition-colors"
             aria-label="Search"
             onClick={() => setIsSearchOpen(!isSearchOpen)}
           >
@@ -248,9 +252,18 @@ const Navigation = () => {
                   <input
                     type="text"
                     placeholder="Cerca gioielli..."
-                    className="flex-1 bg-transparent text-nav-foreground placeholder:text-nav-foreground/60 outline-none text-lg"
+                    className="min-w-0 flex-1 bg-transparent text-nav-foreground placeholder:text-nav-foreground/60 outline-none text-lg"
                     autoFocus
                   />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="lg:hidden shrink-0 text-nav-foreground"
+                    aria-label="Chiudi ricerca"
+                    onClick={() => setIsSearchOpen(false)}
+                  >
+                    <X size={20} />
+                  </Button>
                 </div>
               </div>
               <div>
@@ -275,6 +288,16 @@ const Navigation = () => {
         <div className="lg:hidden absolute top-full left-0 right-0 bg-nav border-b border-border z-50 max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="px-4 sm:px-6 py-8">
             <div className="space-y-6">
+              <Button
+                variant="ghost"
+                className="w-full justify-start px-0 text-lg font-light text-nav-foreground hover:text-nav-hover"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsSearchOpen(true);
+                }}
+              >
+                Cerca
+              </Button>
               {navItems.map((item) => (
                 <div key={item.name}>
                   <Link
