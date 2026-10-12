@@ -21,7 +21,7 @@ const FiftyFiftySection = () => {
                 muted
                 playsInline
                 preload="none"
-                poster={`${I_BASE}/f_auto,q_auto,w_800/${V_PATH}.jpg`}
+                poster={`${V_BASE}/f_auto,q_auto,w_800/${V_PATH}.jpg`}
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               >
                 <source

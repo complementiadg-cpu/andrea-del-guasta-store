@@ -16,7 +16,7 @@ const OneThirdTwoThirdsSection = () => {
             <div className="w-full h-[350px] sm:h-[450px] lg:h-[600px] aspect-square mb-3 overflow-hidden bg-neutral-100">
               <video
                 src="https://res.cloudinary.com/cjgxjyub/video/upload/f_auto,q_auto,w_720/v1786196973/OR2612_c54u62.mp4"
-                poster="https://res.cloudinary.com/cjgxjyub/image/upload/f_auto,q_auto,w_720/v1786196973/OR2612_c54u62.jpg"
+                poster="https://res.cloudinary.com/cjgxjyub/video/upload/f_auto,q_auto,w_720/v1786196973/OR2612_c54u62.jpg"
                 autoPlay
                 loop
                 muted
