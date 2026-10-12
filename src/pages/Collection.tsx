@@ -14,7 +14,7 @@ const Collection = () => {
 
       <main className="pt-6">
         <CategoryHeader category={name} />
-        <ProductGrid filterCollection={collection ? decodeURIComponent(collection) : undefined} />
+        <ProductGrid filterCollection={collection ? decodeURIComponent(collection) : undefined} showCategoryFilters />
       </main>
 
       <Footer />
