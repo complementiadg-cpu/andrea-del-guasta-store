@@ -13,7 +13,7 @@ import { saveOrder } from "@/lib/orders";
 import { createStripeCheckout } from "@/lib/stripe";
 import { toast } from "sonner";
 
-const normalizePhone = (value: string) => value.replace(/[\s().\-]/g, "");
+const normalizePhone = (value: string) => value.replace(/[\s().-]/g, "");
 const isValidPhone = (value: string) => /^\+?\d{8,15}$/.test(normalizePhone(value.trim()));
 
 const Checkout = () => {
