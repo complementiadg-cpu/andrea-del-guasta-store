@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { useProducts } from "@/hooks/useProducts";
@@ -15,8 +15,10 @@ const normalize = (s: string) => s.trim().toLowerCase();
 
 const ProductGrid = ({ filterCategory, filterCollection, showCategoryFilters }: ProductGridProps) => {
   const { data: products, isLoading, error } = useProducts();
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [activeCollection, setActiveCollection] = useState<string>("all");
+  const activeRouteCategory =
+    filterCategory && !["all", "shop"].includes(normalize(filterCategory)) ? normalize(filterCategory) : null;
+  const activeRouteCollection =
+    filterCollection && normalize(filterCollection) !== "all" ? normalize(filterCollection) : null;
 
   const categories = useMemo(() => {
     if (!products) return [];
@@ -44,9 +46,6 @@ const ProductGrid = ({ filterCategory, filterCollection, showCategoryFilters }: 
         : null;
     const routeCollection =
       filterCollection && normalize(filterCollection) !== "all" ? normalize(filterCollection) : null;
-    const chipFilter = showCategoryFilters && activeCategory !== "all" ? normalize(activeCategory) : null;
-    const chipCollection =
-      showCategoryFilters && activeCollection !== "all" ? normalize(activeCollection) : null;
 
     return products.filter((p) => {
       const cat = normalize(p.category);
@@ -54,11 +53,9 @@ const ProductGrid = ({ filterCategory, filterCollection, showCategoryFilters }: 
       if (routeFilter && cat !== routeFilter && !cat.includes(routeFilter) && !routeFilter.includes(cat))
         return false;
       if (routeCollection && col !== routeCollection) return false;
-      if (chipFilter && cat !== chipFilter) return false;
-      if (chipCollection && col !== chipCollection) return false;
       return true;
     });
-  }, [products, filterCategory, filterCollection, activeCategory, activeCollection, showCategoryFilters]);
+  }, [products, filterCategory, filterCollection]);
 
   return (
     <section className="w-full px-4 sm:px-6 mb-16">
@@ -70,23 +67,36 @@ const ProductGrid = ({ filterCategory, filterCollection, showCategoryFilters }: 
                 Categorie
               </p>
               <div className="flex flex-wrap gap-2">
-                <FilterChip
-                  label="Tutte"
-                  active={activeCategory === "all"}
-                  onClick={() => setActiveCategory("all")}
-                />
+                <FilterChip label="Tutte" to="/category/shop" active={!activeRouteCategory && !activeRouteCollection} />
                 {categories.map((c) => (
                   <FilterChip
                     key={c}
                     label={c}
-                    active={normalize(activeCategory) === normalize(c)}
-                    onClick={() => setActiveCategory(c)}
+                    to={`/category/${encodeURIComponent(c.toLowerCase())}`}
+                    active={activeRouteCategory === normalize(c)}
                   />
                 ))}
               </div>
             </div>
           )}
-
+          {collections.length > 0 && (
+            <div>
+              <p className="text-[10px] font-light uppercase tracking-[0.25em] text-muted-foreground mb-2">
+                Collezioni
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <FilterChip label="Tutte" to="/collection/all" active={false} />
+                {collections.map((c) => (
+                  <FilterChip
+                    key={c}
+                    label={c}
+                    to={`/collection/${encodeURIComponent(c)}`}
+                    active={activeRouteCollection === normalize(c)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -111,17 +121,10 @@ const ProductGrid = ({ filterCategory, filterCollection, showCategoryFilters }: 
   );
 };
 
-const FilterChip = ({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) => (
-  <button
-    onClick={onClick}
+const FilterChip = ({ label, active, to }: { label: string; active: boolean; to: string }) => (
+  <Link
+    to={to}
+    aria-current={active ? "page" : undefined}
     className={`px-4 py-2 text-sm font-light border transition-colors ${
       active
         ? "bg-foreground text-background border-foreground"
@@ -129,7 +132,7 @@ const FilterChip = ({
     }`}
   >
     {label}
-  </button>
+  </Link>
 );
 
 const ProductCard = ({ product }: { product: Product }) => {
