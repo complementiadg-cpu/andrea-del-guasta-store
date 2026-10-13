@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: "Email non valida" }, 400);
     if (!messaggio) return json({ error: "Messaggio obbligatorio" }, 400);
 
-    // Salva il messaggio nella tabella "Messaggi_Contatto"
+    // 1. Salva il messaggio nella tabella "Messaggi_Contatto" su Supabase
     try {
       const url = Deno.env.get("SUPABASE_URL");
       const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -42,6 +42,7 @@ Deno.serve(async (req) => {
       console.error("Errore salvataggio:", (e as Error).message);
     }
 
+    // 2. Prepara e invia l'email tramite Resend
     const html = `
       <h2>Nuovo messaggio dal Servizio Clienti</h2>
       <p><strong>Nome:</strong> ${esc(nome) || "-"}</p>
@@ -55,18 +56,20 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        from: "Andrea Del Guasta <info@andreadelguasta.com>",
+        from: "Servizio Clienti <no-reply@andreadelguasta.com>",
         to: ["info@andreadelguasta.com"],
         reply_to: email,
         subject: `Richiesta clienti da ${[nome, cognome].filter(Boolean).join(" ") || email}`,
         html,
       }),
     });
+
     const data = await res.json();
     if (!res.ok) {
       console.error("Errore Resend:", JSON.stringify(data));
       return json({ error: "Invio non riuscito" }, 502);
     }
+
     console.log("Email contatto inviata a info@andreadelguasta.com");
     return json({ ok: true });
   } catch (e) {
