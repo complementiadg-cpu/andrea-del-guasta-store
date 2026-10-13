@@ -25,6 +25,23 @@ Deno.serve(async (req) => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: "Email non valida" }, 400);
     if (!messaggio) return json({ error: "Messaggio obbligatorio" }, 400);
 
+    // Salva il messaggio nella tabella "Messaggi_Contatto"
+    try {
+      const url = Deno.env.get("SUPABASE_URL");
+      const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (url && key) {
+        const r = await fetch(`${url}/rest/v1/Messaggi_Contatto`, {
+          method: "POST",
+          headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "return=minimal" },
+          body: JSON.stringify({ nome: nome || null, cognome: cognome || null, email, ordine: ordine || null, messaggio }),
+        });
+        if (!r.ok) console.error("Errore salvataggio:", r.status, await r.text());
+        else console.log("Messaggio salvato nel database");
+      }
+    } catch (e) {
+      console.error("Errore salvataggio:", (e as Error).message);
+    }
+
     const html = `
       <h2>Nuovo messaggio dal Servizio Clienti</h2>
       <p><strong>Nome:</strong> ${esc(nome) || "-"}</p>
