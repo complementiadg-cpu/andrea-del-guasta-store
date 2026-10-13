@@ -7,8 +7,26 @@ import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../../components/ui/accordion";
 import AboutSidebar from "../../components/about/AboutSidebar";
+import { useState, type FormEvent } from "react";
+import { supabase } from "@/lib/supabase";
 
 const CustomerCare = () => {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const body = Object.fromEntries(new FormData(form).entries());
+    setStatus("sending");
+    const { error } = await supabase.functions.invoke("send-contact-message", { body });
+    if (error) {
+      setStatus("error");
+      return;
+    }
+    form.reset();
+    setStatus("sent");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -97,39 +115,44 @@ const CustomerCare = () => {
 
           <ContentSection title="Modulo di Contatto">
             <div>
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-light text-foreground">Nome</label>
-                    <Input className="rounded-none" placeholder="Inserisci il tuo nome" />
+                    <Input name="nome" maxLength={100} className="rounded-none" placeholder="Inserisci il tuo nome" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-light text-foreground">Cognome</label>
-                    <Input className="rounded-none" placeholder="Inserisci il tuo cognome" />
+                    <Input name="cognome" maxLength={100} className="rounded-none" placeholder="Inserisci il tuo cognome" />
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-sm font-light text-foreground">Email</label>
-                  <Input type="email" className="rounded-none" placeholder="Inserisci la tua email" />
+                  <label className="text-sm font-light text-foreground">Email *</label>
+                  <Input name="email" type="email" required maxLength={255} className="rounded-none" placeholder="Inserisci la tua email" />
                 </div>
                 
                 <div className="space-y-2">
                   <label className="text-sm font-light text-foreground">Numero d'Ordine (Opzionale)</label>
-                  <Input className="rounded-none" placeholder="Inserisci il numero d'ordine se applicabile" />
+                  <Input name="ordine" maxLength={100} className="rounded-none" placeholder="Inserisci il numero d'ordine se applicabile" />
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-sm font-light text-foreground">Come possiamo aiutarti?</label>
+                  <label className="text-sm font-light text-foreground">Come possiamo aiutarti? *</label>
                   <Textarea 
+                    name="messaggio"
+                    required
+                    maxLength={3000}
                     className="rounded-none min-h-[120px]" 
                     placeholder="Descrivi la tua richiesta in dettaglio"
                   />
                 </div>
                 
-                <Button type="submit" className="w-full rounded-none">
-                  Invia Messaggio
+                <Button type="submit" disabled={status === "sending"} className="w-full rounded-none">
+                  {status === "sending" ? "Invio in corso..." : "Invia Messaggio"}
                 </Button>
+                {status === "sent" && <p className="text-sm text-foreground">Grazie! Il tuo messaggio è stato inviato.</p>}
+                {status === "error" && <p className="text-sm text-destructive">Invio non riuscito. Riprova o scrivi a info@andreadelguasta.com.</p>}
               </form>
             </div>
           </ContentSection>
