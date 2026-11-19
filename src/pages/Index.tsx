@@ -13,10 +13,10 @@ const Index = () => {
       <Header />
 
       <main className="pt-6">
+        <HomeImageBanner />
         <FiftyFiftySection />
         <CollectionShowcase collection="Stone" />
 
-        <HomeImageBanner />
 
         <LargeHero />
         <CollectionShowcase collection="Pearl" />
