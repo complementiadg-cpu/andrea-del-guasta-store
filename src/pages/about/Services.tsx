@@ -1,8 +1,16 @@
+import { Link } from "react-router-dom";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import PageHeader from "../../components/about/PageHeader";
 import ContentSection from "../../components/about/ContentSection";
 import ImageTextBlock from "../../components/about/ImageTextBlock";
+import SectionImage from "../../components/about/SectionImage";
+import { Button } from "../../components/ui/button";
+
+// Inserisci qui l'URL dell'immagine dell'atelier
+const IMMAGINI = {
+  atelier: "",
+};
 
 const Services = () => {
   return (
@@ -76,6 +84,41 @@ const Services = () => {
                   esaltando carattere e identità invece di inseguire il momento.
                 </p>
               </div>
+            </div>
+          </ContentSection>
+
+          <ContentSection title="Atelier ADG">
+            <div className="max-w-3xl space-y-6">
+              <h3 className="text-2xl font-light text-foreground">
+                L'Atelier: un luogo dedicato al su misura e all'arte dell'evento
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
+                L'atelier apre le sue porte su appuntamento per accoglierti in
+                uno spazio riservato dove ogni dettaglio prende forma con cura
+                artigianale. All'interno potrai esplorare da vicino le
+                collezioni, scoprire allestimenti e complementi dedicati agli
+                eventi e dare vita a capi su misura progettati intorno alle tue
+                esigenze, guidato nella scelta dei modelli e dei materiali più
+                adatti. Situato in posizione strategica tra Prato e Pistoia, nel
+                cuore di uno dei distretti tessili e artigianali più rinomati
+                d'Italia, l'atelier apre le sue porte per offrirti uno spazio
+                riservato dove ogni dettaglio prende forma.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Un ambiente intimo e facilmente raggiungibile da tutta la
+                Toscana, pensato per trasformare un'idea o un'occasione speciale
+                in un percorso sartoriale e creativo interamente personalizzato.
+                Contattaci per fissare il tuo incontro riservato.
+              </p>
+              <Link to="/about/customer-care">
+                <Button className="rounded-none px-10">Prenota</Button>
+              </Link>
+              <SectionImage
+                image={IMMAGINI.atelier}
+                alt="Atelier ADG"
+                ratio="wide"
+                className="max-w-3xl"
+              />
             </div>
           </ContentSection>
         </main>
