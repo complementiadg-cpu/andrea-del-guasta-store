@@ -5,6 +5,7 @@ import FiftyFiftySection from "../components/content/FiftyFiftySection";
 import OneThirdTwoThirdsSection from "../components/content/OneThirdTwoThirdsSection";
 import EditorialSection from "../components/content/EditorialSection";
 import CollectionShowcase from "../components/content/CollectionShowcase";
+import HomeImageBanner from "../components/content/HomeImageBanner";
 
 const Index = () => {
   return (
@@ -14,6 +15,8 @@ const Index = () => {
       <main className="pt-6">
         <FiftyFiftySection />
         <CollectionShowcase collection="Stone" />
+
+        <HomeImageBanner />
 
         <LargeHero />
         <CollectionShowcase collection="Pearl" />
