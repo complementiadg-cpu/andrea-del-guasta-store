@@ -116,10 +116,10 @@ const HomeImageBanner = () => {
                 className="absolute inset-0 h-full w-full object-cover object-center"
               />
 
-              {/* Gradiente leggero solo in basso per garantire la leggibilità del testo */}
+              {/* Sfumatura centrale delicata per garantire leggibilità su tutte le foto */}
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/75 via-black/35 to-transparent"
+                className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-black/30"
               />
             </CarouselItem>
           ))}
@@ -135,14 +135,17 @@ const HomeImageBanner = () => {
         />
       </Carousel>
 
-      {/* Overlay testuale fisso sopra lo slider */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-11 z-10 flex flex-col items-center px-6 text-center text-white sm:bottom-14 md:bottom-16">
+      {/* Overlay testuale centrato sopra lo slider */}
+      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-12 text-center text-white sm:px-20">
         <h1 className="font-serif text-xl uppercase tracking-[0.22em] drop-shadow-sm sm:text-3xl md:text-4xl lg:text-[42px]">
           Presenze Essenziali
         </h1>
         <p className="mt-2 max-w-xl text-xs font-light tracking-wide text-white/90 drop-shadow-sm sm:mt-3 sm:text-sm md:text-base">
           Micro-sculture di luce che trasformano il gioiello in un incontro inatteso.
         </p>
+        <span className="mt-5 font-serif text-xs italic tracking-[0.18em] text-white/95 drop-shadow-sm sm:mt-7 sm:text-sm md:text-base">
+          Presto Online
+        </span>
       </div>
 
       {/* Indicatori slide */}
