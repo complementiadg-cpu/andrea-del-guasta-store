@@ -88,8 +88,8 @@ const Services = () => {
           </ContentSection>
 
           <ContentSection title="Atelier ADG">
-            <div className="grid w-full gap-10 lg:grid-cols-2 items-center lg:gap-16">
-              <div className="order-2 max-w-xl lg:order-1">
+            <div className="grid w-full grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
+              <div className="order-2 lg:order-1 lg:col-span-5">
                 <h3 className="text-2xl font-light text-foreground mb-6">
                   L'Atelier: un luogo dedicato al su misura e all'arte
                   dell'evento
@@ -113,19 +113,19 @@ const Services = () => {
                   personalizzato. Contattaci per fissare il tuo incontro
                   riservato.
                 </p>
-                <div className="mt-14">
+                <div className="mt-10">
                   <Link to="/about/customer-care">
                     <Button className="rounded-none px-10">Prenota</Button>
                   </Link>
                 </div>
               </div>
 
-              <div className="order-1 flex justify-center lg:order-2">
-                <div className="w-full max-w-2xl aspect-[3/2] overflow-hidden">
+              <div className="order-1 w-full lg:order-2 lg:col-span-7">
+                <div className="w-full aspect-[3/2] overflow-hidden">
                   <img
-                    src={atelierImg(800)}
-                    srcSet={`${atelierImg(400)} 400w, ${atelierImg(800)} 800w, ${atelierImg(1200)} 1200w, ${atelierImg(1600)} 1600w`}
-                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    src={atelierImg(1200)}
+                    srcSet={`${atelierImg(600)} 600w, ${atelierImg(1000)} 1000w, ${atelierImg(1400)} 1400w, ${atelierImg(1800)} 1800w`}
+                    sizes="(max-width: 1024px) 100vw, 58vw"
                     alt="Atelier ADG"
                     loading="lazy"
                     decoding="async"
