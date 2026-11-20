@@ -7,24 +7,44 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import pearlEditorial from "@/assets/home-pearl-editorial.webp.asset.json";
-import metalEditorial from "@/assets/home-metal-editorial.webp.asset.json";
-import stoneEditorial from "@/assets/home-stone-editorial.webp.asset.json";
 
-const slides = [
+interface SlideItem {
+  baseUrl: string;
+  alt: string;
+}
+
+const slides: SlideItem[] = [
   {
-    src: pearlEditorial.url,
-    alt: "Collana e orecchini con perle in un editoriale couture",
+    baseUrl:
+      "https://res.cloudinary.com/cjgxjyub/image/upload/v1795170803/magnific_ricrea-cambiando-la-collana-indossata-dalla-modella-con-quella_JNCTdYIOq4_hgymnk.jpg",
+    alt: "Modella che indossa i bijoux della capsule collection Presenze Essenziali",
   },
   {
-    src: metalEditorial.url,
-    alt: "Orecchini e bracciale argento dalle forme scultoree",
+    baseUrl:
+      "https://res.cloudinary.com/cjgxjyub/image/upload/v1795170845/magnific_ricrea-con-materiali-realistici-su-un-tessuto_79fTVDKJAL_htlbdg.png",
+    alt: "Insetto scultoreo di perline posato su collana e tessuto botanico scuro",
   },
   {
-    src: stoneEditorial.url,
-    alt: "Bracciale e anello con pietre su travertino toscano",
+    baseUrl:
+      "https://res.cloudinary.com/cjgxjyub/image/upload/v1795170849/magnific_ricrea-con-uno-sfondo-di-tessuto-fogliage-color_SyhcRohUb8_fjssyz.png",
+    alt: "Fili di perle e catene con micro-scultura di perline su sfondo foliage",
+  },
+  {
+    baseUrl:
+      "https://res.cloudinary.com/cjgxjyub/image/upload/v1795171315/magnific_ricrea-con-materiali-realistici-su-un-tessuto_Lw8GRXEswO_kpu2oe.png",
+    alt: "Ragno artigianale in perline su filo di perle e catene metalliche",
+  },
+  {
+    baseUrl:
+      "https://res.cloudinary.com/cjgxjyub/image/upload/v1795171329/magnific_ricrea-con-materiali-realistici-su-un-tessuto_DoObyO5pcl_jbfjrf.jpg",
+    alt: "Libellula intrecciata a mano abbinata ai bijoux Andrea Del Guasta",
   },
 ];
+
+// Genera URL Cloudinary ottimizzati (formato automatico WebP/AVIF, qualità automatica e ridimensionamento)
+const getOptimizedCloudinaryUrl = (url: string, width: number) => {
+  return url.replace("/upload/", `/upload/f_auto,q_auto,w_${width},c_limit/`);
+};
 
 const HomeImageBanner = () => {
   const [api, setApi] = useState<CarouselApi>();
@@ -56,7 +76,7 @@ const HomeImageBanner = () => {
 
   return (
     <section
-      aria-label="Galleria editoriale"
+      aria-label="Galleria editoriale Presenze Essenziali"
       className="relative mb-16 w-full overflow-hidden bg-muted/10"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -69,19 +89,32 @@ const HomeImageBanner = () => {
         <CarouselContent className="ml-0">
           {slides.map((slide, index) => (
             <CarouselItem
-              key={slide.src}
-              className="relative aspect-video pl-0"
+              key={slide.baseUrl}
+              className="relative aspect-[4/3] sm:aspect-video pl-0"
               aria-label={`${index + 1} di ${slides.length}`}
             >
               <img
-                src={slide.src}
+                src={getOptimizedCloudinaryUrl(slide.baseUrl, 1600)}
+                srcSet={`
+                  ${getOptimizedCloudinaryUrl(slide.baseUrl, 640)} 640w,
+                  ${getOptimizedCloudinaryUrl(slide.baseUrl, 1024)} 1024w,
+                  ${getOptimizedCloudinaryUrl(slide.baseUrl, 1600)} 1600w,
+                  ${getOptimizedCloudinaryUrl(slide.baseUrl, 2200)} 2200w
+                `}
+                sizes="100vw"
                 alt={slide.alt}
-                width={1536}
-                height={864}
+                width={1600}
+                height={900}
                 loading={index === 0 ? "eager" : "lazy"}
                 fetchPriority={index === 0 ? "high" : "auto"}
                 decoding="async"
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover object-center"
+              />
+
+              {/* Gradiente leggero solo in basso per garantire la leggibilità del testo */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/75 via-black/35 to-transparent"
               />
             </CarouselItem>
           ))}
@@ -89,35 +122,35 @@ const HomeImageBanner = () => {
 
         <CarouselPrevious
           aria-label="Immagine precedente"
-          className="left-4 top-1/2 h-10 w-10 -translate-y-1/2 rounded-none border-0 bg-background/80 text-foreground shadow-none hover:bg-background md:left-6"
+          className="left-3 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-none border-0 bg-background/80 text-foreground shadow-none hover:bg-background md:left-6 md:h-10 md:w-10"
         />
         <CarouselNext
           aria-label="Immagine successiva"
-          className="right-4 top-1/2 h-10 w-10 -translate-y-1/2 rounded-none border-0 bg-background/80 text-foreground shadow-none hover:bg-background md:right-6"
+          className="right-3 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-none border-0 bg-background/80 text-foreground shadow-none hover:bg-background md:right-6 md:h-10 md:w-10"
         />
       </Carousel>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] bg-gradient-to-t from-foreground/80 via-foreground/35 to-transparent px-14 pb-12 pt-8 sm:px-10 sm:pb-16 sm:pt-24 md:px-14 lg:px-20">
-        <div className="max-w-5xl text-background">
-          <h1 className="font-serif text-[clamp(0.875rem,3.5vw,3.75rem)] font-normal uppercase leading-tight tracking-[0.12em] sm:tracking-[0.18em]">
-            Presenze Essenziali
-          </h1>
-          <p className="mt-2 max-w-md font-sans text-[0.7rem] font-light leading-relaxed tracking-wide text-background/90 sm:mt-3 sm:text-sm md:text-base">
-            Micro-sculture di luce che trasformano il gioiello in un incontro inatteso.
-          </p>
-        </div>
+      {/* Overlay testuale fisso sopra lo slider */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-11 z-10 flex flex-col items-center px-6 text-center text-white sm:bottom-14 md:bottom-16">
+        <h1 className="font-serif text-xl uppercase tracking-[0.22em] drop-shadow-sm sm:text-3xl md:text-4xl lg:text-[42px]">
+          Presenze Essenziali
+        </h1>
+        <p className="mt-2 max-w-xl text-xs font-light tracking-wide text-white/90 drop-shadow-sm sm:mt-3 sm:text-sm md:text-base">
+          Micro-sculture di luce che trasformano il gioiello in un incontro inatteso.
+        </p>
       </div>
 
-      <div className="absolute inset-x-0 bottom-5 z-10 flex items-center justify-center gap-2">
+      {/* Indicatori slide */}
+      <div className="absolute inset-x-0 bottom-4 z-10 flex items-center justify-center gap-2 sm:bottom-5">
         {slides.map((slide, index) => (
           <button
-            key={slide.src}
+            key={slide.baseUrl}
             type="button"
             aria-label={`Vai all'immagine ${index + 1}`}
             aria-current={selectedIndex === index ? "true" : undefined}
             onClick={() => api?.scrollTo(index)}
             className={`h-1 transition-all duration-300 ${
-              selectedIndex === index ? "w-10 bg-background" : "w-6 bg-background/50"
+              selectedIndex === index ? "w-10 bg-white" : "w-6 bg-white/50"
             }`}
           />
         ))}
