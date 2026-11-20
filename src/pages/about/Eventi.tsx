@@ -212,7 +212,7 @@ export const FilosofiaVideo = () => {
 };
 
 // ============================================================
-// IMMAGINE SERVIZI (Adattiva senza ritagli)
+// IMMAGINE SERVIZI (Piena larghezza su sfondo bianco)
 // ============================================================
 
 export const ServiziImage = ({
@@ -223,14 +223,14 @@ export const ServiziImage = ({
   alt: string;
 }) => {
   return (
-    <div className="w-full overflow-hidden rounded-2xl shadow-xl border border-border bg-neutral-950 flex items-center justify-center p-2 md:p-4">
+    <div className="w-full overflow-hidden rounded-2xl shadow-xl border border-border bg-white">
       <img
         src={src}
         alt={alt}
         loading="lazy"
         decoding="async"
         draggable={false}
-        className="w-full h-auto max-h-[75vh] object-contain rounded-xl"
+        className="block w-full h-auto object-cover"
       />
     </div>
   );
