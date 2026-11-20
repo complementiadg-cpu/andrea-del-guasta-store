@@ -95,7 +95,7 @@ const HomeImageBanner = () => {
           {slides.map((slide, index) => (
             <CarouselItem
               key={slide.baseUrl}
-              className="relative aspect-[4/3] pl-0 sm:aspect-video"
+              className="relative aspect-[9/16] pl-0 sm:aspect-video"
               aria-label={`${index + 1} di ${slides.length}`}
             >
               <img
@@ -107,6 +107,7 @@ const HomeImageBanner = () => {
                   ${getOptimizedCloudinaryUrl(slide.baseUrl, 2200)} 2200w
                 `}
                 sizes="100vw"
+                style={{ aspectRatio: "auto" }}
                 alt={slide.alt}
                 width={1600}
                 height={900}
@@ -119,7 +120,7 @@ const HomeImageBanner = () => {
               {/* Sfumatura centrale delicata per garantire leggibilità su tutte le foto */}
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-black/30"
+                className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-black/20 sm:from-black/25 sm:via-black/45 sm:to-black/30"
               />
             </CarouselItem>
           ))}
@@ -136,7 +137,7 @@ const HomeImageBanner = () => {
       </Carousel>
 
       {/* Overlay testuale centrato sopra lo slider */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-12 text-center text-white sm:px-20">
+      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-start px-12 pt-14 text-center sm:justify-center sm:pt-0 text-white sm:px-20">
         <h1 className="font-serif text-xl uppercase tracking-[0.22em] drop-shadow-sm sm:text-3xl md:text-4xl lg:text-[42px]">
           Presenze Essenziali
         </h1>
