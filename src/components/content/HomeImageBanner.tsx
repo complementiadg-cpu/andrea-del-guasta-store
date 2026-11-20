@@ -39,6 +39,11 @@ const slides: SlideItem[] = [
       "https://res.cloudinary.com/cjgxjyub/image/upload/v1795171329/magnific_ricrea-con-materiali-realistici-su-un-tessuto_DoObyO5pcl_jbfjrf.jpg",
     alt: "Libellula intrecciata a mano abbinata ai bijoux Andrea Del Guasta",
   },
+  {
+    baseUrl:
+      "https://res.cloudinary.com/cjgxjyub/image/upload/v1795173045/magnific_ricrea-con-materiali-realistici-su-un-tessuto_UPvf7ycwny_aosupu.png",
+    alt: "Dettaglio scultoreo di perline e bijoux su tessuto materico",
+  },
 ];
 
 // Genera URL Cloudinary ottimizzati (formato automatico WebP/AVIF, qualità automatica e ridimensionamento)
@@ -90,7 +95,7 @@ const HomeImageBanner = () => {
           {slides.map((slide, index) => (
             <CarouselItem
               key={slide.baseUrl}
-              className="relative aspect-[4/3] sm:aspect-video pl-0"
+              className="relative aspect-[4/3] pl-0 sm:aspect-video"
               aria-label={`${index + 1} di ${slides.length}`}
             >
               <img
