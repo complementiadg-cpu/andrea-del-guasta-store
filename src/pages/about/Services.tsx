@@ -88,8 +88,8 @@ const Services = () => {
           </ContentSection>
 
           <ContentSection title="Atelier ADG">
-            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center max-w-6xl">
-              <div className="order-2 lg:order-1">
+            <div className="grid w-full gap-10 lg:grid-cols-2 items-center lg:gap-16">
+              <div className="order-2 max-w-xl lg:order-1">
                 <h3 className="text-2xl font-light text-foreground mb-6">
                   L'Atelier: un luogo dedicato al su misura e all'arte
                   dell'evento
@@ -120,8 +120,8 @@ const Services = () => {
                 </div>
               </div>
 
-              <div className="order-1 lg:order-2">
-                <div className="w-full aspect-[3/2] overflow-hidden">
+              <div className="order-1 flex justify-center lg:order-2">
+                <div className="w-full max-w-2xl aspect-[3/2] overflow-hidden">
                   <img
                     src={atelierImg(800)}
                     srcSet={`${atelierImg(400)} 400w, ${atelierImg(800)} 800w, ${atelierImg(1200)} 1200w, ${atelierImg(1600)} 1600w`}
