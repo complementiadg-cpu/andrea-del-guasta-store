@@ -97,6 +97,17 @@ const HomeImageBanner = () => {
         />
       </Carousel>
 
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] bg-gradient-to-t from-foreground/80 via-foreground/35 to-transparent px-14 pb-12 pt-8 sm:px-10 sm:pb-16 sm:pt-24 md:px-14 lg:px-20">
+        <div className="max-w-5xl text-background">
+          <h1 className="font-serif text-[clamp(0.875rem,3.5vw,3.75rem)] font-normal uppercase leading-tight tracking-[0.12em] sm:tracking-[0.18em]">
+            Presenze Essenziali
+          </h1>
+          <p className="mt-2 max-w-md font-sans text-[0.7rem] font-light leading-relaxed tracking-wide text-background/90 sm:mt-3 sm:text-sm md:text-base">
+            Micro-sculture di luce che trasformano il gioiello in un incontro inatteso.
+          </p>
+        </div>
+      </div>
+
       <div className="absolute inset-x-0 bottom-5 z-10 flex items-center justify-center gap-2">
         {slides.map((slide, index) => (
           <button
