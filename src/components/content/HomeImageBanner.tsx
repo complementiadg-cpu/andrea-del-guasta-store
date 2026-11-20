@@ -126,13 +126,14 @@ const HomeImageBanner = () => {
           ))}
         </CarouselContent>
 
+        {/* Frecce solo su desktop: su mobile la galleria si scorre con il dito */}
         <CarouselPrevious
           aria-label="Immagine precedente"
-          className="left-3 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-none border-0 bg-background/80 text-foreground shadow-none hover:bg-background md:left-6 md:h-10 md:w-10"
+          className="hidden left-3 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-none border-0 bg-background/80 text-foreground shadow-none hover:bg-background sm:flex md:left-6 md:h-10 md:w-10"
         />
         <CarouselNext
           aria-label="Immagine successiva"
-          className="right-3 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-none border-0 bg-background/80 text-foreground shadow-none hover:bg-background md:right-6 md:h-10 md:w-10"
+          className="hidden right-3 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-none border-0 bg-background/80 text-foreground shadow-none hover:bg-background sm:flex md:right-6 md:h-10 md:w-10"
         />
       </Carousel>
 
