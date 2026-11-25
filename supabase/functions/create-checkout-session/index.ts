@@ -1,4 +1,11 @@
 import Stripe from "npm:stripe@14.21.0";
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+const parsePrice = (v: unknown): number => {
+  if (typeof v === "number") return v;
+  const c = String(v ?? "").replace(/[^\d.,-]/g, "").trim();
+  return parseFloat(c.includes(",") ? c.replace(/\./g, "").replace(",", ".") : c);
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,11 +38,13 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     const items: Item[] = Array.isArray(body?.items) ? body.items : [];
-    const shippingCost = Number(body?.shippingCost ?? 0);
-    const shippingLabel = String(body?.shippingLabel ?? "Spedizione");
+    const shippingLabel = String(body?.shippingLabel ?? "Spedizione").slice(0, 80);
     const email = typeof body?.email === "string" ? body.email : undefined;
     const orderId = body?.orderId ?? null;
-    const origin = String(body?.origin || req.headers.get("origin") || "");
+    const requested = String(body?.origin || req.headers.get("origin") || "");
+    const allowed = /^https:\/\/((www\.)?andreadelguasta\.com|[a-z0-9-]+\.lovable\.app)$/i.test(requested)
+      || /^http:\/\/localhost(:\d+)?$/.test(requested);
+    const origin = allowed ? requested : "https://www.andreadelguasta.com";
 
     if (items.length === 0) {
       return new Response(JSON.stringify({ error: "Carrello vuoto." }), {
@@ -44,14 +53,36 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Prezzi letti dal database: il prezzo inviato dal browser viene ignorato
+    const skus = [...new Set(items.map((i) => String(i?.sku ?? "")).filter(Boolean))];
+    if (skus.length !== new Set(items.map((i) => i?.sku)).size || skus.length === 0) {
+      return new Response(JSON.stringify({ error: "Articolo non valido." }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: prodotti, error: dbErr } = await db
+      .from("Prodotti").select('SKU, "Nome Prodotto", "Prezzo (€)"').in("SKU", skus);
+    if (dbErr) throw new Error("Lettura prodotti fallita: " + dbErr.message);
+    const priceMap = new Map<string, { name: string; price: number }>();
+    for (const p of prodotti ?? []) {
+      priceMap.set(String(p.SKU), { name: p["Nome Prodotto"] ?? "", price: parsePrice(p["Prezzo (€)"]) });
+    }
     for (const i of items) {
-      if (!i?.name || !Number.isFinite(Number(i.price)) || Number(i.price) <= 0) {
-        return new Response(JSON.stringify({ error: "Articolo non valido." }), {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+      const real = priceMap.get(String(i.sku));
+      if (!real || !Number.isFinite(real.price) || real.price <= 0) {
+        return new Response(JSON.stringify({ error: "Articolo non disponibile." }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
+      i.price = real.price;
+      i.name = real.name || i.name;
+      i.quantity = Math.min(20, Math.max(1, Math.round(Number(i.quantity) || 1)));
     }
+    const subtotal = items.reduce((t, i) => t + i.price * i.quantity, 0);
+    // Spedizione ricalcolata: nazionale gratuita, internazionale 25 € (gratuita sopra 300 €)
+    const isInternational = /internazional/i.test(shippingLabel);
+    const shippingCost = isInternational && subtotal <= 300 ? 25 : 0;
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
